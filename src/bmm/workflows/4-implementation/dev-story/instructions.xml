@@ -221,111 +221,212 @@
     </check>
   </step>
 
-  <step n="5" goal="Implement task following red-green-refactor cycle">
-    <critical>FOLLOW THE STORY FILE TASKS/SUBTASKS SEQUENCE EXACTLY AS WRITTEN - NO DEVIATION</critical>
+  <step n="5" goal="Autonomous implementation using self-sufficient story">
+    <critical>🤖 AUTONOMOUS DEVELOPMENT LOOP - Spawn subagent that works until 100% complete!</critical>
+    <critical>📋 SELF-SUFFICIENT STORY - Agent needs ONLY story file + codebase, no external context!</critical>
 
-    <action>Review the current task/subtask from the story file - this is your authoritative implementation guide</action>
-    <action>Plan implementation following red-green-refactor cycle</action>
+    <check if="{task_tool_available} AND {subagents.enabled} AND {subagents.mode} != 'explicit'">
+      <output>🚀 Spawning autonomous development agent for story {{story_key}}...</output>
+      <output>Agent will work continuously in loops until ALL tasks complete, ALL tests pass, ALL ACs met.</output>
 
-    <!-- RED PHASE -->
-    <action>Write FAILING tests first for the task/subtask functionality</action>
-    <action>Confirm tests fail before implementation - this validates test correctness</action>
+      <invoke-subagent type="general" mode="blocking">
+        <objective>
+          Autonomously implement story {{story_key}} to 100% completion:
 
-    <!-- GREEN PHASE -->
-    <action>Implement MINIMAL code to make tests pass</action>
-    <action>Run tests to confirm they now pass</action>
-    <action>Handle error conditions and edge cases as specified in task/subtask</action>
+          **Phase 1: Understand**
+          - Read COMPLETE story file at {{story_file}} (self-sufficient with embedded context)
+          - Understand ALL acceptance criteria
+          - Review ALL tasks/subtasks that need implementation
+          - Review Dev Notes for architecture requirements, patterns, previous learnings
+          - Explore existing codebase for patterns and conventions
 
-    <!-- REFACTOR PHASE -->
-    <action>Improve code structure while keeping tests green</action>
-    <action>Ensure code follows architecture patterns and coding standards from Dev Notes</action>
+          **Phase 2: Execute Tasks in Continuous Loop**
+          - FOR EACH unchecked task in Tasks/Subtasks section (in order):
+            1. Plan implementation approach based on Dev Notes guidance
+            2. Write FAILING tests first (RED phase of TDD)
+            3. Confirm tests fail (validates test correctness)
+            4. Implement MINIMAL code to make tests pass (GREEN phase)
+            5. Run full test suite to verify tests pass and no regressions
+            6. IF tests fail: Debug and fix (max 3 attempts per task)
+               - Retry 1: Analyze failure, adjust implementation
+               - Retry 2: Review Dev Notes for missed requirements
+               - Retry 3: Check for architecture violations
+               - IF still failing after 3 attempts: HALT with detailed error
+            7. Refactor code while keeping tests green (REFACTOR phase)
+            8. Validate task meets related acceptance criteria
+            9. ONLY THEN mark task checkbox [x] in story file
+            10. Update File List with ALL new/modified/deleted files
+            11. Add implementation notes to Dev Agent Record
+            12. Save story file
+            13. Continue to NEXT unchecked task
 
-    <action>Document technical approach and decisions in Dev Agent Record → Implementation Plan</action>
+          - CONTINUE this loop WITHOUT STOPPING until ALL tasks are checked
 
-    <action if="new dependencies required beyond story specifications">HALT: "Additional dependencies need user approval"</action>
-    <action if="3 consecutive implementation failures occur">HALT and request guidance</action>
-    <action if="required configuration is missing">HALT: "Cannot proceed without necessary configuration files"</action>
+          **Phase 3: Final Validation**
+          - Verify ALL tasks/subtasks marked [x]
+          - Run full regression test suite - ALL must pass
+          - Validate ALL acceptance criteria satisfied
+          - Verify File List includes every changed file
+          - Update story Status to "review"
+          - Add final completion notes to Dev Agent Record
 
-    <critical>NEVER implement anything not mapped to a specific task/subtask in the story file</critical>
-    <critical>NEVER proceed to next task until current task/subtask is complete AND tests pass</critical>
-    <critical>Execute continuously without pausing until all tasks/subtasks are complete or explicit HALT condition</critical>
-    <critical>Do NOT propose to pause for review until Step 9 completion gates are satisfied</critical>
-  </step>
+          **Phase 4: Report Results**
+          - Return completion status: "completed" or "halted"
+          - Return test results summary (total, passing, failing)
+          - Return list of files modified
+          - Return any blocking issues encountered
 
-  <step n="6" goal="Author comprehensive tests">
-    <action>Create unit tests for business logic and core functionality introduced/changed by the task</action>
-    <action>Add integration tests for component interactions specified in story requirements</action>
-    <action>Include end-to-end tests for critical user flows when story requirements demand them</action>
-    <action>Cover edge cases and error handling scenarios identified in story Dev Notes</action>
-  </step>
+          **HALT Conditions (only stop for these):**
+          - 3 consecutive test failures on same task (needs human debugging)
+          - Missing dependencies not specified in story Dev Notes
+          - Ambiguous requirements in story file (needs clarification)
+          - Configuration files missing that are required
+          - Cannot determine how to run tests after exploration
 
-  <step n="7" goal="Run validations and tests">
-    <action>Determine how to run tests for this repo (infer test framework from project structure)</action>
-    <action>Run all existing tests to ensure no regressions</action>
-    <action>Run the new tests to verify implementation correctness</action>
-    <action>Run linting and code quality checks if configured in project</action>
-    <action>Validate implementation meets ALL story acceptance criteria; enforce quantitative thresholds explicitly</action>
-    <action if="regression tests fail">STOP and fix before continuing - identify breaking changes immediately</action>
-    <action if="new tests fail">STOP and fix before continuing - ensure implementation correctness</action>
-  </step>
+          **Critical Requirements:**
+          - Use ONLY story file + existing codebase (story is self-sufficient)
+          - Follow TDD red-green-refactor cycle for EVERY task
+          - Run tests after EVERY implementation change
+          - NEVER mark task complete unless tests 100% passing
+          - NEVER skip tasks or change task order
+          - Execute continuously without pausing until done or HALT
+        </objective>
+        <context>
+          <story-file>{{story_file}}</story-file>
+          <project-root>{{project_root}}</project-root>
+          <story-dir>{{story_dir}}</story-dir>
+        </context>
+        <constraints>
+          <max-turns>100</max-turns>
+          <halt-on>
+            - 3 consecutive test failures on same task
+            - Missing dependencies not in story
+            - Ambiguous requirements
+            - Missing required configuration
+          </halt-on>
+        </constraints>
+        <output-var>{autonomous_dev_results}</output-var>
+      </invoke-subagent>
 
-  <step n="8" goal="Validate and mark task complete ONLY when fully done">
-    <critical>NEVER mark a task complete unless ALL conditions are met - NO LYING OR CHEATING</critical>
+      <output>✅ Autonomous development agent completed!</output>
 
-    <!-- VALIDATION GATES -->
-    <action>Verify ALL tests for this task/subtask ACTUALLY EXIST and PASS 100%</action>
-    <action>Confirm implementation matches EXACTLY what the task/subtask specifies - no extra features</action>
-    <action>Validate that ALL acceptance criteria related to this task are satisfied</action>
-    <action>Run full test suite to ensure NO regressions introduced</action>
+      <!-- Process results -->
+      <check if="{autonomous_dev_results}.status == 'completed'">
+        <output>🎉 Story {{story_key}} fully implemented autonomously!</output>
+        <output>Test Results: {autonomous_dev_results}.test_summary</output>
+        <output>Files Modified: {autonomous_dev_results}.files_modified</output>
+        <action>Proceed to step 9 for final validation</action>
+      </check>
 
-    <!-- REVIEW FOLLOW-UP HANDLING -->
-    <check if="task is review follow-up (has [AI-Review] prefix)">
-      <action>Extract review item details (severity, description, related AC/file)</action>
-      <action>Add to resolution tracking list: {{resolved_review_items}}</action>
+      <check if="{autonomous_dev_results}.status == 'halted'">
+        <output>⚠️ Autonomous agent halted due to blocking issue:</output>
+        <output>{autonomous_dev_results}.halt_reason</output>
+        <output>Partial Progress:</output>
+        <output>- Tasks completed: {autonomous_dev_results}.tasks_completed</output>
+        <output>- Tasks remaining: {autonomous_dev_results}.tasks_remaining</output>
+        <output>- Files modified so far: {autonomous_dev_results}.files_modified</output>
+        <ask>How would you like to proceed?
+          [r] Resume manually from where agent stopped
+          [c] Clarify requirements and restart agent
+          [h] Get human developer assistance
+        </ask>
+        <action>Based on user choice, either HALT or continue with manual intervention</action>
+      </check>
 
-      <!-- Mark task in Review Follow-ups section -->
-      <action>Mark task checkbox [x] in "Tasks/Subtasks → Review Follow-ups (AI)" section</action>
-
-      <!-- CRITICAL: Also mark corresponding action item in review section -->
-      <action>Find matching action item in "Senior Developer Review (AI) → Action Items" section by matching description</action>
-      <action>Mark that action item checkbox [x] as resolved</action>
-
-      <action>Add to Dev Agent Record → Completion Notes: "✅ Resolved review finding [{{severity}}]: {{description}}"</action>
+      <check if="{autonomous_dev_results}.status == 'failed'">
+        <output>❌ Autonomous agent encountered fatal error: {autonomous_dev_results}.error</output>
+        <action>Fall back to manual implementation loop below</action>
+      </check>
     </check>
 
-    <!-- ONLY MARK COMPLETE IF ALL VALIDATION PASS -->
-    <check if="ALL validation gates pass AND tests ACTUALLY exist and pass">
-      <action>ONLY THEN mark the task (and subtasks) checkbox with [x]</action>
-      <action>Update File List section with ALL new, modified, or deleted files (paths relative to repo root)</action>
-      <action>Add completion notes to Dev Agent Record summarizing what was ACTUALLY implemented and tested</action>
-    </check>
+    <!-- Fallback: Manual implementation if Task tool unavailable or explicit mode -->
+    <else>
+      <output>ℹ️ Using manual implementation mode (autonomous agents disabled or unavailable)</output>
 
-    <check if="ANY validation fails">
-      <action>DO NOT mark task complete - fix issues first</action>
-      <action>HALT if unable to fix validation failures</action>
-    </check>
+      <!-- Original manual implementation logic -->
+      <critical>FOLLOW THE STORY FILE TASKS/SUBTASKS SEQUENCE EXACTLY AS WRITTEN - NO DEVIATION</critical>
 
-    <check if="review_continuation == true and {{resolved_review_items}} is not empty">
-      <action>Count total resolved review items in this session</action>
-      <action>Add Change Log entry: "Addressed code review findings - {{resolved_count}} items resolved (Date: {{date}})"</action>
-    </check>
+      <action>Review the current task/subtask from the story file - this is your authoritative implementation guide</action>
+      <action>Plan implementation following red-green-refactor cycle</action>
 
-    <action>Save the story file</action>
-    <action>Determine if more incomplete tasks remain</action>
-    <action if="more tasks remain">
-      <goto step="5">Next task</goto>
-    </action>
-    <action if="no tasks remain">
-      <goto step="9">Completion</goto>
-    </action>
+      <!-- RED PHASE -->
+      <action>Write FAILING tests first for the task/subtask functionality</action>
+      <action>Confirm tests fail before implementation - this validates test correctness</action>
+
+      <!-- GREEN PHASE -->
+      <action>Implement MINIMAL code to make tests pass</action>
+      <action>Run tests to confirm they now pass</action>
+      <action>Handle error conditions and edge cases as specified in task/subtask</action>
+
+      <!-- REFACTOR PHASE -->
+      <action>Improve code structure while keeping tests green</action>
+      <action>Ensure code follows architecture patterns and coding standards from Dev Notes</action>
+
+      <action>Document technical approach and decisions in Dev Agent Record → Implementation Plan</action>
+
+      <action if="new dependencies required beyond story specifications">HALT: "Additional dependencies need user approval"</action>
+      <action if="3 consecutive implementation failures occur">HALT and request guidance</action>
+      <action if="required configuration is missing">HALT: "Cannot proceed without necessary configuration files"</action>
+
+      <critical>NEVER implement anything not mapped to a specific task/subtask in the story file</critical>
+      <critical>NEVER proceed to next task until current task/subtask is complete AND tests pass</critical>
+      <critical>Execute continuously without pausing until all tasks/subtasks are complete or explicit HALT condition</critical>
+
+      <!-- Manual task validation and loop -->
+      <action>Verify ALL tests for this task/subtask ACTUALLY EXIST and PASS 100%</action>
+      <action>Confirm implementation matches EXACTLY what the task/subtask specifies</action>
+      <action>Validate that ALL acceptance criteria related to this task are satisfied</action>
+      <action>Run full test suite to ensure NO regressions introduced</action>
+
+      <check if="ALL validation gates pass AND tests ACTUALLY exist and pass">
+        <action>Mark the task (and subtasks) checkbox with [x]</action>
+        <action>Update File List section with ALL new, modified, or deleted files</action>
+        <action>Add completion notes to Dev Agent Record</action>
+      </check>
+
+      <check if="ANY validation fails">
+        <action>DO NOT mark task complete - fix issues first</action>
+        <action>HALT if unable to fix validation failures</action>
+      </check>
+
+      <action>Save the story file</action>
+      <action>Determine if more incomplete tasks remain</action>
+      <action if="more tasks remain">
+        <goto step="5">Next task</goto>
+      </action>
+      <action if="no tasks remain">
+        <goto step="9">Completion</goto>
+      </action>
+    </else>
   </step>
 
   <step n="9" goal="Story completion and mark for review" tag="sprint-status">
-    <action>Verify ALL tasks and subtasks are marked [x] (re-scan the story document now)</action>
-    <action>Run the full regression suite (do not skip)</action>
+    <critical>🔍 FINAL VALIDATION - Ensure 100% completion before marking for review</critical>
+
+    <!-- Read current story file to verify state (autonomous agent may have updated it) -->
+    <action>Re-read complete story file: {{story_file}}</action>
+    <action>Verify ALL tasks and subtasks are marked [x]</action>
+    <action>Verify story Status is "review" (autonomous agent should have set this)</action>
+
+    <!-- Validate test results -->
+    <check if="autonomous agent was used">
+      <action>Review test results from {autonomous_dev_results}.test_summary</action>
+      <check if="{autonomous_dev_results}.all_tests_passing != true">
+        <output>❌ HALT: Tests not all passing!</output>
+        <output>Test Summary: {autonomous_dev_results}.test_summary</output>
+        <action>HALT - Cannot mark for review with failing tests</action>
+      </check>
+    </check>
+    <else>
+      <action>Run the full regression suite manually (do not skip)</action>
+      <check if="any tests fail">
+        <output>❌ HALT: Tests failing!</output>
+        <action>HALT - Fix failing tests before marking for review</action>
+      </check>
+    </else>
+
     <action>Confirm File List includes every changed file</action>
     <action>Execute enhanced definition-of-done validation</action>
-    <action>Update the story Status to: "review"</action>
 
     <!-- Enhanced Definition of Done Validation -->
     <action>Validate definition-of-done checklist with essential requirements:
@@ -334,13 +435,19 @@
       - Unit tests for core functionality added/updated
       - Integration tests for component interactions added when required
       - End-to-end tests for critical flows added when story demands them
-      - All tests pass (no regressions, new tests successful)
+      - All tests pass 100% (no regressions, new tests successful)
       - Code quality checks pass (linting, static analysis if configured)
       - File List includes every new/modified/deleted file (relative paths)
       - Dev Agent Record contains implementation notes
-      - Change Log includes summary of changes
+      - Change Log includes summary of changes (or Dev Agent Record has completion notes)
       - Only permitted story sections were modified
+      - Story uses ONLY embedded context (no external file dependencies)
     </action>
+
+    <!-- Update story status if not already done by autonomous agent -->
+    <check if="story Status != 'review'">
+      <action>Update the story Status to: "review"</action>
+    </check>
 
     <!-- Mark story ready for review - sprint status conditional -->
     <check if="{sprint_status} file exists AND {{current_sprint_status}} != 'no-sprint-tracking'">
@@ -372,11 +479,63 @@
 
   <step n="10" goal="Completion communication and user support">
     <action>Execute the enhanced definition-of-done checklist using the validation framework</action>
-    <action>Prepare a concise summary in Dev Agent Record → Completion Notes</action>
 
-    <action>Communicate to {user_name} that story implementation is complete and ready for review</action>
-    <action>Summarize key accomplishments: story ID, story key, title, key changes made, tests added, files modified</action>
-    <action>Provide the story file path and current status (now "review")</action>
+    <check if="autonomous agent was used">
+      <output>**🤖 AUTONOMOUS DEVELOPMENT COMPLETED, {user_name}!**
+
+        **Story Details:**
+        - Story ID: {{story_id}}
+        - Story Key: {{story_key}}
+        - File: {{story_file}}
+        - Status: review (ready for code review)
+
+        **Autonomous Execution Summary:**
+        - Mode: Autonomous loop execution (zero human intervention)
+        - Tasks completed: {autonomous_dev_results}.tasks_completed
+        - Test results: {autonomous_dev_results}.test_summary
+        - Files modified: {autonomous_dev_results}.files_count
+        - Execution approach: TDD red-green-refactor for all tasks
+        - Retries/failures handled: {autonomous_dev_results}.retry_count
+
+        **Key Accomplishments:**
+        {autonomous_dev_results}.key_changes
+
+        **Files Modified:**
+        {autonomous_dev_results}.files_modified
+
+        **Next Steps:**
+        1. Review the implemented story in {{story_file}}
+        2. Verify all acceptance criteria are met (autonomous agent validated, but double-check!)
+        3. Run `code-review` workflow for comprehensive review
+        4. Optional: Run `/bmad:tea:automate` for additional test coverage
+        5. Once approved, story can be merged
+
+        💡 **Tip:** For best results, run `code-review` using a **different** LLM than the one that implemented.
+      </output>
+    </check>
+    <else>
+      <output>**✅ STORY IMPLEMENTATION COMPLETED, {user_name}!**
+
+        **Story Details:**
+        - Story ID: {{story_id}}
+        - Story Key: {{story_key}}
+        - File: {{story_file}}
+        - Status: review (ready for code review)
+
+        **Implementation Summary:**
+        - Tasks completed: ALL
+        - Tests: ALL passing
+        - Files modified: See File List in story file
+
+        **Next Steps:**
+        1. Review the implemented story in {{story_file}}
+        2. Verify all acceptance criteria are met
+        3. Run `code-review` workflow for peer review
+        4. Optional: Run `/bmad:tea:automate` to expand test coverage
+
+        💡 **Tip:** For best results, run `code-review` using a **different** LLM.
+      </output>
+    </else>
 
     <action>Based on {user_skill_level}, ask if user needs any explanations about:
       - What was implemented and how it works
@@ -391,18 +550,8 @@
       <action>Use examples and references to specific code when helpful</action>
     </check>
 
-    <action>Once explanations are complete (or user indicates no questions), suggest logical next steps</action>
-    <action>Recommended next steps (flexible based on project setup):
-      - Review the implemented story and test the changes
-      - Verify all acceptance criteria are met
-      - Ensure deployment readiness if applicable
-      - Run `code-review` workflow for peer review
-      - Optional: If Test Architect module installed, run `/bmad:tea:automate` to expand guardrail tests
-    </action>
-
-    <output>💡 **Tip:** For best results, run `code-review` using a **different** LLM than the one that implemented this story.</output>
     <check if="{sprint_status} file exists">
-      <action>Suggest checking {sprint_status} to see project progress</action>
+      <action>Suggest checking {sprint_status} to see overall project progress</action>
     </check>
     <action>Remain flexible - allow user to choose their own path or ask for other assistance</action>
   </step>

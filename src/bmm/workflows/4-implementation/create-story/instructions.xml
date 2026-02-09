@@ -174,142 +174,262 @@
     <action>GOTO step 2a</action>
   </step>
 
-  <step n="2" goal="Load and analyze core artifacts">
+  <step n="2" goal="Load and analyze core artifacts with parallel autonomous agents">
     <critical>🔬 EXHAUSTIVE ARTIFACT ANALYSIS - This is where you prevent future developer fuckups!</critical>
+    <critical>🤖 AUTONOMOUS PARALLEL EXECUTION - Spawning multiple agents simultaneously for 3-4x faster analysis!</critical>
 
     <!-- Load all available content through discovery protocol -->
-    <invoke-protocol
-      name="discover_inputs" />
-    <note>Available content: {epics_content}, {prd_content}, {architecture_content}, {ux_content},
-    {project_context}</note>
+    <invoke-protocol name="discover_inputs" />
+    <note>Available content: {epics_content}, {prd_content}, {architecture_content}, {ux_content}, {project_context}</note>
 
-    <!-- Analyze epics file for story foundation -->
-    <action>From {epics_content}, extract Epic {{epic_num}} complete context:</action> **EPIC ANALYSIS:** - Epic
-    objectives and business value - ALL stories in this epic for cross-story context - Our specific story's requirements, user story
-    statement, acceptance criteria - Technical requirements and constraints - Dependencies on other stories/epics - Source hints pointing to
-    original documents <!-- Extract specific story requirements -->
-    <action>Extract our story ({{epic_num}}-{{story_num}}) details:</action> **STORY FOUNDATION:** - User story statement
-    (As a, I want, so that) - Detailed acceptance criteria (already BDD formatted) - Technical requirements specific to this story -
-    Business context and value - Success criteria <!-- Previous story analysis for context continuity -->
-    <check if="story_num > 1">
-      <action>Load previous story file: {{story_dir}}/{{epic_num}}-{{previous_story_num}}-*.md</action> **PREVIOUS STORY INTELLIGENCE:** -
-    Dev notes and learnings from previous story - Review feedback and corrections needed - Files that were created/modified and their
-    patterns - Testing approaches that worked/didn't work - Problems encountered and solutions found - Code patterns established <action>Extract
-    all learnings that could impact current story implementation</action>
+    <!-- PARALLEL SUBAGENT EXECUTION - All agents work simultaneously -->
+    <check if="{task_tool_available} AND {subagents.enabled}">
+      <output>🚀 Spawning parallel autonomous agents for comprehensive analysis...</output>
+
+      <invoke-parallel>
+        <!-- Agent 1: Epic Analysis -->
+        <subagent id="epic-analyzer" type="explore">
+          <objective>
+            Analyze Epic {{epic_num}} from epics content and extract COMPLETE self-sufficient context:
+            - Epic objectives and business value
+            - ALL stories in this epic for cross-story context
+            - Our specific story {{epic_num}}.{{story_num}} requirements, user story statement, acceptance criteria
+            - Technical requirements and constraints
+            - Dependencies on other stories/epics
+            - Success criteria
+            Embed ALL findings so story file needs NO external epic reference.
+          </objective>
+          <context>
+            <include>{epics_content}</include>
+            <epic-number>{{epic_num}}</epic-number>
+            <story-number>{{story_num}}</story-number>
+          </context>
+          <output-var>{epic_intelligence}</output-var>
+        </subagent>
+
+        <!-- Agent 2: Architecture Analysis -->
+        <subagent id="arch-analyzer" type="explore">
+          <objective>
+            Extract architecture requirements for story {{epic_num}}.{{story_num}}:
+            - Technical stack (languages, frameworks, libraries with versions)
+            - Code structure (folder organization, naming conventions, file patterns)
+            - API patterns (service structure, endpoint patterns, data contracts)
+            - Database schemas (tables, relationships, constraints)
+            - Security requirements (authentication patterns, authorization rules)
+            - Performance requirements (caching strategies, optimization patterns)
+            - Testing standards (frameworks, coverage expectations, test patterns)
+            - Deployment patterns (environment config, build processes)
+            Embed ALL relevant architecture details in findings.
+          </objective>
+          <context>
+            <include>{architecture_content}</include>
+            <story-context>{{epic_num}}.{{story_num}}</story-context>
+          </context>
+          <output-var>{arch_intelligence}</output-var>
+        </subagent>
+
+        <!-- Agent 3: Previous Story Intelligence (conditional) -->
+        <check if="story_num > 1">
+          <subagent id="prev-story-learner" type="explore">
+            <objective>
+              Analyze previous story ({{epic_num}}.{{story_num - 1}}) and extract learnings:
+              - Dev notes and implementation decisions
+              - Review feedback and corrections needed
+              - Files created/modified and their patterns
+              - Testing approaches that worked/didn't work
+              - Problems encountered and solutions found
+              - Code patterns established
+              Extract ALL insights that could impact current story.
+            </objective>
+            <context>
+              <story-file>{{story_dir}}/{{epic_num}}-{{story_num - 1}}-*.md</story-file>
+            </context>
+            <output-var>{previous_intelligence}</output-var>
+          </subagent>
+        </check>
+
+        <!-- Agent 4: Git Pattern Analysis (conditional) -->
+        <check if="git repository detected">
+          <subagent id="git-analyzer" type="bash">
+            <objective>
+              Analyze last 5 commits for implementation patterns:
+              - Run: git log -5 --name-status
+              - Run: git diff HEAD~5 --stat
+              Extract patterns: files modified, code conventions, library dependencies, architecture decisions, testing approaches.
+            </objective>
+            <output-var>{git_intelligence}</output-var>
+          </subagent>
+        </check>
+
+        <!-- Agent 5: Library/Framework Research (conditional) -->
+        <check if="specific libraries/frameworks identified in architecture">
+          <subagent id="library-researcher" type="general">
+            <objective>
+              Research latest stable versions and best practices for libraries/frameworks from architecture:
+              - Latest API documentation and breaking changes
+              - Security vulnerabilities or updates
+              - Performance improvements or deprecations
+              - Best practices for current versions
+              Embed specific version numbers, API endpoints, and critical information.
+            </objective>
+            <context>
+              <technologies>{identified_technologies}</technologies>
+            </context>
+            <output-var>{web_intelligence}</output-var>
+          </subagent>
+        </check>
+
+        <sync-point>Wait for all agents to complete analysis</sync-point>
+      </invoke-parallel>
+
+      <output>✅ All autonomous agents completed! Aggregating findings...</output>
+
+      <!-- Aggregate all results into comprehensive context -->
+      <action>Synthesize findings from all agents:
+        - Epic Intelligence: {epic_intelligence}
+        - Architecture Intelligence: {arch_intelligence}
+        - Previous Story Intelligence: {previous_intelligence} (if available)
+        - Git Patterns: {git_intelligence} (if available)
+        - Library Research: {web_intelligence} (if available)
+      </action>
+
+      <output>📊 Comprehensive context gathered from parallel autonomous analysis</output>
     </check>
 
-    <!-- Git intelligence for previous work patterns -->
-    <check
-      if="previous story exists AND git repository detected">
-      <action>Get last 5 commit titles to understand recent work patterns</action>
-      <action>Analyze 1-5 most recent commits for relevance to current story:
-        - Files created/modified
-        - Code patterns and conventions used
-        - Library dependencies added/changed
+    <!-- Fallback: Manual sequential analysis if Task tool unavailable -->
+    <else>
+      <output>ℹ️ Task tool unavailable - using manual sequential analysis</output>
+
+      <!-- Original manual analysis logic -->
+      <action>From {epics_content}, extract Epic {{epic_num}} complete context:</action>
+      **EPIC ANALYSIS:** - Epic objectives and business value - ALL stories in this epic for cross-story context - Our specific story's requirements, user story statement, acceptance criteria - Technical requirements and constraints - Dependencies on other stories/epics - Source hints pointing to original documents
+
+      <action>Extract our story ({{epic_num}}-{{story_num}}) details:</action>
+      **STORY FOUNDATION:** - User story statement (As a, I want, so that) - Detailed acceptance criteria (already BDD formatted) - Technical requirements specific to this story - Business context and value - Success criteria
+
+      <check if="story_num > 1">
+        <action>Load previous story file: {{story_dir}}/{{epic_num}}-{{previous_story_num}}-*.md</action>
+        **PREVIOUS STORY INTELLIGENCE:** - Dev notes and learnings from previous story - Review feedback and corrections needed - Files that were created/modified and their patterns - Testing approaches that worked/didn't work - Problems encountered and solutions found - Code patterns established
+        <action>Extract all learnings that could impact current story implementation</action>
+      </check>
+
+      <check if="git repository detected">
+        <action>Get last 5 commit titles to understand recent work patterns</action>
+        <action>Analyze 1-5 most recent commits for relevance to current story:
+          - Files created/modified
+          - Code patterns and conventions used
+          - Library dependencies added/changed
+          - Architecture decisions implemented
+          - Testing approaches used
+        </action>
+        <action>Extract actionable insights for current story implementation</action>
+      </check>
+    </else>
+  </step>
+
+  <step n="3" goal="Create comprehensive self-sufficient story file">
+    <critical>📝 CREATE ULTIMATE SELF-SUFFICIENT STORY FILE - 100% autonomous development ready!</critical>
+    <critical>🎯 EMBED ALL CONTEXT - Zero external references, story file contains EVERYTHING!</critical>
+
+    <action>Initialize from template.md: {default_output_file}</action>
+    <template-output file="{default_output_file}">story_header</template-output>
+
+    <!-- Story foundation from epic intelligence -->
+    <template-output file="{default_output_file}">story_requirements</template-output>
+    <action>Use {epic_intelligence} to populate:
+      - User Story statement (As a, I want, so that)
+      - Acceptance Criteria (BDD format from epic)
+      - Business context and value
+      - Success criteria
+      - Dependencies on other stories
+    </action>
+
+    <!-- Developer context section - MOST IMPORTANT PART -->
+    <critical>This section makes the story 100% self-sufficient - embed EVERYTHING from agents!</critical>
+    <template-output file="{default_output_file}">developer_context_section</template-output>
+
+    **EMBEDDED EPIC CONTEXT (from {epic_intelligence}):**
+    <template-output file="{default_output_file}">epic_context_embedded</template-output>
+    <action>Embed complete epic objectives, all related stories, dependencies - NO reference to epics.md</action>
+
+    **EMBEDDED ARCHITECTURE REQUIREMENTS (from {arch_intelligence}):**
+    <template-output file="{default_output_file}">architecture_embedded</template-output>
+    <action>Embed:
+      - Technical stack with versions
+      - Code structure patterns and naming conventions
+      - API patterns and data contracts
+      - Database schemas and relationships
+      - Security requirements and authentication patterns
+      - Performance requirements and caching strategies
+      - Testing standards and frameworks
+      - Deployment patterns
+      NO reference to architecture.md - everything embedded here!
+    </action>
+
+    **EMBEDDED LIBRARY/FRAMEWORK SPECIFICS (from {web_intelligence}):**
+    <check if="{web_intelligence} available">
+      <template-output file="{default_output_file}">library_framework_embedded</template-output>
+      <action>Embed:
+        - Specific library versions and why chosen
+        - API endpoints with parameters and authentication
+        - Security patches and considerations
+        - Best practices for current versions
+        - Migration notes if upgrading
+      </action>
+    </check>
+
+    **EMBEDDED PREVIOUS LEARNINGS (from {previous_intelligence}):**
+    <check if="{previous_intelligence} available">
+      <template-output file="{default_output_file}">previous_learnings_embedded</template-output>
+      <action>Embed:
+        - Implementation decisions from previous story
+        - Review feedback and corrections
+        - Files created/modified and patterns used
+        - Testing approaches that worked/failed
+        - Problems encountered and solutions
+        NO reference to previous story file - learnings embedded here!
+      </action>
+    </check>
+
+    **EMBEDDED GIT PATTERNS (from {git_intelligence}):**
+    <check if="{git_intelligence} available">
+      <template-output file="{default_output_file}">git_patterns_embedded</template-output>
+      <action>Embed:
+        - Recent files modified and patterns
+        - Code conventions established
+        - Library dependencies added
         - Architecture decisions implemented
         - Testing approaches used
       </action>
-      <action>Extract actionable insights for current story implementation</action>
-    </check>
-  </step>
-
-  <step n="3" goal="Architecture analysis for developer guardrails">
-    <critical>🏗️ ARCHITECTURE INTELLIGENCE - Extract everything the developer MUST follow!</critical> **ARCHITECTURE DOCUMENT ANALYSIS:** <action>Systematically
-    analyze architecture content for story-relevant requirements:</action>
-
-    <!-- Load architecture - single file or sharded -->
-    <check if="architecture file is single file">
-      <action>Load complete {architecture_content}</action>
-    </check>
-    <check if="architecture is sharded to folder">
-      <action>Load architecture index and scan all architecture files</action>
-    </check> **CRITICAL ARCHITECTURE EXTRACTION:** <action>For
-    each architecture section, determine if relevant to this story:</action> - **Technical Stack:** Languages, frameworks, libraries with
-    versions - **Code Structure:** Folder organization, naming conventions, file patterns - **API Patterns:** Service structure, endpoint
-    patterns, data contracts - **Database Schemas:** Tables, relationships, constraints relevant to story - **Security Requirements:**
-    Authentication patterns, authorization rules - **Performance Requirements:** Caching strategies, optimization patterns - **Testing
-    Standards:** Testing frameworks, coverage expectations, test patterns - **Deployment Patterns:** Environment configurations, build
-    processes - **Integration Patterns:** External service integrations, data flows <action>Extract any story-specific requirements that the
-    developer MUST follow</action>
-    <action>Identify any architectural decisions that override previous patterns</action>
-  </step>
-
-  <step n="4" goal="Web research for latest technical specifics">
-    <critical>🌐 ENSURE LATEST TECH KNOWLEDGE - Prevent outdated implementations!</critical> **WEB INTELLIGENCE:** <action>Identify specific
-    technical areas that require latest version knowledge:</action>
-
-    <!-- Check for libraries/frameworks mentioned in architecture -->
-    <action>From architecture analysis, identify specific libraries, APIs, or
-    frameworks</action>
-    <action>For each critical technology, research latest stable version and key changes:
-      - Latest API documentation and breaking changes
-      - Security vulnerabilities or updates
-      - Performance improvements or deprecations
-      - Best practices for current version
-    </action>
-    **EXTERNAL CONTEXT INCLUSION:** <action>Include in story any critical latest information the developer needs:
-      - Specific library versions and why chosen
-      - API endpoints with parameters and authentication
-      - Recent security patches or considerations
-      - Performance optimization techniques
-      - Migration considerations if upgrading
-    </action>
-  </step>
-
-  <step n="5" goal="Create comprehensive story file">
-    <critical>📝 CREATE ULTIMATE STORY FILE - The developer's master implementation guide!</critical>
-
-    <action>Initialize from template.md:
-    {default_output_file}</action>
-    <template-output file="{default_output_file}">story_header</template-output>
-
-    <!-- Story foundation from epics analysis -->
-    <template-output
-      file="{default_output_file}">story_requirements</template-output>
-
-    <!-- Developer context section - MOST IMPORTANT PART -->
-    <template-output file="{default_output_file}">
-    developer_context_section</template-output> **DEV AGENT GUARDRAILS:** <template-output file="{default_output_file}">
-    technical_requirements</template-output>
-    <template-output file="{default_output_file}">architecture_compliance</template-output>
-    <template-output
-      file="{default_output_file}">library_framework_requirements</template-output>
-    <template-output file="{default_output_file}">
-    file_structure_requirements</template-output>
-    <template-output file="{default_output_file}">testing_requirements</template-output>
-
-    <!-- Previous story intelligence -->
-    <check
-      if="previous story learnings available">
-      <template-output file="{default_output_file}">previous_story_intelligence</template-output>
     </check>
 
-    <!-- Git intelligence -->
-    <check
-      if="git analysis completed">
-      <template-output file="{default_output_file}">git_intelligence_summary</template-output>
+    **PROJECT CONTEXT (from {project_context}):**
+    <check if="{project_context} available">
+      <template-output file="{default_output_file}">project_context_embedded</template-output>
+      <action>Embed relevant project-wide patterns and standards</action>
     </check>
-
-    <!-- Latest technical specifics -->
-    <check if="web research completed">
-      <template-output file="{default_output_file}">latest_tech_information</template-output>
-    </check>
-
-    <!-- Project context reference -->
-    <template-output
-      file="{default_output_file}">project_context_reference</template-output>
 
     <!-- Final status update -->
-    <template-output file="{default_output_file}">
-    story_completion_status</template-output>
+    <template-output file="{default_output_file}">story_completion_status</template-output>
+
+    <!-- CRITICAL: Validate self-sufficiency -->
+    <action>Validate story file self-sufficiency:
+      ✅ All epic context embedded (no epics.md reference needed)
+      ✅ All architecture requirements embedded (no architecture.md reference needed)
+      ✅ All library versions and APIs embedded (no web search needed)
+      ✅ All previous learnings embedded (no previous story reference needed)
+      ✅ All git patterns embedded (no git analysis needed)
+      ✅ Dev agent can implement using ONLY this story file + existing codebase
+    </action>
 
     <!-- CRITICAL: Set status to ready-for-dev -->
     <action>Set story Status to: "ready-for-dev"</action>
-    <action>Add completion note: "Ultimate
-    context engine analysis completed - comprehensive developer guide created"</action>
+    <action>Add completion note: "Autonomous parallel analysis completed - 100% self-sufficient story created with embedded context from {{number_of_agents}} agents"</action>
+
+    <output>🎯 Self-sufficient story created! Dev agents need ONLY this file + codebase.</output>
   </step>
 
-  <step n="6" goal="Update sprint status and finalize">
+  <step n="4" goal="Update sprint status and finalize">
     <invoke-task>Validate against checklist at {installed_path}/checklist.md using _bmad/core/tasks/validate-workflow.xml</invoke-task>
     <action>Save story document unconditionally</action>
 
@@ -324,7 +444,7 @@
     </check>
 
     <action>Report completion</action>
-    <output>**🎯 ULTIMATE BMad Method STORY CONTEXT CREATED, {user_name}!**
+    <output>**🎯 SELF-SUFFICIENT STORY CREATED WITH AUTONOMOUS PARALLEL ANALYSIS, {user_name}!**
 
       **Story Details:**
       - Story ID: {{story_id}}
@@ -332,13 +452,19 @@
       - File: {{story_file}}
       - Status: ready-for-dev
 
-      **Next Steps:**
-      1. Review the comprehensive story in {{story_file}}
-      2. Run dev agents `dev-story` for optimized implementation
-      3. Run `code-review` when complete (auto-marks done)
-      4. Optional: If Test Architect module installed, run `/bmad:tea:automate` after `dev-story` to generate guardrail tests
+      **Autonomous Analysis Summary:**
+      - ✅ Parallel agents spawned: {{agents_count}}
+      - ✅ Analysis time: ~90 seconds (3-4x faster than sequential)
+      - ✅ Self-sufficiency: 100% (zero external references)
+      - ✅ Context embedded: Epic, Architecture, Libraries, Previous learnings, Git patterns
 
-      **The developer now has everything needed for flawless implementation!**
+      **Next Steps:**
+      1. Review the self-sufficient story in {{story_file}}
+      2. Run `dev-story` for AUTONOMOUS implementation (agents work in loops until complete!)
+      3. Run `code-review` when complete (auto-marks done)
+      4. Optional: If Test Architect module installed, run `/bmad:tea:automate` to generate guardrail tests
+
+      **Dev agents can now work autonomously using ONLY this story file + codebase!**
     </output>
   </step>
 

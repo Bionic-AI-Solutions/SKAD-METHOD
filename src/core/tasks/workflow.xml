@@ -63,6 +63,9 @@
           <tag>invoke-workflow xml tag → Execute another workflow with given inputs and the workflow.xml runner</tag>
           <tag>invoke-task xml tag → Execute specified task</tag>
           <tag>invoke-protocol name="protocol_name" xml tag → Execute reusable protocol from protocols section</tag>
+          <tag>invoke-subagent xml tag → Spawn Claude subagent for autonomous task execution</tag>
+          <tag>invoke-parallel xml tag → Spawn multiple Claude subagents in parallel</tag>
+          <tag>sync-point xml tag → Wait for background subagents to complete</tag>
           <tag>goto step="x" → Jump to specified step</tag>
         </execute-tags>
       </substep>
@@ -126,6 +129,9 @@
       <tag>invoke-workflow - Call another workflow</tag>
       <tag>invoke-task - Call a task</tag>
       <tag>invoke-protocol - Execute a reusable protocol (e.g., discover_inputs)</tag>
+      <tag>invoke-subagent - Spawn single Claude subagent using Task tool</tag>
+      <tag>invoke-parallel - Spawn multiple Claude subagents in parallel using Task tool</tag>
+      <tag>sync-point - Wait for background subagents to complete and collect results</tag>
     </execution>
     <output>
       <tag>template-output - Save content checkpoint</tag>
@@ -220,6 +226,210 @@
 
     </protocol>
   </protocols>
+
+  <subagent-execution desc="How to process invoke-subagent, invoke-parallel, and sync-point tags">
+    <critical>These tags enable autonomous Claude subagent execution using the Task tool</critical>
+    <critical>Subagents work independently and can run in parallel for faster execution</critical>
+
+    <tag name="invoke-subagent">
+      <purpose>Spawn a single Claude subagent for autonomous task execution</purpose>
+
+      <attributes>
+        <attr name="type" required="true">Subagent type: explore, plan, bash, or general</attr>
+        <attr name="mode" default="blocking">blocking (wait for completion) or background (continue immediately)</attr>
+        <attr name="id">Unique identifier for this subagent (required if background mode)</attr>
+      </attributes>
+
+      <child-elements>
+        <element name="objective" required="true">Clear description of what the subagent should accomplish</element>
+        <element name="context">Context to provide to the subagent (file paths, variables, data)</element>
+        <element name="constraints">Constraints like max-turns, halt-conditions, timeout</element>
+        <element name="output-var" required="true">Variable name to store the subagent's result (e.g., {epic_intelligence})</element>
+      </child-elements>
+
+      <execution-instructions>
+        <step n="1">Parse the invoke-subagent tag and extract all attributes and child elements</step>
+        <step n="2">Determine subagent type from 'type' attribute</step>
+        <step n="3">Build the subagent prompt from objective, context, and constraints</step>
+        <step n="4">Use Claude Task tool to spawn the subagent:
+          - description: Short 3-5 word summary of objective
+          - prompt: Complete objective with all context and constraints
+          - subagent_type: Value from 'type' attribute (explore/plan/bash/general)
+          - run_in_background: true if mode="background", false if mode="blocking"
+        </step>
+        <step n="5" if="mode=blocking">Wait for subagent to complete and receive results</step>
+        <step n="6">Store the subagent's output in the variable specified by output-var</step>
+        <step n="7" if="mode=background">Save subagent task ID for later sync-point</step>
+        <step n="8">Continue to next workflow step</step>
+      </execution-instructions>
+
+      <example>
+        <![CDATA[
+        <invoke-subagent type="explore" mode="blocking">
+          <objective>Analyze Epic 1 from the epics document and extract complete context, requirements, and dependencies</objective>
+          <context>
+            <include>{epics_content}</include>
+            <focus>epic-1</focus>
+          </context>
+          <constraints>
+            <max-files>20</max-files>
+          </constraints>
+          <output-var>{epic_intelligence}</output-var>
+        </invoke-subagent>
+
+        Result stored in {epic_intelligence} variable for use in subsequent steps.
+        ]]>
+      </example>
+    </tag>
+
+    <tag name="invoke-parallel">
+      <purpose>Spawn multiple Claude subagents in parallel for faster execution</purpose>
+
+      <child-elements>
+        <element name="subagent" multiple="true">Multiple subagent definitions (same structure as invoke-subagent)</element>
+        <element name="sync-point">Optional wait point for all agents to complete</element>
+      </child-elements>
+
+      <execution-instructions>
+        <step n="1">Parse all subagent child elements within invoke-parallel block</step>
+        <step n="2">For each subagent, prepare Task tool invocation with:
+          - Unique ID from subagent's 'id' attribute (required)
+          - Type from subagent's 'type' attribute
+          - Objective from subagent's objective element
+          - Context from subagent's context element
+          - Output variable from subagent's output-var element
+        </step>
+        <step n="3">CRITICAL: Invoke ALL subagents in PARALLEL using a SINGLE message with multiple Task tool calls</step>
+        <step n="4" if="sync-point present">Wait for ALL subagents to complete before continuing</step>
+        <step n="5">Store each subagent's output in its respective output-var</step>
+        <step n="6" if="aggregate-results present">Combine all subagent results as specified</step>
+        <step n="7">Continue to next workflow step</step>
+      </execution-instructions>
+
+      <example>
+        <![CDATA[
+        <invoke-parallel>
+          <subagent id="epic-analysis" type="explore">
+            <objective>Analyze Epic 1 requirements and extract complete story context</objective>
+            <context>{epics_content}</context>
+            <output-var>{epic_intelligence}</output-var>
+          </subagent>
+          <subagent id="arch-analysis" type="explore">
+            <objective>Extract architecture constraints and patterns for authentication</objective>
+            <context>{architecture_content}</context>
+            <output-var>{arch_intelligence}</output-var>
+          </subagent>
+          <subagent id="git-analysis" type="bash">
+            <objective>Analyze last 5 commits for code patterns and conventions</objective>
+            <output-var>{git_intelligence}</output-var>
+          </subagent>
+          <sync-point>Wait for all 3 agents to complete</sync-point>
+        </invoke-parallel>
+
+        Results available in {epic_intelligence}, {arch_intelligence}, {git_intelligence} variables.
+        ]]>
+      </example>
+    </tag>
+
+    <tag name="sync-point">
+      <purpose>Wait for background subagents to complete and collect their results</purpose>
+
+      <attributes>
+        <attr name="for">Optional comma-separated list of subagent IDs to wait for (if omitted, waits for all background agents)</attr>
+        <attr name="timeout">Optional timeout in milliseconds (default: 120000)</attr>
+      </attributes>
+
+      <execution-instructions>
+        <step n="1">Identify which background subagents to wait for (all or specific IDs from 'for' attribute)</step>
+        <step n="2">Check status of each background subagent</step>
+        <step n="3">If any still running, wait for completion (up to timeout)</step>
+        <step n="4">Collect results from all completed subagents</step>
+        <step n="5">Store results in their respective output-var variables</step>
+        <step n="6" if="timeout exceeded">Handle timeout gracefully - report partial results available</step>
+        <step n="7">Continue to next workflow step</step>
+      </execution-instructions>
+
+      <example>
+        <![CDATA[
+        <!-- After spawning background agents earlier -->
+        <sync-point for="pattern-explorer, dependency-analyzer" timeout="180000" />
+        <!-- Now {discovered_patterns} and {dependency_status} are available -->
+        ]]>
+      </example>
+    </tag>
+
+    <feature-detection>
+      <title>Graceful Fallback When Task Tool Unavailable</title>
+      <instructions>
+        <step n="1">Before processing any subagent tag, check if Claude Task tool is available</step>
+        <step n="2">Set {task_tool_available} = true if available, false otherwise</step>
+        <step n="3">If Task tool unavailable:
+          - Log warning about subagent tags being unavailable
+          - Look for fallback actions in workflow (check if="{task_tool_available}" blocks)
+          - Execute fallback manual actions if specified
+          - If no fallback specified, execute the workflow step manually as best as possible
+        </step>
+        <step n="4">Workflows should use feature detection pattern:
+          <check if="{task_tool_available}">
+            <invoke-subagent>...</invoke-subagent>
+          </check>
+          <else>
+            <action>Manual fallback execution</action>
+          </else>
+        </step>
+      </instructions>
+    </feature-detection>
+
+    <result-management>
+      <title>How to Store and Use Subagent Results</title>
+      <instructions>
+        <storage>
+          <step n="1">Each subagent result is stored in the variable specified by output-var</step>
+          <step n="2">Results are available immediately after blocking agents complete</step>
+          <step n="3">Results are available after sync-point for background agents</step>
+          <step n="4">Results persist for the duration of the workflow execution</step>
+        </storage>
+        <usage>
+          <step n="1">Access results using {variable_name} syntax in subsequent steps</step>
+          <step n="2">Results can be used in template-output sections</step>
+          <step n="3">Results can be passed to other subagents as context</step>
+          <step n="4">Results can be used in conditional checks</step>
+        </usage>
+        <structure>
+          <note>Subagent results typically include:</note>
+          <field>status - "completed", "failed", "timeout"</field>
+          <field>output - The main result from the subagent</field>
+          <field>findings - Structured findings or insights (for Explore agents)</field>
+          <field>errors - Any errors or issues encountered</field>
+        </structure>
+      </instructions>
+    </result-management>
+
+    <error-handling>
+      <title>Handling Subagent Failures and Timeouts</title>
+      <instructions>
+        <step n="1">If subagent fails to spawn: Log error and execute fallback action if specified</step>
+        <step n="2">If subagent times out: Store partial results if available, set status to "timeout"</step>
+        <step n="3">If subagent encounters error: Store error details in result variable, set status to "failed"</step>
+        <step n="4">Check result status before using: if "{result_variable}.status" != "completed", handle appropriately</step>
+        <step n="5">Workflows can specify error handling:
+          <check if="{result_variable}.status == 'failed'">
+            <action>Handle failure - fallback or report to user</action>
+          </check>
+        </step>
+      </instructions>
+    </error-handling>
+
+    <best-practices>
+      <practice>Use parallel invocation when tasks are independent (epic + architecture + git analysis)</practice>
+      <practice>Use background mode for long-running tasks that don't block immediate next steps</practice>
+      <practice>Always specify clear, focused objectives for subagents</practice>
+      <practice>Provide sufficient context but avoid overwhelming subagents with unnecessary data</practice>
+      <practice>Use appropriate subagent types: Explore for codebase analysis, Plan for strategy, Bash for commands, general for mixed tasks</practice>
+      <practice>Implement feature detection and graceful fallback for workflows that must work without Task tool</practice>
+      <practice>Validate subagent results before using them in critical workflow steps</practice>
+    </best-practices>
+  </subagent-execution>
 
   <llm final="true">
     <critical-rules>
