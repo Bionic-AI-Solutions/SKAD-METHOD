@@ -1,0 +1,20 @@
+name: ralph-qa-automate
+description: "Generate tests autonomously via Ralph loop, one feature per iteration"
+author: "Custom"
+
+config_source: "{project-root}/_bmad/bmm/config.yaml"
+user_name: "{config_source}:user_name"
+communication_language: "{config_source}:communication_language"
+user_skill_level: "{config_source}:user_skill_level"
+document_output_language: "{config_source}:document_output_language"
+date: system-generated
+
+installed_path: "{project-root}/_bmad/bmm/workflows/qa/ralph-qa-automate"
+instructions: "{installed_path}/instructions.md"
+ralph_qa_prompt_template: "{installed_path}/ralph-qa-prompt.template.md"
+
+project_context: "**/project-context.md"
+
+variables:
+  test_plan_file: "test-plan.md"
+  max_iterations: 20

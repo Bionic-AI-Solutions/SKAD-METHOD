@@ -28,8 +28,12 @@ agent:
 
   menu:
     - trigger: QA or fuzzy match on qa-automate
+      workflow: "{project-root}/_bmad/bmm/workflows/qa/ralph-qa-automate/workflow.yaml"
+      description: "[QA] Automate: Generate tests autonomously via Ralph loop (one feature per iteration). DEFAULT."
+
+    - trigger: QAC or fuzzy match on qa-automate-classic
       workflow: "{project-root}/_bmad/bmm/workflows/qa/automate/workflow.yaml"
-      description: "[QA] Automate - Generate tests for existing features (simplified)"
+      description: "[QAC] Automate Classic: Generate tests via in-context execution (original BMAD workflow)"
 
   prompts:
     - id: welcome

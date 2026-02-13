@@ -412,6 +412,20 @@
     <!-- Final status update -->
     <template-output file="{default_output_file}">story_completion_status</template-output>
 
+    <!-- Generate Ralph Tasks JSON manifest for fresh-context loop execution -->
+    <critical>Each ralph task must be atomic enough for ONE fresh-context iteration with no prior context</critical>
+    <action>Generate Ralph Tasks JSON from the same task breakdown:
+      - For each top-level task in Tasks/Subtasks:
+        - Create JSON object with id, category, description, acceptance_criteria, steps, verification, passes:false
+        - Subtasks become entries in the parent task's "steps" array
+        - Category: setup|feature|integration|testing|styling based on task type
+        - verification: specific check command or browser verification step
+      - Tasks MUST be atomic enough for one fresh-context ralph iteration
+      - If a BMAD task is too large, split into multiple ralph tasks
+      - Order must match Tasks/Subtasks section exactly
+    </action>
+    <template-output file="{default_output_file}">ralph_tasks_json</template-output>
+
     <!-- CRITICAL: Validate self-sufficiency -->
     <action>Validate story file self-sufficiency:
       ✅ All epic context embedded (no epics.md reference needed)
@@ -420,6 +434,16 @@
       ✅ All previous learnings embedded (no previous story reference needed)
       ✅ All git patterns embedded (no git analysis needed)
       ✅ Dev agent can implement using ONLY this story file + existing codebase
+    </action>
+
+    <!-- CRITICAL: Validate ralph-readiness -->
+    <action>Validate ralph-readiness:
+      ✅ Ralph Tasks JSON section present with all tasks
+      ✅ Each ralph task is atomic (completable in one iteration with no prior context)
+      ✅ Steps array is specific and actionable
+      ✅ verification field tells agent how to confirm task works
+      ✅ All tasks have "passes": false
+      ✅ JSON tasks map 1:1 to markdown checkboxes
     </action>
 
     <!-- CRITICAL: Set status to ready-for-dev -->

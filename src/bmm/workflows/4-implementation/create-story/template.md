@@ -21,6 +21,28 @@ so that {{benefit}}.
 - [ ] Task 2 (AC: #)
   - [ ] Subtask 2.1
 
+## Ralph Tasks
+
+<!-- JSON task manifest for Ralph loop execution. Each task = one fresh-context iteration.
+     Keep in sync with Tasks/Subtasks checkboxes above. Only modify "passes" field during execution. -->
+
+```json
+[
+  {
+    "id": "task-1",
+    "category": "{{category}}",
+    "description": "{{task_description}}",
+    "acceptance_criteria": ["AC: #1"],
+    "steps": [
+      "{{step_1}}",
+      "{{step_2}}"
+    ],
+    "verification": "{{how_to_verify}}",
+    "passes": false
+  }
+]
+```
+
 ## Dev Notes
 
 - Relevant architecture patterns and constraints

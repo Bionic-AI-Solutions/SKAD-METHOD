@@ -1,0 +1,24 @@
+name: ralph-dev-story
+description: "Prepare and execute a story via the Ralph Wiggum autonomous loop (fresh context per task)"
+author: "Custom"
+
+config_source: "{project-root}/_bmad/bmm/config.yaml"
+user_name: "{config_source}:user_name"
+communication_language: "{config_source}:communication_language"
+user_skill_level: "{config_source}:user_skill_level"
+document_output_language: "{config_source}:document_output_language"
+story_dir: "{config_source}:implementation_artifacts"
+date: system-generated
+
+installed_path: "{project-root}/_bmad/bmm/workflows/4-implementation/ralph-dev-story"
+instructions: "{installed_path}/instructions.md"
+validation: "{installed_path}/checklist.md"
+ralph_prompt_template: "{installed_path}/ralph-prompt.template.md"
+
+story_file: "" # Explicit story path; auto-discovered if empty
+implementation_artifacts: "{config_source}:implementation_artifacts"
+sprint_status: "{implementation_artifacts}/sprint-status.yaml"
+project_context: "**/project-context.md"
+
+variables:
+  max_iterations: 20

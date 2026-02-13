@@ -356,3 +356,22 @@ The story now includes comprehensive developer guidance to prevent common implem
 - Miss key implementation signals due to inefficient communication
 
 **Go create the ultimate developer implementation guide! 🚀**
+
+---
+
+## **🔄 RALPH LOOP READINESS VALIDATION**
+
+**Validate the Ralph Tasks JSON section for fresh-context loop execution:**
+
+### Ralph Tasks JSON Quality
+
+- [ ] Ralph Tasks JSON section present in story file and contains valid JSON
+- [ ] Each task has required fields: id, category, description, acceptance_criteria, steps, verification, passes
+- [ ] Each task is atomic (completable in one fresh-context iteration with no prior context)
+- [ ] Steps array is specific and actionable -- agent must know exactly what to do
+- [ ] verification field tells agent exactly how to confirm the task works (command or browser check)
+- [ ] Tasks map 1:1 to Tasks/Subtasks markdown checkboxes
+- [ ] All passes fields set to false
+- [ ] Task order matches Tasks/Subtasks section exactly
+- [ ] No task requires knowledge from a previous ralph iteration (each is self-contained)
+- [ ] Story Dev Notes contain start command, build/lint/test commands for PROMPT.md generation
