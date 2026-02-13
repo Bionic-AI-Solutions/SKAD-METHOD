@@ -45,11 +45,23 @@ if [ -z "$TARGET_DIR" ]; then
 fi
 
 # Verify BMAD root looks correct
-if [ ! -f "$BMAD_ROOT/tools/cli/index.js" ]; then
-  echo -e "${RED}Error: BMAD CLI not found at $BMAD_ROOT/tools/cli/index.js${NC}"
+if [ ! -f "$BMAD_ROOT/tools/cli/bmad-cli.js" ]; then
+  echo -e "${RED}Error: BMAD CLI not found at $BMAD_ROOT/tools/cli/bmad-cli.js${NC}"
   echo "Expected this script to be at BMAD-METHOD/scripts/install-ralph-bmad.sh"
   echo "Actual location: $SCRIPT_DIR"
   exit 1
+fi
+
+# ─── Step 0: Ensure npm dependencies are installed ───
+if [ ! -d "$BMAD_ROOT/node_modules" ]; then
+  echo -e "${BLUE}Installing BMAD CLI dependencies...${NC}"
+  (cd "$BMAD_ROOT" && npm install --no-fund --no-audit 2>&1) || {
+    echo -e "${RED}Error: Failed to install npm dependencies in $BMAD_ROOT${NC}"
+    echo "Make sure Node.js >= 20 and npm are available."
+    exit 1
+  }
+  echo -e "  ${GREEN}Dependencies installed${NC}"
+  echo ""
 fi
 
 # Resolve target directory (create if needed)
@@ -69,7 +81,7 @@ echo ""
 # ─── Step 1: Run standard BMAD install using our forked source ───
 echo -e "${BLUE}Step 1: Installing BMAD Method (with ralph integration)...${NC}"
 echo ""
-node "$BMAD_ROOT/tools/cli/index.js" install --directory "$TARGET_DIR"
+node "$BMAD_ROOT/tools/cli/bmad-cli.js" install --directory "$TARGET_DIR" --modules bmm --tools claude-code -y
 
 # ─── Step 2: Copy ralph scripts to target project root ───
 echo ""
@@ -104,13 +116,8 @@ if [ -d "$AGENT_CONFIG_DIR" ] && [ -d "$CUSTOMIZATIONS_SRC" ]; then
   for f in "$CUSTOMIZATIONS_SRC"/*.customize.yaml; do
     if [ -f "$f" ]; then
       BASENAME=$(basename "$f")
-      # Don't overwrite existing user customizations
-      if [ ! -f "$AGENT_CONFIG_DIR/$BASENAME" ]; then
-        cp "$f" "$AGENT_CONFIG_DIR/"
-        echo -e "  ${GREEN}Installed: $BASENAME${NC}"
-      else
-        echo -e "  ${YELLOW}Skipped (already exists): $BASENAME${NC}"
-      fi
+      cp "$f" "$AGENT_CONFIG_DIR/"
+      echo -e "  ${GREEN}Installed: $BASENAME${NC}"
     fi
   done
 else
@@ -126,7 +133,7 @@ fi
 # ─── Step 4: Recompile agents to apply customizations ───
 echo ""
 echo -e "${BLUE}Step 4: Recompiling agents with customizations...${NC}"
-node "$BMAD_ROOT/tools/cli/index.js" install --directory "$TARGET_DIR" --action compile-agents
+node "$BMAD_ROOT/tools/cli/bmad-cli.js" install --directory "$TARGET_DIR" --action compile-agents
 
 # ─── Done ───
 echo ""
