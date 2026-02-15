@@ -38,9 +38,10 @@ if [ -z "$TARGET_DIR" ]; then
   echo ""
   echo "What gets installed:"
   echo "  - BMAD Method framework (with ralph workflows baked in)"
-  echo "  - ralph.sh           (autonomous loop engine)"
-  echo "  - ralph-bmad.sh      (BMAD-aware wrapper with status tracking)"
-  echo "  - Agent customizations (.customize.yaml files with ralph context)"
+  echo "  - ralph.sh                (autonomous loop engine)"
+  echo "  - ralph-bmad.sh           (BMAD-aware wrapper with status tracking + CR gate)"
+  echo "  - cr-prompt.template.md   (CR gate prompt template for adversarial review)"
+  echo "  - Agent customizations    (.customize.yaml files with ralph context)"
   exit 1
 fi
 
@@ -105,6 +106,13 @@ else
   exit 1
 fi
 
+if [ -f "$SCRIPT_DIR/cr-prompt.template.md" ]; then
+  cp "$SCRIPT_DIR/cr-prompt.template.md" "$TARGET_DIR/cr-prompt.template.md"
+  echo -e "  ${GREEN}Installed: cr-prompt.template.md${NC}"
+else
+  echo -e "  ${YELLOW}Warning: cr-prompt.template.md not found. CR gate will be skipped during ralph-bmad.sh runs.${NC}"
+fi
+
 # ─── Step 3: Copy agent customization files ───
 echo ""
 echo -e "${BLUE}Step 3: Installing agent customization files...${NC}"
@@ -147,14 +155,15 @@ echo -e "${BLUE}Installed files:${NC}"
 echo "  _bmad/                      BMAD framework (with ralph workflows)"
 echo "  _bmad/_config/agents/       Agent customizations (ralph context)"
 echo "  ralph.sh                    Ralph loop engine (fresh context per iteration)"
-echo "  ralph-bmad.sh               BMAD wrapper (story status tracking)"
+echo "  ralph-bmad.sh               BMAD wrapper (story status tracking + CR gate)"
+echo "  cr-prompt.template.md       CR gate prompt template (adversarial review)"
 echo ""
 echo -e "${BLUE}Workflow Progression:${NC}"
 echo "  Phase 1-3: Analysis → Planning → Solutioning (unchanged)"
 echo "  Phase 4:   CS → DS → CR"
 echo ""
 echo "  CS  = Create Story (includes Ralph Tasks JSON)"
-echo "  DS  = Dev Story     DEFAULT: Ralph loop (fresh context per task)"
+echo "  DS  = Dev Story     DEFAULT: Ralph loop (fresh context per task) + auto CR gate"
 echo "  DSC = Dev Story Classic      fallback: original subagent"
 echo "  CR  = Code Review   (unchanged)"
 echo "  QA  = QA Automate   DEFAULT: Ralph loop (one feature per iteration)"

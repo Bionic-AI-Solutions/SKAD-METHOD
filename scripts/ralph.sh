@@ -78,8 +78,9 @@ for ((i=1; i<=MAX_ITERATIONS; i++)); do
   echo ""
 
   # Run Claude with the prompt from PROMPT.md
-  # Using --output-format text for cleaner output
-  result=$(claude -p "$(cat PROMPT.md)" --output-format text 2>&1) || true
+  # --dangerously-skip-permissions: required for headless execution (no interactive approval)
+  # --output-format text: cleaner output for parsing
+  result=$(claude -p "$(cat PROMPT.md)" --output-format text --dangerously-skip-permissions 2>&1) || true
 
   echo "$result"
   echo ""
