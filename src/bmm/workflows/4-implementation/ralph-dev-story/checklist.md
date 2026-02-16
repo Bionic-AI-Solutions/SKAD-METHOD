@@ -6,9 +6,9 @@ Validate that all prerequisites are met before launching the Ralph loop.
 
 - [ ] Story file exists and is accessible
 - [ ] Story has `Status: ready-for-dev`
-- [ ] Story file has valid `## Ralph Tasks` JSON section
+- [ ] Story file has valid `## Ralph Tasks JSON` section (exact header required by extract script)
 - [ ] Ralph Tasks JSON is a valid JSON array
-- [ ] All ralph tasks have required fields: id, category, description, steps, verification, passes
+- [ ] All ralph tasks have required fields: `id`, `title`, `acceptanceCriteria`, `steps`, `checkCommands`, `passes`
 - [ ] Remaining tasks have `"passes": false`
 - [ ] Tasks/Subtasks markdown checkboxes are in sync with Ralph Tasks JSON
 

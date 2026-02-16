@@ -21,23 +21,26 @@ so that {{benefit}}.
 - [ ] Task 2 (AC: #)
   - [ ] Subtask 2.1
 
-## Ralph Tasks
+## Ralph Tasks JSON
 
 <!-- JSON task manifest for Ralph loop execution. Each task = one fresh-context iteration.
-     Keep in sync with Tasks/Subtasks checkboxes above. Only modify "passes" field during execution. -->
+     Keep tasks in sync with Tasks/Subtasks checkboxes above. Only modify "passes" field during execution.
+     See ralph-task-guide.md for task decomposition best practices. -->
 
 ```json
 [
   {
     "id": "task-1",
-    "category": "{{category}}",
-    "description": "{{task_description}}",
-    "acceptance_criteria": ["AC: #1"],
+    "title": "{{task_title}}",
+    "acceptanceCriteria": ["AC1"],
     "steps": [
-      "{{step_1}}",
-      "{{step_2}}"
+      "{{step_1_with_file_path}}",
+      "{{step_2_with_file_path}}"
     ],
-    "verification": "{{how_to_verify}}",
+    "checkCommands": [
+      "{{bash_verification_command_1}}",
+      "{{bash_verification_command_2}}"
+    ],
     "passes": false
   }
 ]

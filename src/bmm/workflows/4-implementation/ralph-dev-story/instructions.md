@@ -8,15 +8,15 @@ Prepare and optionally launch Ralph Wiggum autonomous loop execution for a BMAD 
 2. Otherwise, check `sprint-status.yaml` for the first story with status `ready-for-dev`.
 3. If no sprint status file exists, search `{story_dir}` for story files with `Status: ready-for-dev`.
 4. Read the COMPLETE story file.
-5. Verify story has a `## Ralph Tasks` section with valid JSON.
-6. If no Ralph Tasks section exists, HALT with message:
+5. Verify story has a `## Ralph Tasks JSON` section with valid JSON.
+6. If no Ralph Tasks JSON section exists, HALT with message:
    > "Story missing Ralph Tasks JSON section. Re-create the story using the `create-story` (CS) workflow, which now generates Ralph Tasks automatically."
 
 ## Step 2: Validate Ralph Tasks
 
 1. Parse the Ralph Tasks JSON array from the story file.
 2. Verify it is a valid JSON array.
-3. Verify each task object has required fields: `id`, `category`, `description`, `steps`, `verification`, `passes`.
+3. Verify each task object has required fields: `id`, `title`, `acceptanceCriteria`, `steps`, `checkCommands`, `passes`.
 4. Count tasks with `"passes": false` (remaining work).
 5. If all tasks already have `"passes": true`, HALT with message:
    > "All ralph tasks already complete. Run code-review (CR) workflow next."

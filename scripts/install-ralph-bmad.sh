@@ -38,10 +38,11 @@ if [ -z "$TARGET_DIR" ]; then
   echo ""
   echo "What gets installed:"
   echo "  - BMAD Method framework (with ralph workflows baked in)"
-  echo "  - ralph.sh                (autonomous loop engine)"
-  echo "  - ralph-bmad.sh           (BMAD-aware wrapper with status tracking + CR gate)"
-  echo "  - cr-prompt.template.md   (CR gate prompt template for adversarial review)"
-  echo "  - Agent customizations    (.customize.yaml files with ralph context)"
+  echo "  - ralph.sh                       (autonomous loop engine)"
+  echo "  - ralph-bmad.sh                  (task-level executor + CR gate)"
+  echo "  - scripts/ralph-extract-task.js  (task extractor for ralph-bmad.sh)"
+  echo "  - cr-prompt.template.md          (CR gate prompt template)"
+  echo "  - Agent customizations           (.customize.yaml files with ralph context)"
   exit 1
 fi
 
@@ -113,6 +114,15 @@ else
   echo -e "  ${YELLOW}Warning: cr-prompt.template.md not found. CR gate will be skipped during ralph-bmad.sh runs.${NC}"
 fi
 
+if [ -f "$SCRIPT_DIR/ralph-extract-task.js" ]; then
+  mkdir -p "$TARGET_DIR/scripts"
+  cp "$SCRIPT_DIR/ralph-extract-task.js" "$TARGET_DIR/scripts/ralph-extract-task.js"
+  echo -e "  ${GREEN}Installed: scripts/ralph-extract-task.js${NC}"
+else
+  echo -e "  ${RED}Error: ralph-extract-task.js not found at $SCRIPT_DIR/ralph-extract-task.js${NC}"
+  exit 1
+fi
+
 # ─── Step 3: Copy agent customization files ───
 echo ""
 echo -e "${BLUE}Step 3: Installing agent customization files...${NC}"
@@ -155,7 +165,8 @@ echo -e "${BLUE}Installed files:${NC}"
 echo "  _bmad/                      BMAD framework (with ralph workflows)"
 echo "  _bmad/_config/agents/       Agent customizations (ralph context)"
 echo "  ralph.sh                    Ralph loop engine (fresh context per iteration)"
-echo "  ralph-bmad.sh               BMAD wrapper (story status tracking + CR gate)"
+echo "  ralph-bmad.sh               BMAD wrapper (task-level executor + CR gate)"
+echo "  scripts/ralph-extract-task.js  Task extractor for ralph-bmad.sh"
 echo "  cr-prompt.template.md       CR gate prompt template (adversarial review)"
 echo ""
 echo -e "${BLUE}Workflow Progression:${NC}"

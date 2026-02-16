@@ -361,17 +361,22 @@ The story now includes comprehensive developer guidance to prevent common implem
 
 ## **🔄 RALPH LOOP READINESS VALIDATION**
 
-**Validate the Ralph Tasks JSON section for fresh-context loop execution:**
+**Validate the Ralph Tasks JSON section for fresh-context loop execution.**
+**Reference: `ralph-task-guide.md` for decomposition best practices.**
 
 ### Ralph Tasks JSON Quality
 
-- [ ] Ralph Tasks JSON section present in story file and contains valid JSON
-- [ ] Each task has required fields: id, category, description, acceptance_criteria, steps, verification, passes
-- [ ] Each task is atomic (completable in one fresh-context iteration with no prior context)
-- [ ] Steps array is specific and actionable -- agent must know exactly what to do
-- [ ] verification field tells agent exactly how to confirm the task works (command or browser check)
+- [ ] Section header is exactly `## Ralph Tasks JSON` (not `## Ralph Tasks` — extract script requires this exact header)
+- [ ] JSON block is valid and parseable
+- [ ] Each task has ALL required fields: `id`, `title`, `acceptanceCriteria`, `steps`, `checkCommands`, `passes`
+- [ ] No extra fields like `category`, `description`, or `verification` (these are obsolete names)
+- [ ] Each task is atomic (completable in one fresh-context iteration, ~3-5 min, 1-3 files)
+- [ ] `steps` array includes specific file paths and concrete implementation details
+- [ ] `checkCommands` array contains bash commands that verify completion (ls, grep, build, test)
+- [ ] `acceptanceCriteria` maps each task to story ACs it addresses
+- [ ] Tasks follow canonical sequence: migrations → scaffold → implementation → tests
 - [ ] Tasks map 1:1 to Tasks/Subtasks markdown checkboxes
-- [ ] All passes fields set to false
+- [ ] All `passes` fields set to `false`
 - [ ] Task order matches Tasks/Subtasks section exactly
-- [ ] No task requires knowledge from a previous ralph iteration (each is self-contained)
-- [ ] Story Dev Notes contain start command, build/lint/test commands for PROMPT.md generation
+- [ ] No task requires knowledge from a previous Ralph iteration (each is self-contained via story Dev Notes)
+- [ ] Story Dev Notes contain architecture context, tech stack, build/lint/test commands

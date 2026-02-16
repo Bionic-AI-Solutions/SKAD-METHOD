@@ -23,7 +23,7 @@ Open the story file and find the `## Ralph Tasks` JSON section.
 Find the FIRST task where `"passes": false`.
 
 Work on exactly ONE task:
-1. Read the task description, steps, and acceptance_criteria
+1. Read the task title, steps, and acceptanceCriteria
 2. Implement following the story's Dev Notes guidance
 3. Run checks:
 {{check_commands}}
@@ -35,7 +35,7 @@ Work on exactly ONE task:
 ## Log Progress
 
 Append a dated progress entry to activity.md describing:
-- Task id and description worked on
+- Task id and title worked on
 - What you changed (files created/modified)
 - Commands run and their results
 - Any issues encountered and how you resolved them

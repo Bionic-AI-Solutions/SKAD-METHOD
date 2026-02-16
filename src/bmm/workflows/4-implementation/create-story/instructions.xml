@@ -414,15 +414,23 @@
 
     <!-- Generate Ralph Tasks JSON manifest for fresh-context loop execution -->
     <critical>Each ralph task must be atomic enough for ONE fresh-context iteration with no prior context</critical>
-    <action>Generate Ralph Tasks JSON from the same task breakdown:
-      - For each top-level task in Tasks/Subtasks:
-        - Create JSON object with id, category, description, acceptance_criteria, steps, verification, passes:false
-        - Subtasks become entries in the parent task's "steps" array
-        - Category: setup|feature|integration|testing|styling based on task type
-        - verification: specific check command or browser verification step
-      - Tasks MUST be atomic enough for one fresh-context ralph iteration
-      - If a BMAD task is too large, split into multiple ralph tasks
-      - Order must match Tasks/Subtasks section exactly
+    <action>Generate Ralph Tasks JSON from the same task breakdown.
+      REFERENCE: {installed_path}/ralph-task-guide.md for decomposition best practices.
+
+      REQUIRED JSON SCHEMA per task:
+        - id: "task-N" (sequential)
+        - title: imperative action description (matches task checkbox text)
+        - acceptanceCriteria: ["AC1", "AC3"] (which story ACs this task addresses)
+        - steps: specific actionable steps WITH file paths (subtasks become steps entries)
+        - checkCommands: bash commands that verify completion (ls, grep, build checks)
+        - passes: false (always false initially)
+
+      TASK SIZING: each task must complete in ~3-5 min, touching 1-3 files.
+      SEQUENCING: migrations → scaffold → implementation → supporting features → infrastructure → tests.
+      STEPS QUALITY: every step must name specific files, functions, or SQL. No vague "set up" or "configure properly".
+      CHECK COMMANDS: at minimum include file existence (ls) + content check (grep) + build verification.
+      Split any task larger than 3 files into multiple tasks.
+      Order must match Tasks/Subtasks section exactly.
     </action>
     <template-output file="{default_output_file}">ralph_tasks_json</template-output>
 
@@ -438,10 +446,13 @@
 
     <!-- CRITICAL: Validate ralph-readiness -->
     <action>Validate ralph-readiness:
-      ✅ Ralph Tasks JSON section present with all tasks
-      ✅ Each ralph task is atomic (completable in one iteration with no prior context)
-      ✅ Steps array is specific and actionable
-      ✅ verification field tells agent how to confirm task works
+      ✅ Section header is exactly "## Ralph Tasks JSON" (extract script requires this)
+      ✅ Each task has ALL required fields: id, title, acceptanceCriteria, steps, checkCommands, passes
+      ✅ NO obsolete fields (category, description, acceptance_criteria, verification)
+      ✅ Each ralph task is atomic (~3-5 min, 1-3 files, one fresh-context iteration)
+      ✅ steps array includes specific file paths and concrete details
+      ✅ checkCommands array has bash verification commands (ls, grep, build)
+      ✅ Tasks follow canonical sequence: migrations → scaffold → impl → tests
       ✅ All tasks have "passes": false
       ✅ JSON tasks map 1:1 to markdown checkboxes
     </action>
