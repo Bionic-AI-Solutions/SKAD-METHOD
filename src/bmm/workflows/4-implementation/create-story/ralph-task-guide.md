@@ -169,6 +169,7 @@ Map each AC to one or more tasks. Every AC must be covered.
 | Test task before implementation | Tests fail because code doesn't exist yet | Tests always last |
 | checkCommands that modify state | Side effects between iterations | Use read-only commands (ls, grep, cat) |
 | Forward dependencies | Task N references Task N+1 output | Reorder so dependencies flow downward |
+| **Mocked integration tests** | **Proves nothing about real integrations** | **Use real MCP/API endpoints + `skipIf` when unavailable; test graceful fallback for missing services** |
 
 ---
 

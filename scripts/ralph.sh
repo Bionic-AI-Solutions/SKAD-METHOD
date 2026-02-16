@@ -16,7 +16,9 @@
 # Example: ./ralph.sh 20 480
 #
 # Environment variables:
-#   RALPH_ITERATION_TIMEOUT=N   Override per-iteration timeout (default: 480s / 8min)
+#   RALPH_ITERATION_TIMEOUT=N   Base per-iteration timeout (default: 480s / 8min)
+#                               Extends automatically when Claude is actively making changes.
+#   RALPH_MAX_ITERATION_TIME=N  Absolute ceiling per iteration (default: 1800s / 30min)
 #   RALPH_STALL_TIMEOUT=N       Kill if no file changes for N seconds (default: 180s / 3min)
 
 set -e
@@ -41,6 +43,7 @@ fi
 
 MAX_ITERATIONS=$1
 ITERATION_TIMEOUT="${RALPH_ITERATION_TIMEOUT:-${2:-480}}"
+MAX_ITERATION_TIME="${RALPH_MAX_ITERATION_TIME:-1800}"
 STALL_TIMEOUT="${RALPH_STALL_TIMEOUT:-180}"
 
 # Verify required files exist
@@ -75,12 +78,16 @@ mkdir -p screenshots
 RALPH_TMP=$(mktemp -d)
 trap 'rm -rf "$RALPH_TMP"' EXIT
 
+# Persistent log directory (optional, set by ralph-bmad.sh via env)
+RALPH_PERSIST_LOG_DIR="${RALPH_LOG_DIR:-}"
+
 echo -e "${BLUE}======================================${NC}"
 echo -e "${BLUE}   Ralph Wiggum Autonomous Loop${NC}"
 echo -e "${BLUE}======================================${NC}"
 echo ""
 echo -e "Max iterations:       ${GREEN}$MAX_ITERATIONS${NC}"
-echo -e "Iteration timeout:    ${GREEN}${ITERATION_TIMEOUT}s ($(( ITERATION_TIMEOUT / 60 ))m)${NC}"
+echo -e "Iteration timeout:    ${GREEN}${ITERATION_TIMEOUT}s ($(( ITERATION_TIMEOUT / 60 ))m) — extends on activity${NC}"
+echo -e "Max iteration time:   ${GREEN}${MAX_ITERATION_TIME}s ($(( MAX_ITERATION_TIME / 60 ))m) — absolute ceiling${NC}"
 echo -e "Stall timeout:        ${GREEN}${STALL_TIMEOUT}s ($(( STALL_TIMEOUT / 60 ))m)${NC}"
 echo -e "Completion signal:    ${GREEN}<promise>COMPLETE</promise>${NC}"
 echo ""
@@ -107,12 +114,17 @@ for ((i=1; i<=MAX_ITERATIONS; i++)); do
   echo -e "${BLUE}======================================${NC}"
   echo -e "${BLUE}   Iteration $i of $MAX_ITERATIONS${NC}"
   echo -e "${BLUE}======================================${NC}"
-  echo -e "${DIM}Started: $(date '+%H:%M:%S')  Timeout: ${ITERATION_TIMEOUT}s  Stall: ${STALL_TIMEOUT}s${NC}"
+  echo -e "${DIM}Started: $(date '+%H:%M:%S')  Timeout: ${ITERATION_TIMEOUT}s (extends on activity, max ${MAX_ITERATION_TIME}s)  Stall: ${STALL_TIMEOUT}s${NC}"
   echo ""
 
   # Capture pre-iteration fingerprint
   PRE_FINGERPRINT=$(file_fingerprint)
   LAST_CHANGE_TIME=$ITER_START
+
+  # Activity-extending deadline: starts at ITERATION_TIMEOUT, extends on each file change,
+  # capped at MAX_ITERATION_TIME. The stall timeout is the primary "is Claude stuck?" check.
+  EFFECTIVE_DEADLINE=$(( ITER_START + ITERATION_TIMEOUT ))
+  ABSOLUTE_DEADLINE=$(( ITER_START + MAX_ITERATION_TIME ))
 
   # Run Claude in background, capture output to file
   claude -p "$(cat PROMPT.md)" --output-format text --dangerously-skip-permissions > "$ITER_OUTPUT" 2>&1 &
@@ -127,22 +139,32 @@ for ((i=1; i<=MAX_ITERATIONS; i++)); do
     ELAPSED=$(( NOW - ITER_START ))
     SINCE_CHANGE=$(( NOW - LAST_CHANGE_TIME ))
 
-    # Check iteration timeout
-    if [ $ELAPSED -ge $ITERATION_TIMEOUT ]; then
-      echo ""
-      echo -e "${RED}⏱  Iteration timeout (${ITERATION_TIMEOUT}s) — killing claude process${NC}"
-      kill "$CLAUDE_PID" 2>/dev/null
-      wait "$CLAUDE_PID" 2>/dev/null || true
-      TIMED_OUT=true
-      break
-    fi
-
-    # Check for file changes (stall detection)
+    # Check for file changes (stall detection + deadline extension)
     CURRENT_FINGERPRINT=$(file_fingerprint)
     if [ "$CURRENT_FINGERPRINT" != "$PRE_FINGERPRINT" ]; then
       PRE_FINGERPRINT="$CURRENT_FINGERPRINT"
       LAST_CHANGE_TIME=$NOW
       touch "$RALPH_TMP/.watchdog-mark"
+
+      # Activity detected — extend deadline (capped at absolute ceiling)
+      NEW_DEADLINE=$(( NOW + ITERATION_TIMEOUT ))
+      if [ $NEW_DEADLINE -gt $EFFECTIVE_DEADLINE ]; then
+        if [ $NEW_DEADLINE -gt $ABSOLUTE_DEADLINE ]; then
+          EFFECTIVE_DEADLINE=$ABSOLUTE_DEADLINE
+        else
+          EFFECTIVE_DEADLINE=$NEW_DEADLINE
+        fi
+      fi
+    fi
+
+    # Check iteration deadline (extends on activity, hard cap at MAX_ITERATION_TIME)
+    if [ $NOW -ge $EFFECTIVE_DEADLINE ]; then
+      echo ""
+      echo -e "${RED}⏱  Iteration timeout (${ELAPSED}s elapsed, deadline reached) — killing claude process${NC}"
+      kill "$CLAUDE_PID" 2>/dev/null
+      wait "$CLAUDE_PID" 2>/dev/null || true
+      TIMED_OUT=true
+      break
     fi
 
     # Check stall timeout (only after initial grace period of 60s)
@@ -159,7 +181,8 @@ for ((i=1; i<=MAX_ITERATIONS; i++)); do
     if [ $(( ELAPSED % 30 )) -lt 5 ] && [ $ELAPSED -gt 5 ]; then
       OUTPUT_LINES=$(wc -l < "$ITER_OUTPUT" 2>/dev/null | tr -d ' ')
       GIT_CHANGES=$(git status --short 2>/dev/null | wc -l | tr -d ' ')
-      echo -e "${DIM}  [${ELAPSED}s] output: ${OUTPUT_LINES} lines | git changes: ${GIT_CHANGES} | idle: ${SINCE_CHANGE}s/${STALL_TIMEOUT}s${NC}"
+      REMAINING=$(( EFFECTIVE_DEADLINE - NOW ))
+      echo -e "${DIM}  [${ELAPSED}s] output: ${OUTPUT_LINES} lines | git changes: ${GIT_CHANGES} | idle: ${SINCE_CHANGE}s/${STALL_TIMEOUT}s | deadline: ${REMAINING}s${NC}"
     fi
 
     sleep 5
@@ -177,6 +200,11 @@ for ((i=1; i<=MAX_ITERATIONS; i++)); do
     result=$(cat "$ITER_OUTPUT")
   fi
 
+  # Persist iteration log if log dir is set
+  if [ -n "$RALPH_PERSIST_LOG_DIR" ] && [ -f "$ITER_OUTPUT" ]; then
+    cp "$ITER_OUTPUT" "$RALPH_PERSIST_LOG_DIR/iteration-${i}.log" 2>/dev/null || true
+  fi
+
   # Show output (truncated if very large)
   OUTPUT_LINES=$(echo "$result" | wc -l | tr -d ' ')
   if [ "$OUTPUT_LINES" -gt 200 ]; then
@@ -192,7 +220,7 @@ for ((i=1; i<=MAX_ITERATIONS; i++)); do
   echo -e "${CYAN}⏱  Iteration $i completed in ${ITER_DURATION}s ($(( ITER_DURATION / 60 ))m$(( ITER_DURATION % 60 ))s)${NC}"
 
   if $TIMED_OUT; then
-    echo -e "${RED}   Status: TIMEOUT — process killed after ${ITERATION_TIMEOUT}s${NC}"
+    echo -e "${RED}   Status: TIMEOUT — process killed after ${ITER_DURATION}s (deadline reached)${NC}"
     echo -e "${YELLOW}   Retrying with fresh context...${NC}"
     echo ""
     sleep 2

@@ -64,6 +64,16 @@ _bmad-output
 .windsurf
 
 
+# Ralph ephemeral files (generated per run)
+PROMPT.md
+CR-PROMPT.md
+CS-PROMPT.md
+activity.md
+ralph-progress.md
+
+# Ralph persistent run logs (debugging)
+ralph-logs/
+
 # Astro / Documentation Build
 website/.astro/
 website/dist/

@@ -40,9 +40,11 @@ if [ -z "$TARGET_DIR" ]; then
   echo "  - BMAD Method framework (with ralph workflows baked in)"
   echo "  - ralph.sh                       (autonomous loop engine)"
   echo "  - ralph-bmad.sh                  (task-level executor + CR gate)"
-  echo "  - scripts/ralph-extract-task.js  (task extractor for ralph-bmad.sh)"
-  echo "  - cr-prompt.template.md          (CR gate prompt template)"
-  echo "  - Agent customizations           (.customize.yaml files with ralph context)"
+  echo "  - scripts/ralph-extract-task.js    (task extractor for ralph-bmad.sh)"
+  echo "  - scripts/ralph-sprint-status.js  (sprint status parser for chaining)"
+  echo "  - cr-prompt.template.md           (CR gate prompt template)"
+  echo "  - cs-prompt.template.md           (headless CS prompt template)"
+  echo "  - Agent customizations            (.customize.yaml files with ralph context)"
   exit 1
 fi
 
@@ -123,6 +125,22 @@ else
   exit 1
 fi
 
+if [ -f "$SCRIPT_DIR/ralph-sprint-status.js" ]; then
+  mkdir -p "$TARGET_DIR/scripts"
+  cp "$SCRIPT_DIR/ralph-sprint-status.js" "$TARGET_DIR/scripts/ralph-sprint-status.js"
+  echo -e "  ${GREEN}Installed: scripts/ralph-sprint-status.js${NC}"
+else
+  echo -e "  ${RED}Error: ralph-sprint-status.js not found at $SCRIPT_DIR/ralph-sprint-status.js${NC}"
+  exit 1
+fi
+
+if [ -f "$SCRIPT_DIR/cs-prompt.template.md" ]; then
+  cp "$SCRIPT_DIR/cs-prompt.template.md" "$TARGET_DIR/cs-prompt.template.md"
+  echo -e "  ${GREEN}Installed: cs-prompt.template.md${NC}"
+else
+  echo -e "  ${YELLOW}Warning: cs-prompt.template.md not found. Headless CS will be unavailable.${NC}"
+fi
+
 # ─── Step 3: Copy agent customization files ───
 echo ""
 echo -e "${BLUE}Step 3: Installing agent customization files...${NC}"
@@ -162,12 +180,14 @@ echo ""
 echo "Ralph-enhanced BMAD Method installed at: $TARGET_DIR"
 echo ""
 echo -e "${BLUE}Installed files:${NC}"
-echo "  _bmad/                      BMAD framework (with ralph workflows)"
-echo "  _bmad/_config/agents/       Agent customizations (ralph context)"
-echo "  ralph.sh                    Ralph loop engine (fresh context per iteration)"
-echo "  ralph-bmad.sh               BMAD wrapper (task-level executor + CR gate)"
-echo "  scripts/ralph-extract-task.js  Task extractor for ralph-bmad.sh"
-echo "  cr-prompt.template.md       CR gate prompt template (adversarial review)"
+echo "  _bmad/                           BMAD framework (with ralph workflows)"
+echo "  _bmad/_config/agents/            Agent customizations (ralph context)"
+echo "  ralph.sh                         Ralph loop engine (fresh context per iteration)"
+echo "  ralph-bmad.sh                    BMAD autonomous pipeline (7-phase chaining)"
+echo "  scripts/ralph-extract-task.js    Task extractor for ralph-bmad.sh"
+echo "  scripts/ralph-sprint-status.js   Sprint status parser for discovery + chaining"
+echo "  cr-prompt.template.md            CR gate prompt template (adversarial review)"
+echo "  cs-prompt.template.md            Headless CS prompt template (auto story creation)"
 echo ""
 echo -e "${BLUE}Workflow Progression:${NC}"
 echo "  Phase 1-3: Analysis → Planning → Solutioning (unchanged)"
