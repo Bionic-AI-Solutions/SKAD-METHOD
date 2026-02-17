@@ -19,16 +19,16 @@ class KiloSetup extends BaseIdeSetup {
   /**
    * Setup KiloCode IDE configuration
    * @param {string} projectDir - Project directory
-   * @param {string} bmadDir - BMAD installation directory
+   * @param {string} skadDir - SKAD installation directory
    * @param {Object} options - Setup options
    */
-  async setup(projectDir, bmadDir, options = {}) {
+  async setup(projectDir, skadDir, options = {}) {
     if (!options.silent) await prompts.log.info(`Setting up ${this.name}...`);
 
-    // Clean up any old BMAD installation first
+    // Clean up any old SKAD installation first
     await this.cleanup(projectDir, options);
 
-    // Load existing config (may contain non-BMAD modes and other settings)
+    // Load existing config (may contain non-SKAD modes and other settings)
     const kiloModesPath = path.join(projectDir, this.configFile);
     let config = {};
 
@@ -49,8 +49,8 @@ class KiloSetup extends BaseIdeSetup {
     }
 
     // Generate agent launchers
-    const agentGen = new AgentCommandGenerator(this.bmadFolderName);
-    const { artifacts: agentArtifacts } = await agentGen.collectAgentArtifacts(bmadDir, options.selectedModules || []);
+    const agentGen = new AgentCommandGenerator(this.skadFolderName);
+    const { artifacts: agentArtifacts } = await agentGen.collectAgentArtifacts(skadDir, options.selectedModules || []);
 
     // Create mode objects and add to config
     let addedCount = 0;
@@ -66,22 +66,22 @@ class KiloSetup extends BaseIdeSetup {
     await this.writeFile(kiloModesPath, finalContent);
 
     // Generate workflow commands
-    const workflowGenerator = new WorkflowCommandGenerator(this.bmadFolderName);
-    const { artifacts: workflowArtifacts } = await workflowGenerator.collectWorkflowArtifacts(bmadDir);
+    const workflowGenerator = new WorkflowCommandGenerator(this.skadFolderName);
+    const { artifacts: workflowArtifacts } = await workflowGenerator.collectWorkflowArtifacts(skadDir);
 
     // Write to .kilocode/workflows/ directory
     const workflowsDir = path.join(projectDir, '.kilocode', 'workflows');
     await this.ensureDir(workflowsDir);
 
-    // Clear old BMAD workflows before writing new ones
-    await this.clearBmadWorkflows(workflowsDir);
+    // Clear old SKAD workflows before writing new ones
+    await this.clearSkadWorkflows(workflowsDir);
 
     // Write workflow files
     const workflowCount = await workflowGenerator.writeDashArtifacts(workflowsDir, workflowArtifacts);
 
     // Generate task and tool commands
-    const taskToolGen = new TaskToolCommandGenerator(this.bmadFolderName);
-    const { artifacts: taskToolArtifacts, counts: taskToolCounts } = await taskToolGen.collectTaskToolArtifacts(bmadDir);
+    const taskToolGen = new TaskToolCommandGenerator(this.skadFolderName);
+    const { artifacts: taskToolArtifacts, counts: taskToolCounts } = await taskToolGen.collectTaskToolArtifacts(skadDir);
 
     // Write task/tool files to workflows directory (same location as workflows)
     await taskToolGen.writeDashArtifacts(workflowsDir, taskToolArtifacts);
@@ -133,7 +133,7 @@ class KiloSetup extends BaseIdeSetup {
 
     // Build mode object (KiloCode uses same schema as Roo)
     return {
-      slug: `bmad-${artifact.module}-${artifact.name}`,
+      slug: `skad-${artifact.module}-${artifact.name}`,
       name: `${icon} ${title}`,
       roleDefinition: roleDefinition,
       whenToUse: whenToUse,
@@ -153,16 +153,16 @@ class KiloSetup extends BaseIdeSetup {
   }
 
   /**
-   * Clear old BMAD workflow files from workflows directory
+   * Clear old SKAD workflow files from workflows directory
    * @param {string} workflowsDir - Workflows directory path
    */
-  async clearBmadWorkflows(workflowsDir) {
+  async clearSkadWorkflows(workflowsDir) {
     const fs = require('fs-extra');
     if (!(await fs.pathExists(workflowsDir))) return;
 
     const entries = await fs.readdir(workflowsDir);
     for (const entry of entries) {
-      if (entry.startsWith('bmad-') && entry.endsWith('.md')) {
+      if (entry.startsWith('skad-') && entry.endsWith('.md')) {
         await fs.remove(path.join(workflowsDir, entry));
       }
     }
@@ -183,13 +183,13 @@ class KiloSetup extends BaseIdeSetup {
 
         if (Array.isArray(config.customModes)) {
           const originalCount = config.customModes.length;
-          // Remove BMAD modes only (keep non-BMAD modes)
-          config.customModes = config.customModes.filter((mode) => !mode.slug || !mode.slug.startsWith('bmad-'));
+          // Remove SKAD modes only (keep non-SKAD modes)
+          config.customModes = config.customModes.filter((mode) => !mode.slug || !mode.slug.startsWith('skad-'));
           const removedCount = originalCount - config.customModes.length;
 
           if (removedCount > 0) {
             await fs.writeFile(kiloModesPath, yaml.stringify(config, { lineWidth: 0 }));
-            if (!options.silent) await prompts.log.message(`Removed ${removedCount} BMAD modes from .kilocodemodes`);
+            if (!options.silent) await prompts.log.message(`Removed ${removedCount} SKAD modes from .kilocodemodes`);
           }
         }
       } catch {
@@ -200,7 +200,7 @@ class KiloSetup extends BaseIdeSetup {
 
     // Clean up workflow files
     const workflowsDir = path.join(projectDir, '.kilocode', 'workflows');
-    await this.clearBmadWorkflows(workflowsDir);
+    await this.clearSkadWorkflows(workflowsDir);
   }
 
   /**
@@ -231,7 +231,7 @@ class KiloSetup extends BaseIdeSetup {
     }
 
     // Create custom agent mode object
-    const slug = `bmad-custom-${agentName.toLowerCase()}`;
+    const slug = `skad-custom-${agentName.toLowerCase()}`;
 
     // Check if mode already exists
     if (config.customModes.some((mode) => mode.slug === slug)) {
@@ -247,8 +247,8 @@ class KiloSetup extends BaseIdeSetup {
     // Add custom mode object
     config.customModes.push({
       slug: slug,
-      name: `BMAD Custom: ${agentName}`,
-      description: `Custom BMAD agent: ${agentName}\n\n**⚠️ IMPORTANT**: Run @${agentPath} first to load the complete agent!\n\nThis is a launcher for the custom BMAD agent "${agentName}". The agent will follow the persona and instructions from the main agent file.\n`,
+      name: `SKAD Custom: ${agentName}`,
+      description: `Custom SKAD agent: ${agentName}\n\n**⚠️ IMPORTANT**: Run @${agentPath} first to load the complete agent!\n\nThis is a launcher for the custom SKAD agent "${agentName}". The agent will follow the persona and instructions from the main agent file.\n`,
       prompt: `@${agentPath}\n`,
       always: false,
       permissions: 'all',

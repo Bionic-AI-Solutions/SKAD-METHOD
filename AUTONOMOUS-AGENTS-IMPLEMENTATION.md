@@ -2,13 +2,13 @@
 
 ## Overview
 
-This implementation integrates Claude's native Task tool with BMAD's workflow execution engine, enabling **truly autonomous AI-driven development** through specialized subagents and parallel execution.
+This implementation integrates Claude's native Task tool with SKAD's workflow execution engine, enabling **truly autonomous AI-driven development** through specialized subagents and parallel execution.
 
 ## Changes Made
 
 ### 1. Core Workflow Engine Enhancement
 
-**File**: `/BMAD-METHOD/src/core/tasks/workflow.xml`
+**File**: `/SKAD-METHOD/src/core/tasks/workflow.xml`
 
 **Changes**:
 - Added `<invoke-subagent>` tag for spawning single Claude subagents
@@ -25,7 +25,7 @@ This implementation integrates Claude's native Task tool with BMAD's workflow ex
 
 ### 2. Configuration
 
-**File**: `/BMAD-METHOD/src/bmm/module.yaml`
+**File**: `/SKAD-METHOD/src/skm/module.yaml`
 
 **Changes**:
 Added `subagents` configuration section:
@@ -42,7 +42,7 @@ subagents:
 
 ### 3. create-story Workflow Transformation
 
-**File**: `/BMAD-METHOD/src/bmm/workflows/4-implementation/create-story/instructions.xml`
+**File**: `/SKAD-METHOD/src/skm/workflows/4-implementation/create-story/instructions.xml`
 
 **Changes**:
 - **Step 2**: Replaced sequential artifact loading with parallel autonomous agents:
@@ -63,7 +63,7 @@ subagents:
 
 ### 4. dev-story Workflow Transformation
 
-**File**: `/BMAD-METHOD/src/bmm/workflows/4-implementation/dev-story/instructions.xml`
+**File**: `/SKAD-METHOD/src/skm/workflows/4-implementation/dev-story/instructions.xml`
 
 **Changes**:
 - **Step 5**: Replaced manual implementation loop (old Steps 5-8) with autonomous subagent that:
@@ -84,10 +84,10 @@ subagents:
 ### 5. Documentation
 
 **Created**:
-- `/BMAD-METHOD/docs/autonomous-agents/overview.md` - Conceptual overview
-- `/BMAD-METHOD/docs/autonomous-agents/agent-types.md` - When to use each agent type
-- `/BMAD-METHOD/docs/autonomous-agents/patterns.md` - Common usage patterns
-- `/BMAD-METHOD/docs/autonomous-agents/troubleshooting.md` - Debugging guide
+- `/SKAD-METHOD/docs/autonomous-agents/overview.md` - Conceptual overview
+- `/SKAD-METHOD/docs/autonomous-agents/agent-types.md` - When to use each agent type
+- `/SKAD-METHOD/docs/autonomous-agents/patterns.md` - Common usage patterns
+- `/SKAD-METHOD/docs/autonomous-agents/troubleshooting.md` - Debugging guide
 
 **Impact**: Comprehensive documentation for users and developers
 
@@ -296,7 +296,7 @@ All workflows include graceful fallback:
 ## Migration Path
 
 ### Existing Installations
-1. Update BMAD-METHOD package
+1. Update SKAD-METHOD package
 2. Configuration auto-migrates with defaults
 3. Workflows work immediately with fallback
 4. Gradual adoption: enable autonomous mode when ready
@@ -332,19 +332,19 @@ All workflows include graceful fallback:
 ## Files Changed
 
 ### Core Files (3)
-1. `/BMAD-METHOD/src/core/tasks/workflow.xml` - Workflow execution engine
-2. `/BMAD-METHOD/src/bmm/module.yaml` - BMM module configuration
-3. `/BMAD-METHOD/AUTONOMOUS-AGENTS-IMPLEMENTATION.md` - This summary
+1. `/SKAD-METHOD/src/core/tasks/workflow.xml` - Workflow execution engine
+2. `/SKAD-METHOD/src/skm/module.yaml` - SKM module configuration
+3. `/SKAD-METHOD/AUTONOMOUS-AGENTS-IMPLEMENTATION.md` - This summary
 
 ### Workflow Files (2)
-4. `/BMAD-METHOD/src/bmm/workflows/4-implementation/create-story/instructions.xml`
-5. `/BMAD-METHOD/src/bmm/workflows/4-implementation/dev-story/instructions.xml`
+4. `/SKAD-METHOD/src/skm/workflows/4-implementation/create-story/instructions.xml`
+5. `/SKAD-METHOD/src/skm/workflows/4-implementation/dev-story/instructions.xml`
 
 ### Documentation Files (4)
-6. `/BMAD-METHOD/docs/autonomous-agents/overview.md`
-7. `/BMAD-METHOD/docs/autonomous-agents/agent-types.md`
-8. `/BMAD-METHOD/docs/autonomous-agents/patterns.md`
-9. `/BMAD-METHOD/docs/autonomous-agents/troubleshooting.md`
+6. `/SKAD-METHOD/docs/autonomous-agents/overview.md`
+7. `/SKAD-METHOD/docs/autonomous-agents/agent-types.md`
+8. `/SKAD-METHOD/docs/autonomous-agents/patterns.md`
+9. `/SKAD-METHOD/docs/autonomous-agents/troubleshooting.md`
 
 **Total**: 9 new/modified files
 
@@ -359,7 +359,7 @@ All workflows include graceful fallback:
 - ✅ Graceful fallback works when Task tool unavailable
 - ✅ Error handling prevents workflow failures
 - ✅ Comprehensive documentation created
-- ✅ No breaking changes to existing BMAD workflows
+- ✅ No breaking changes to existing SKAD workflows
 
 ## Next Steps
 
@@ -380,7 +380,7 @@ This implementation delivers on the vision of **truly autonomous AI-driven devel
 - **Zero human intervention** during implementation
 - **Backward compatible** with graceful fallback
 
-BMAD now leverages Claude's full autonomous capabilities while maintaining robustness and user control.
+SKAD now leverages Claude's full autonomous capabilities while maintaining robustness and user control.
 
 ---
 

@@ -1,27 +1,27 @@
 ---
 title: "Established Projects"
-description: How to use BMad Method on existing codebases
+description: How to use SKAD Method on existing codebases
 sidebar:
   order: 6
 ---
 
-Use BMad Method effectively when working on existing projects and legacy codebases, sometimes also referred to as brownfield projects.
+Use SKAD Method effectively when working on existing projects and legacy codebases, sometimes also referred to as brownfield projects.
 
-This guide covers the essential workflow for onboarding to existing projects with BMad Method.
+This guide covers the essential workflow for onboarding to existing projects with SKAD Method.
 
 :::note[Prerequisites]
-- BMad Method installed (`npx bmad-method install`)
+- SKAD Method installed (`npx skad-method install`)
 - An existing codebase you want to work on
 - Access to an AI-powered IDE (Claude Code, Cursor, or Windsurf)
 :::
 
 ## Step 1: Clean Up Completed Planning Artifacts
 
-If you have completed all PRD epics and stories through the BMad process, clean up those files. Archive them, delete them, or rely on version history if needed. Do not keep these files in:
+If you have completed all PRD epics and stories through the SKAD process, clean up those files. Archive them, delete them, or rely on version history if needed. Do not keep these files in:
 
 - `docs/`
-- `_bmad-output/planning-artifacts/`
-- `_bmad-output/implementation-artifacts/`
+- `_skad-output/planning-artifacts/`
+- `_skad-output/implementation-artifacts/`
 
 ## Step 2: Maintain Quality Project Documentation
 
@@ -38,7 +38,7 @@ For complex projects, consider using the `document-project` workflow. It offers 
 
 Get help to know what to do next based on your unique needs
 
-Run `bmad-help` to get guidance when you are not sure what to do next.
+Run `skad-help` to get guidance when you are not sure what to do next.
 
 ### Choosing Your Approach
 
@@ -46,8 +46,8 @@ You have two primary options depending on the scope of changes:
 
 | Scope                          | Recommended Approach                                                                                                          |
 | ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------- |
-| **Small updates or additions** | Use `quick-flow-solo-dev` to create a tech-spec and implement the change. The full four-phase BMad Method is likely overkill. |
-| **Major changes or additions** | Start with the BMad Method, applying as much or as little rigor as needed.                                                    |
+| **Small updates or additions** | Use `quick-flow-solo-dev` to create a tech-spec and implement the change. The full four-phase SKAD Method is likely overkill. |
+| **Major changes or additions** | Start with the SKAD Method, applying as much or as little rigor as needed.                                                    |
 
 ### During PRD Creation
 

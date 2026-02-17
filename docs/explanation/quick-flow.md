@@ -56,18 +56,18 @@ For best results, run `quick-dev` in a new conversation after finishing `quick-s
 
 ## What Quick Flow Skips
 
-The full BMad Method produces a Product Brief, PRD, Architecture doc, and Epic/Story breakdown before any code is written. Quick Flow replaces all of that with a single tech-spec. This works because Quick Flow targets changes where:
+The full SKAD Method produces a Product Brief, PRD, Architecture doc, and Epic/Story breakdown before any code is written. Quick Flow replaces all of that with a single tech-spec. This works because Quick Flow targets changes where:
 
 - The product direction is already established
 - Architecture decisions are already made
 - A single developer can reason about the full scope
 - Requirements fit in one conversation
 
-## Escalating to Full BMad Method
+## Escalating to Full SKAD Method
 
 Quick Flow includes built-in guardrails for scope detection. When you run `quick-dev` with a direct request, it evaluates signals like multi-component mentions, system-level language, and uncertainty about approach. If it detects the work is bigger than a quick flow:
 
 - **Light escalation** - Recommends running `quick-spec` first to create a plan
-- **Heavy escalation** - Recommends switching to the full BMad Method PRD process
+- **Heavy escalation** - Recommends switching to the full SKAD Method PRD process
 
 You can also escalate manually at any time. Your tech-spec work carries forward - it becomes input for the broader planning process rather than being discarded.

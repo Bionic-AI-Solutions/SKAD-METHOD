@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!-- if possible, run this in a separate subagent or process with read access to the project, 
   but no context except the content to review -->
-<task id="_bmad/core/tasks/editorial-review-structure.xml"
+<task id="_skad/core/tasks/editorial-review-structure.xml"
   name="Editorial Review - Structure"
   description="Structural editor that proposes cuts, reorganization,
     and simplification while preserving comprehension">
@@ -98,7 +98,7 @@
         <i>Scaffolding: Complex ideas built on established foundations</i>
       </model>
       <model name="Prompt/Task Definition (Functional)"
-        applicability="BMAD tasks, prompts, system instructions, XML definitions">
+        applicability="SKAD tasks, prompts, system instructions, XML definitions">
         <i>Meta-first: Inputs, usage constraints, and context defined before instructions</i>
         <i>Separation of Concerns: Instructions (logic) separate from Data (content)</i>
         <i>Step-by-step: Execution flow must be explicit and ordered</i>

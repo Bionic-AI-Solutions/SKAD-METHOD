@@ -1,4 +1,4 @@
-# Contributing to BMad
+# Contributing to SKAD
 
 Thank you for considering contributing! We believe in **Human Amplification, Not Replacement** — bringing out the best thinking in both humans and AI through guided collaboration.
 
@@ -8,18 +8,18 @@ Thank you for considering contributing! We believe in **Human Amplification, Not
 
 ## Our Philosophy
 
-BMad strengthens human-AI collaboration through specialized agents and guided workflows. Every contribution should answer: **"Does this make humans and AI better together?"**
+SKAD strengthens human-AI collaboration through specialized agents and guided workflows. Every contribution should answer: **"Does this make humans and AI better together?"**
 
 **✅ What we welcome:**
 - Enhanced collaboration patterns and workflows
 - Improved agent personas and prompts
-- Domain-specific modules leveraging BMad Core
+- Domain-specific modules leveraging SKAD Core
 - Better planning and context continuity
 
 **❌ What doesn't fit:**
 - Purely automated solutions that sideline humans
 - Complexity that creates barriers to adoption
-- Features that fragment BMad Core's foundation
+- Features that fragment SKAD Core's foundation
 
 ---
 
@@ -31,27 +31,27 @@ BMad strengthens human-AI collaboration through specialized agents and guided wo
 
 1. **Search existing issues** — Use the GitHub issue search to check if your bug or feature has already been reported
 2. **Search closed issues** — Your issue may have been fixed or addressed previously
-3. **Check discussions** — Some conversations happen in [GitHub Discussions](https://github.com/bmad-code-org/BMAD-METHOD/discussions)
+3. **Check discussions** — Some conversations happen in [GitHub Discussions](https://github.com/skad-code-org/SKAD-METHOD/discussions)
 
 ### Bug Reports
 
-After searching, if the bug is unreported, use the [bug report template](https://github.com/bmad-code-org/BMAD-METHOD/issues/new?template=bug_report.md) and include:
+After searching, if the bug is unreported, use the [bug report template](https://github.com/skad-code-org/SKAD-METHOD/issues/new?template=bug_report.md) and include:
 
 - Clear description of the problem
 - Steps to reproduce
 - Expected vs actual behavior
-- Your environment (model, IDE, BMad version)
+- Your environment (model, IDE, SKAD version)
 - Screenshots or error messages if applicable
 
 ### Feature Requests
 
-After searching, use the [feature request template](https://github.com/bmad-code-org/BMAD-METHOD/issues/new?template=feature_request.md) and explain:
+After searching, use the [feature request template](https://github.com/skad-code-org/SKAD-METHOD/issues/new?template=feature_request.md) and explain:
 
 - What the feature is
-- Why it would benefit the BMad community
+- Why it would benefit the SKAD community
 - How it strengthens human-AI collaboration
 
-**For community modules**, review [TRADEMARK.md](TRADEMARK.md) for proper naming conventions (e.g., "My Module (BMad Community Module)").
+**For community modules**, review [TRADEMARK.md](TRADEMARK.md) for proper naming conventions (e.g., "My Module (SKAD Community Module)").
 
 ---
 
@@ -86,7 +86,7 @@ If your change exceeds 800 lines, break it into smaller PRs that can be reviewed
 ### New to Pull Requests?
 
 1. **Fork** the repository
-2. **Clone** your fork: `git clone https://github.com/YOUR-USERNAME/bmad-method.git`
+2. **Clone** your fork: `git clone https://github.com/YOUR-USERNAME/skad-method.git`
 3. **Create a branch**: `git checkout -b fix/description` or `git checkout -b feature/description`
 4. **Make changes** — keep them focused
 5. **Commit**: `git commit -m "fix: correct typo in README"`
@@ -145,7 +145,7 @@ Keep messages under 72 characters. Each commit = one logical change.
 - Keep dev agents lean — focus on coding context, not documentation
 - Web/planning agents can be larger with complex tasks
 - Everything is natural language (markdown) — no code in core framework
-- Use BMad modules for domain-specific features
+- Use SKAD modules for domain-specific features
 - Validate YAML schemas: `npm run validate:schemas`
 - Validate file references: `npm run validate:refs`
 
@@ -162,8 +162,8 @@ Keep messages under 72 characters. Each commit = one logical change.
 ## Need Help?
 
 - 💬 **Discord**: [Join the community](https://discord.gg/gk8jAdXWmj)
-- 🐛 **Bugs**: Use the [bug report template](https://github.com/bmad-code-org/BMAD-METHOD/issues/new?template=bug_report.md)
-- 💡 **Features**: Use the [feature request template](https://github.com/bmad-code-org/BMAD-METHOD/issues/new?template=feature_request.md)
+- 🐛 **Bugs**: Use the [bug report template](https://github.com/skad-code-org/SKAD-METHOD/issues/new?template=bug_report.md)
+- 💡 **Features**: Use the [feature request template](https://github.com/skad-code-org/SKAD-METHOD/issues/new?template=feature_request.md)
 
 ---
 

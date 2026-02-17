@@ -1,51 +1,51 @@
-# This file allows these modules under bmad-code-org to also be installed with the bmad method installer, while
+# This file allows these modules under skad-code-org to also be installed with the skad method installer, while
 # allowing us to keep the source of these projects in separate repos.
 
 modules:
-  bmad-builder:
-    url: https://github.com/bmad-code-org/bmad-builder
+  skad-builder:
+    url: https://github.com/skad-code-org/skad-builder
     module-definition: src/module.yaml
     code: bmb
-    name: "BMad Builder"
+    name: "SKAD Builder"
     description: "Agent, Workflow and Module Builder"
     defaultSelected: false
-    type: bmad-org
-    npmPackage: bmad-builder
+    type: skad-org
+    npmPackage: skad-builder
 
-  bmad-creative-intelligence-suite:
-    url: https://github.com/bmad-code-org/bmad-module-creative-intelligence-suite
+  skad-creative-intelligence-suite:
+    url: https://github.com/skad-code-org/skad-module-creative-intelligence-suite
     module-definition: src/module.yaml
     code: cis
-    name: "BMad Creative Intelligence Suite"
+    name: "SKAD Creative Intelligence Suite"
     description: "Creative tools for writing, brainstorming, and more"
     defaultSelected: false
-    type: bmad-org
-    npmPackage: bmad-creative-intelligence-suite
+    type: skad-org
+    npmPackage: skad-creative-intelligence-suite
 
-  bmad-game-dev-studio:
-    url: https://github.com/bmad-code-org/bmad-module-game-dev-studio.git
+  skad-game-dev-studio:
+    url: https://github.com/skad-code-org/skad-module-game-dev-studio.git
     module-definition: src/module.yaml
     code: gds
-    name: "BMad Game Dev Studio"
+    name: "SKAD Game Dev Studio"
     description: "Game development agents and workflows"
     defaultSelected: false
-    type: bmad-org
-    npmPackage: bmad-game-dev-studio
+    type: skad-org
+    npmPackage: skad-game-dev-studio
 
-  bmad-method-test-architecture-enterprise:
-    url: https://github.com/bmad-code-org/bmad-method-test-architecture-enterprise
+  skad-method-test-architecture-enterprise:
+    url: https://github.com/skad-code-org/skad-method-test-architecture-enterprise
     module-definition: src/module.yaml
     code: tea
     name: "Test Architect"
     description: "Master Test Architect for quality strategy, test automation, and release gates"
     defaultSelected: false
-    type: bmad-org
-    npmPackage: bmad-method-test-architecture-enterprise
+    type: skad-org
+    npmPackage: skad-method-test-architecture-enterprise
 
 # TODO: Enable once fixes applied:
 
 # whiteport-design-system:
-#   url: https://github.com/bmad-code-org/bmad-method-wds-expansion
+#   url: https://github.com/skad-code-org/skad-method-wds-expansion
 #   module-definition: src/module.yaml
 #   code: WDS
 #   name: "Whiteport UX Design System"

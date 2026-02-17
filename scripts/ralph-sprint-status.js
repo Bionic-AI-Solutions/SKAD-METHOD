@@ -12,8 +12,8 @@
 const { readFileSync, writeFileSync } = require('node:fs');
 const { resolve } = require('node:path');
 
-const DEFAULT_YAML_PATH = '_bmad-output/implementation-artifacts/sprint-status.yaml';
-const STORY_DIR = '_bmad-output/implementation-artifacts';
+const DEFAULT_YAML_PATH = '_skad-output/implementation-artifacts/sprint-status.yaml';
+const STORY_DIR = '_skad-output/implementation-artifacts';
 
 // Parse sprint-status.yaml into a map of key → status
 function parseSprintStatus(yamlPath) {

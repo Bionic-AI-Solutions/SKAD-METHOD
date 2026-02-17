@@ -1,6 +1,6 @@
-@_bmad/bmm/workflows/4-implementation/create-story/instructions.xml
-@_bmad-output/implementation-artifacts/sprint-status.yaml
-@_bmad-output/planning-artifacts/epics.md @activity.md
+@_skad/skm/workflows/4-implementation/create-story/instructions.xml
+@_skad-output/implementation-artifacts/sprint-status.yaml
+@_skad-output/planning-artifacts/epics.md @activity.md
 
 You are performing AUTOMATED Create Story (CS) for the next backlog story.
 
@@ -11,17 +11,17 @@ This is a HEADLESS execution — you make all decisions autonomously. There is n
 - Story key: {{story_key}}
 - Epic: {{epic_num}}
 - Story number: {{story_num}}
-- Output file: _bmad-output/implementation-artifacts/{{story_key}}.md
+- Output file: _skad-output/implementation-artifacts/{{story_key}}.md
 
 ## Instructions
 
 Follow the create-story workflow instructions loaded above (instructions.xml).
 
 1. Read the epics file to extract full context for Epic {{epic_num}}, Story {{story_num}}
-2. Read the architecture docs in `_bmad-output/planning-artifacts/` for technical context
-3. Analyze previous stories in this epic (check `_bmad-output/implementation-artifacts/{{epic_num}}-*`) for learnings and patterns
+2. Read the architecture docs in `_skad-output/planning-artifacts/` for technical context
+3. Analyze previous stories in this epic (check `_skad-output/implementation-artifacts/{{epic_num}}-*`) for learnings and patterns
 4. Create a comprehensive, self-sufficient story file at the output path above
-5. Follow the template at `_bmad/bmm/workflows/4-implementation/create-story/template.md`
+5. Follow the template at `_skad/skm/workflows/4-implementation/create-story/template.md`
 
 ## Critical Requirements
 

@@ -19,7 +19,7 @@
 
 ## CONTEXT BOUNDARIES:
 
-- Agent manifest CSV is available at `{project-root}/_bmad/_config/agent-manifest.csv`
+- Agent manifest CSV is available at `{project-root}/_skad/_config/agent-manifest.csv`
 - User configuration from config.yaml is loaded and resolved
 - Party mode is standalone interactive workflow
 - All agent data is available for conversation orchestration
@@ -34,11 +34,11 @@ Load the complete agent roster from manifest and initialize party mode with enga
 
 Begin agent loading process:
 
-"Now initializing **Party Mode** with our complete BMAD agent roster! Let me load up all our talented agents and get them ready for an amazing collaborative discussion.
+"Now initializing **Party Mode** with our complete SKAD agent roster! Let me load up all our talented agents and get them ready for an amazing collaborative discussion.
 
 **Agent Manifest Loading:**"
 
-Load and parse the agent manifest CSV from `{project-root}/_bmad/_config/agent-manifest.csv`
+Load and parse the agent manifest CSV from `{project-root}/_skad/_config/agent-manifest.csv`
 
 ### 2. Extract Agent Data
 
@@ -74,7 +74,7 @@ Generate enthusiastic party mode introduction:
 
 "🎉 PARTY MODE ACTIVATED! 🎉
 
-Welcome {{user_name}}! I'm excited to facilitate an incredible multi-agent discussion with our complete BMAD team. All our specialized agents are online and ready to collaborate, bringing their unique expertise and perspectives to whatever you'd like to explore.
+Welcome {{user_name}}! I'm excited to facilitate an incredible multi-agent discussion with our complete SKAD team. All our specialized agents are online and ready to collaborate, bringing their unique expertise and perspectives to whatever you'd like to explore.
 
 **Our Collaborating Agents Include:**
 
@@ -92,7 +92,7 @@ Welcome {{user_name}}! I'm excited to facilitate an incredible multi-agent discu
 
 After agent loading and introduction:
 
-"**Agent roster loaded successfully!** All our BMAD experts are excited to collaborate with you.
+"**Agent roster loaded successfully!** All our SKAD experts are excited to collaborate with you.
 
 **Ready to start the discussion?**
 [C] Continue - Begin multi-agent conversation

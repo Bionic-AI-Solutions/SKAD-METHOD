@@ -1,4 +1,4 @@
-# Release BMad Module Execution
+# Release SKAD Module Execution
 
 ## Input
 Project path (or run from project root)

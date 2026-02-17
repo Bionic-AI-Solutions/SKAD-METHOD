@@ -1,6 +1,6 @@
 const fs = require('fs-extra');
 const path = require('node:path');
-const { BMAD_FOLDER_NAME } = require('./shared/path-utils');
+const { SKAD_FOLDER_NAME } = require('./shared/path-utils');
 const prompts = require('../../../lib/prompts');
 
 /**
@@ -15,19 +15,19 @@ class IdeManager {
   constructor() {
     this.handlers = new Map();
     this._initialized = false;
-    this.bmadFolderName = BMAD_FOLDER_NAME; // Default, can be overridden
+    this.skadFolderName = SKAD_FOLDER_NAME; // Default, can be overridden
   }
 
   /**
-   * Set the bmad folder name for all IDE handlers
-   * @param {string} bmadFolderName - The bmad folder name
+   * Set the skad folder name for all IDE handlers
+   * @param {string} skadFolderName - The skad folder name
    */
-  setBmadFolderName(bmadFolderName) {
-    this.bmadFolderName = bmadFolderName;
+  setSkadFolderName(skadFolderName) {
+    this.skadFolderName = skadFolderName;
     // Update all loaded handlers
     for (const handler of this.handlers.values()) {
-      if (typeof handler.setBmadFolderName === 'function') {
-        handler.setBmadFolderName(bmadFolderName);
+      if (typeof handler.setSkadFolderName === 'function') {
+        handler.setSkadFolderName(skadFolderName);
       }
     }
   }
@@ -74,8 +74,8 @@ class IdeManager {
         if (HandlerClass) {
           const instance = new HandlerClass();
           if (instance.name && typeof instance.name === 'string') {
-            if (typeof instance.setBmadFolderName === 'function') {
-              instance.setBmadFolderName(this.bmadFolderName);
+            if (typeof instance.setSkadFolderName === 'function') {
+              instance.setSkadFolderName(this.skadFolderName);
             }
             this.handlers.set(instance.name, instance);
           }
@@ -104,8 +104,8 @@ class IdeManager {
       if (!platformInfo.installer) continue;
 
       const handler = new ConfigDrivenIdeSetup(platformCode, platformInfo);
-      if (typeof handler.setBmadFolderName === 'function') {
-        handler.setBmadFolderName(this.bmadFolderName);
+      if (typeof handler.setSkadFolderName === 'function') {
+        handler.setSkadFolderName(this.skadFolderName);
       }
       this.handlers.set(platformCode, handler);
     }
@@ -164,10 +164,10 @@ class IdeManager {
    * Setup IDE configuration
    * @param {string} ideName - Name of the IDE
    * @param {string} projectDir - Project directory
-   * @param {string} bmadDir - BMAD installation directory
+   * @param {string} skadDir - SKAD installation directory
    * @param {Object} options - Setup options
    */
-  async setup(ideName, projectDir, bmadDir, options = {}) {
+  async setup(ideName, projectDir, skadDir, options = {}) {
     const handler = this.handlers.get(ideName.toLowerCase());
 
     if (!handler) {
@@ -177,7 +177,7 @@ class IdeManager {
     }
 
     try {
-      const handlerResult = await handler.setup(projectDir, bmadDir, options);
+      const handlerResult = await handler.setup(projectDir, skadDir, options);
       // Build detail string from handler-returned data
       let detail = '';
       if (handlerResult && handlerResult.results) {

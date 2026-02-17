@@ -1,10 +1,10 @@
 ---
 title: "Established Projects FAQ"
-description: Common questions about using BMad Method on established projects
+description: Common questions about using SKAD Method on established projects
 sidebar:
   order: 8
 ---
-Quick answers to common questions about working on established projects with the BMad Method (BMM).
+Quick answers to common questions about working on established projects with the SKAD Method (SKM).
 
 ## Questions
 
@@ -45,6 +45,6 @@ Quick Flow detects your conventions and asks: "Should I follow these existing co
 - **Yes** → Maintain consistency with current codebase
 - **No** → Establish new standards (document why in tech-spec)
 
-BMM respects your choice — it won't force modernization, but it will offer it.
+SKM respects your choice — it won't force modernization, but it will offer it.
 
-**Have a question not answered here?** Please [open an issue](https://github.com/bmad-code-org/BMAD-METHOD/issues) or ask in [Discord](https://discord.gg/gk8jAdXWmj) so we can add it!
+**Have a question not answered here?** Please [open an issue](https://github.com/skad-code-org/SKAD-METHOD/issues) or ask in [Discord](https://discord.gg/gk8jAdXWmj) so we can add it!

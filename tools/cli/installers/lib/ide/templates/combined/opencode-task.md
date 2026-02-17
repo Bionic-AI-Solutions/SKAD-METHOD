@@ -2,11 +2,11 @@
 description: '{{description}}'
 ---
 
-Execute the BMAD '{{name}}' task.
+Execute the SKAD '{{name}}' task.
 
 TASK INSTRUCTIONS:
-1. LOAD the task file from {project-root}/{{bmadFolderName}}/{{path}}
+1. LOAD the task file from {project-root}/{{skadFolderName}}/{{path}}
 2. READ its entire contents
 3. FOLLOW every instruction precisely as specified
 
-TASK FILE: {project-root}/{{bmadFolderName}}/{{path}}
+TASK FILE: {project-root}/{{skadFolderName}}/{{path}}

@@ -1,5 +1,5 @@
 ---
-name: bmad-os-changelog-social
+name: skad-os-changelog-social
 description: Generate social media announcements for Discord, Twitter, and LinkedIn from the latest changelog entry. Use when user asks to create release announcements, social posts, or share changelog updates. Reads CHANGELOG.md in current working directory. Reference examples/ for tone and format.
 disable-model-invocation: true
 ---
@@ -58,7 +58,7 @@ Extract PR numbers from commit messages that contain `#` followed by digits. Com
 Use this template style:
 
 ```markdown
-🚀 **BMad vVERSION RELEASED!**
+🚀 **SKAD vVERSION RELEASED!**
 
 🎉 [Brief hype sentence]
 
@@ -90,12 +90,12 @@ X commits | Y PRs merged | Z files changed
 Community-driven FTW! 🌟
 
 📦 **INSTALL:**
-`npx bmad-method@VERSION install`
+`npx skad-method@VERSION install`
 
 ⭐ **SUPPORT US:**
-🌟 GitHub: github.com/bmad-code-org/BMAD-METHOD/
-📺 YouTube: youtube.com/@BMadCode
-☕ Donate: buymeacoffee.com/bmad
+🌟 GitHub: github.com/skad-code-org/SKAD-METHOD/
+📺 YouTube: youtube.com/@SKADCode
+☕ Donate: buymeacoffee.com/skad
 
 🔥 **Next version tease!**
 ```
@@ -154,7 +154,7 @@ Read the appropriate example file before generating to match the established sty
 
 ## Output Format
 
-**CRITICAL: ALWAYS write to files** - Create files in `_bmad-output/social/` directory:
+**CRITICAL: ALWAYS write to files** - Create files in `_skad-output/social/` directory:
 
 1. `{repo-name}-discord-{version}.md` - Discord announcement
 2. `{repo-name}-twitter-{version}.md` - Twitter post
@@ -173,6 +173,6 @@ Also present a preview in the chat:
 ```
 
 Files created:
-- `_bmad-output/social/{filename}`
+- `_skad-output/social/{filename}`
 
 Offer to make adjustments if the user wants different emphasis, tone, or content.

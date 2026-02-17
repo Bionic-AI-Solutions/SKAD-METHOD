@@ -78,7 +78,7 @@ mkdir -p screenshots
 RALPH_TMP=$(mktemp -d)
 trap 'rm -rf "$RALPH_TMP"' EXIT
 
-# Persistent log directory (optional, set by ralph-bmad.sh via env)
+# Persistent log directory (optional, set by ralph-skad.sh via env)
 RALPH_PERSIST_LOG_DIR="${RALPH_LOG_DIR:-}"
 
 echo -e "${BLUE}======================================${NC}"

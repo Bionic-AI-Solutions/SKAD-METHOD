@@ -38,7 +38,7 @@ class CustomHandler {
             entry.name === 'dist' ||
             entry.name === 'build' ||
             entry.name === '.git' ||
-            entry.name === 'bmad'
+            entry.name === 'skad'
           ) {
             continue;
           }
@@ -119,12 +119,12 @@ class CustomHandler {
   /**
    * Install custom content
    * @param {string} customPath - Path to custom content directory
-   * @param {string} bmadDir - Target bmad directory
+   * @param {string} skadDir - Target skad directory
    * @param {Object} config - Configuration from custom.yaml
    * @param {Function} fileTrackingCallback - Optional callback to track installed files
    * @returns {Object} Installation result
    */
-  async install(customPath, bmadDir, config, fileTrackingCallback = null) {
+  async install(customPath, skadDir, config, fileTrackingCallback = null) {
     const results = {
       agentsInstalled: 0,
       workflowsInstalled: 0,
@@ -134,19 +134,19 @@ class CustomHandler {
     };
 
     try {
-      // Create custom directories in bmad
-      const bmadCustomDir = path.join(bmadDir, 'custom');
-      const bmadAgentsDir = path.join(bmadCustomDir, 'agents');
-      const bmadWorkflowsDir = path.join(bmadCustomDir, 'workflows');
+      // Create custom directories in skad
+      const skadCustomDir = path.join(skadDir, 'custom');
+      const skadAgentsDir = path.join(skadCustomDir, 'agents');
+      const skadWorkflowsDir = path.join(skadCustomDir, 'workflows');
 
-      await fs.ensureDir(bmadCustomDir);
-      await fs.ensureDir(bmadAgentsDir);
-      await fs.ensureDir(bmadWorkflowsDir);
+      await fs.ensureDir(skadCustomDir);
+      await fs.ensureDir(skadAgentsDir);
+      await fs.ensureDir(skadWorkflowsDir);
 
       // Process agents - compile and copy agents
       const agentsDir = path.join(customPath, 'agents');
       if (await fs.pathExists(agentsDir)) {
-        await this.compileAndCopyAgents(agentsDir, bmadAgentsDir, bmadDir, config, fileTrackingCallback, results);
+        await this.compileAndCopyAgents(agentsDir, skadAgentsDir, skadDir, config, fileTrackingCallback, results);
 
         // Count agent files
         const agentFiles = await this.findFilesRecursively(agentsDir, ['.agent.yaml', '.md']);
@@ -156,7 +156,7 @@ class CustomHandler {
       // Process workflows - copy entire workflows directory structure
       const workflowsDir = path.join(customPath, 'workflows');
       if (await fs.pathExists(workflowsDir)) {
-        await this.copyDirectory(workflowsDir, bmadWorkflowsDir, results, fileTrackingCallback, config);
+        await this.copyDirectory(workflowsDir, skadWorkflowsDir, results, fileTrackingCallback, config);
 
         // Count workflow files
         const workflowFiles = await this.findFilesRecursively(workflowsDir, ['.md']);
@@ -169,7 +169,7 @@ class CustomHandler {
         if (entry.isFile() && entry.name !== 'custom.yaml' && !entry.name.startsWith('.') && !entry.name.endsWith('.md')) {
           // Skip .md files at root as they're likely docs
           const sourcePath = path.join(customPath, entry.name);
-          const targetPath = path.join(bmadCustomDir, entry.name);
+          const targetPath = path.join(skadCustomDir, entry.name);
 
           try {
             // Check if file already exists
@@ -286,12 +286,12 @@ class CustomHandler {
    * Compile .agent.yaml files to .md format and handle sidecars
    * @param {string} sourceAgentsPath - Source agents directory
    * @param {string} targetAgentsPath - Target agents directory
-   * @param {string} bmadDir - BMAD installation directory
+   * @param {string} skadDir - SKAD installation directory
    * @param {Object} config - Configuration for placeholder replacement
    * @param {Function} fileTrackingCallback - Optional callback to track installed files
    * @param {Object} results - Results object to update
    */
-  async compileAndCopyAgents(sourceAgentsPath, targetAgentsPath, bmadDir, config, fileTrackingCallback, results) {
+  async compileAndCopyAgents(sourceAgentsPath, targetAgentsPath, skadDir, config, fileTrackingCallback, results) {
     // Get all .agent.yaml files recursively
     const agentFiles = await this.findFilesRecursively(sourceAgentsPath, ['.agent.yaml']);
 
@@ -303,9 +303,9 @@ class CustomHandler {
 
       const agentName = path.basename(agentFile, '.agent.yaml');
       const targetMdPath = path.join(targetDir, `${agentName}.md`);
-      // Use the actual bmadDir if available (for when installing to temp dir)
-      const actualBmadDir = config._bmadDir || bmadDir;
-      const customizePath = path.join(actualBmadDir, '_config', 'agents', `custom-${agentName}.customize.yaml`);
+      // Use the actual skadDir if available (for when installing to temp dir)
+      const actualSkadDir = config._skadDir || skadDir;
+      const customizePath = path.join(actualSkadDir, '_config', 'agents', `custom-${agentName}.customize.yaml`);
 
       // Read and compile the YAML
       try {
@@ -320,7 +320,7 @@ class CustomHandler {
             let templateContent = await fs.readFile(genericTemplatePath, 'utf8');
             await fs.writeFile(customizePath, templateContent, 'utf8');
             // Only show customize creation in verbose mode
-            if (process.env.BMAD_VERBOSE_INSTALL === 'true') {
+            if (process.env.SKAD_VERBOSE_INSTALL === 'true') {
               await prompts.log.message('  Created customize: custom-' + agentName + '.customize.yaml');
             }
           }
@@ -344,7 +344,7 @@ class CustomHandler {
         }
 
         // Only show compilation details in verbose mode
-        if (process.env.BMAD_VERBOSE_INSTALL === 'true') {
+        if (process.env.SKAD_VERBOSE_INSTALL === 'true') {
           await prompts.log.message('    Compiled agent: ' + agentName + ' -> ' + path.relative(targetAgentsPath, targetMdPath));
         }
       } catch (error) {

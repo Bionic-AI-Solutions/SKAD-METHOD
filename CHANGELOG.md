@@ -10,8 +10,8 @@ Production-hardened Ralph scripts based on learnings from the wa-agents project 
 
 ### Fixes
 
-* **Robust JSON block regex** — Changed `\s*\n\s*` to `[\s\S]*?` in ralph-bmad.sh, ralph-extract-task.js, and ralph-sprint-status.js so the Ralph Tasks JSON block is found regardless of extra blank lines or whitespace between the heading and the fenced code block
-* **Safe string replacement** — Changed `content.replace(jsonMatch[1], newJson)` to `content.replace(jsonMatch[1], () => newJson)` in ralph-bmad.sh auto-verify to prevent `$` characters in JSON from being misinterpreted as replacement patterns
+* **Robust JSON block regex** — Changed `\s*\n\s*` to `[\s\S]*?` in ralph-skad.sh, ralph-extract-task.js, and ralph-sprint-status.js so the Ralph Tasks JSON block is found regardless of extra blank lines or whitespace between the heading and the fenced code block
+* **Safe string replacement** — Changed `content.replace(jsonMatch[1], newJson)` to `content.replace(jsonMatch[1], () => newJson)` in ralph-skad.sh auto-verify to prevent `$` characters in JSON from being misinterpreted as replacement patterns
 * **Test task stall timeout** — Bumped `RALPH_STALL_TIMEOUT` to 300s for tasks with test/integration/unit in the title, giving the agent longer to read large test suites before the stall detector kills it
 * **Wall-clock timer reset per story** — In chain mode, `RUN_START` now resets after each story completes so every story gets a full wall-clock budget instead of sharing a single countdown
 * **Robust discover_next_story error handling** — Changed from `set -e` crash to `discover_next_story || DISCOVER_RESULT=$?` pattern so non-zero return codes (1 = all done, 2 = needs CS) are handled gracefully
@@ -19,10 +19,10 @@ Production-hardened Ralph scripts based on learnings from the wa-agents project 
 
 ### Files Changed
 
-* `scripts/ralph-bmad.sh` — regex, replacement safety, stall timeout, wall-clock reset, error handling
+* `scripts/ralph-skad.sh` — regex, replacement safety, stall timeout, wall-clock reset, error handling
 * `scripts/ralph-extract-task.js` — regex robustness
 * `scripts/ralph-sprint-status.js` — regex robustness
-* `src/bmm/workflows/4-implementation/dev-story/checklist.md` — integration test integrity item
+* `src/skm/workflows/4-implementation/dev-story/checklist.md` — integration test integrity item
 
 ---
 
@@ -44,7 +44,7 @@ Production-hardened Ralph scripts based on learnings from the wa-agents project 
 
 * **Workflow File Splitting** — Split monolithic `workflow.md` files into specific `workflow-*.md` files for individual workflow invocation (bd620e38)
 * **Installer Multi-Workflow Support** — Installer manifest generator now supports `workflow-*.md` pattern, allowing multiple workflow files per directory (731bee26)
-* **Internal Skill Renaming** — Renamed internal project skills to use `bmad-os-` prefix for consistent naming (5276d58b)
+* **Internal Skill Renaming** — Renamed internal project skills to use `skad-os-` prefix for consistent naming (5276d58b)
 
 ---
 
@@ -76,7 +76,7 @@ Production-hardened Ralph scripts based on learnings from the wa-agents project 
 ### ♻️ Refactoring
 
 * **Excalidraw/Flattener Removal** — Removed dead artifacts no longer supported beyond beta: Excalidraw workflows, flattener tool, and 12+ diagram creation workflows (-3,798 lines) (f699a368)
-* **Centralized Constants** — Centralized `BMAD_FOLDER_NAME` to reduce hardcoded strings (PR #1492)
+* **Centralized Constants** — Centralized `SKAD_FOLDER_NAME` to reduce hardcoded strings (PR #1492)
 * **Cross-Platform Paths** — Fixed path separator inconsistencies in agent IDs (PR #1492)
 
 ### 📚 Documentation
@@ -101,7 +101,7 @@ Production-hardened Ralph scripts based on learnings from the wa-agents project 
 ### 🐛 Bug Fixes
 
 * **Fix npm install peer dependency issues** — Add `.npmrc` with `legacy-peer-deps=true`, update Starlight to 0.37.5, and add `--legacy-peer-deps` flag to module installer (PR #1476)
-* **Fix leaked source paths in PRD validation report** — Replace absolute `/src/core/` paths with `{project-root}/_bmad/core/` (#1481)
+* **Fix leaked source paths in PRD validation report** — Replace absolute `/src/core/` paths with `{project-root}/_skad/core/` (#1481)
 * **Fix orphaned market research customer analysis** — Connect step-01-init to step-02-customer-behavior to complete workflow sharding (#1486)
 * **Fix duplicate 2-letter brainstorming code** — Change BS to BSP to resolve conflict with cis Brainstorming module
 * **Fix tech writer sidecar functionality** — Enable proper sidecar operation (#1487)
@@ -154,7 +154,7 @@ Production-hardened Ralph scripts based on learnings from the wa-agents project 
 
 ### 🐛 Bug Fixes
 
-- **Quick-flow workflow path fix** (#1368): Fixed incorrect workflow_path in bmad-quick-flow/quick-spec steps (step-01, step-02, step-03) - changed from non-existent 'create-tech-spec' to correct 'quick-spec'
+- **Quick-flow workflow path fix** (#1368): Fixed incorrect workflow_path in skad-quick-flow/quick-spec steps (step-01, step-02, step-03) - changed from non-existent 'create-tech-spec' to correct 'quick-spec'
 - **PRD edit flow paths**: Fixed path references in PRD editing workflow
 - **Agent file handling**: Changes to prevent double agent files and use .agent.md file extensions
 - **README link fix**: Corrected broken documentation links
@@ -172,19 +172,19 @@ Production-hardened Ralph scripts based on learnings from the wa-agents project 
 
 ### 🎉 Beta Release
 
-- **Transition from Alpha to Beta**: BMad Method is now in Beta! This marks a significant milestone in the framework's development
-- **NPM Default Tag**: Beta versions are now published with the `latest` tag, making `npx bmad-method` serve the beta version by default
+- **Transition from Alpha to Beta**: SKAD Method is now in Beta! This marks a significant milestone in the framework's development
+- **NPM Default Tag**: Beta versions are now published with the `latest` tag, making `npx skad-method` serve the beta version by default
 
 ### 🌟 Key Highlights
 
-1. **bmad-help**: Revolutionary AI-powered guidance system replaces the alpha workflow-init and workflow tracking — introduces full AI intelligence to guide users through workflows, commands, and project context
-2. **Module Ecosystem Expansion**: bmad-builder, CIS (Creative Intelligence Suite), and Game Dev Studio moved to separate repositories for focused development
-3. **Installer Consolidation**: Unified installer architecture with standardized command naming (`bmad-dash-case.md` or `bmad-*-agent-*.md`)
+1. **skad-help**: Revolutionary AI-powered guidance system replaces the alpha workflow-init and workflow tracking — introduces full AI intelligence to guide users through workflows, commands, and project context
+2. **Module Ecosystem Expansion**: skad-builder, CIS (Creative Intelligence Suite), and Game Dev Studio moved to separate repositories for focused development
+3. **Installer Consolidation**: Unified installer architecture with standardized command naming (`skad-dash-case.md` or `skad-*-agent-*.md`)
 4. **Windows Compatibility**: Complete migration from Inquirer.js to @clack/prompts for reliable cross-platform support
 
 ### 🚀 Major Features
 
-**bmad-help - Intelligent Guidance System:**
+**skad-help - Intelligent Guidance System:**
 
 - **Replaces**: workflow-init and legacy workflow tracking
 - **AI-Powered**: Full context awareness of installed modules, workflows, agents, and commands
@@ -196,9 +196,9 @@ Production-hardened Ralph scripts based on learnings from the wa-agents project 
 
 | Module                                | Status                                            | New Location                                            |
 | ------------------------------------- | ------------------------------------------------- | ------------------------------------------------------- |
-| **bmad-builder**                      | Near beta, with docs and walkthroughs coming soon | `bmad-code-org/bmad-builder`                            |
-| **CIS** (Creative Intelligence Suite) | Published as npm package                          | `bmad-code-org/bmad-module-creative-intelligence-suite` |
-| **Game Dev Studio**                   | Published as npm package                          | `bmad-code-org/bmad-module-game-dev-studio`             |
+| **skad-builder**                      | Near beta, with docs and walkthroughs coming soon | `skad-code-org/skad-builder`                            |
+| **CIS** (Creative Intelligence Suite) | Published as npm package                          | `skad-code-org/skad-module-creative-intelligence-suite` |
+| **Game Dev Studio**                   | Published as npm package                          | `skad-code-org/skad-module-game-dev-studio`             |
 
 ### 🔧 Installer & CLI Improvements
 
@@ -206,10 +206,10 @@ Production-hardened Ralph scripts based on learnings from the wa-agents project 
 
 - All IDE installers now use a common `UnifiedInstaller` class
 - Standardized command naming conventions:
-  - Workflows: `bmad-module-workflow-name.md`
-  - Agents: `bmad-module-agent-name.md`
-  - Tasks: `bmad-task-name.md`
-  - Tools: `bmad-tool-name.md`
+  - Workflows: `skad-module-workflow-name.md`
+  - Agents: `skad-module-agent-name.md`
+  - Tasks: `skad-task-name.md`
+  - Tools: `skad-tool-name.md`
 - External module installation from npm with progress indicators
 - Module removal on unselect with confirmation
 
@@ -226,7 +226,7 @@ Production-hardened Ralph scripts based on learnings from the wa-agents project 
 - TEA documentation restructured using Diátaxis framework (25 docs)
 - Style guide optimized for LLM readers (367 lines, down from 767)
 - Glossary rewritten using table format (123 lines, down from 373)
-- README overhaul with numbered command flows and prominent `/bmad-help` callout
+- README overhaul with numbered command flows and prominent `/skad-help` callout
 - New workflow map diagram with interactive HTML
 - New editorial review tasks for document quality
 - E2E testing methodology for Game Dev Studio
@@ -274,7 +274,7 @@ More documentation updates coming soon.
 - **Starlight Theme**: Professional documentation theme with dark mode default and responsive design
 - **Build Pipeline Overhaul**: New build-docs.js orchestrates link checking, artifact generation, and Astro build
 - **LLM-Friendly Documentation**: Generated llms.txt and llms-full.txt for AI agent discoverability
-- **Downloadable Source Bundles**: bmad-sources.zip and bmad-prompts.zip for offline use
+- **Downloadable Source Bundles**: skad-sources.zip and skad-prompts.zip for offline use
 
 **Diataxis Framework Implementation:**
 
@@ -289,7 +289,7 @@ More documentation updates coming soon.
 - **Site-Relative Links**: Converted 217 links to repo-relative format (/docs/path/file.md)
 - **Link Validation Tools**: New validate-doc-links.js and fix-doc-links.js for maintaining link integrity
 - **Broken Link Fixes**: Resolved ~50 broken internal links across documentation
-- **BMad Acronym Standardization**: Consistent use of "BMad" (Breakthrough Method of Agile AI Driven Development)
+- **SKAD Acronym Standardization**: Consistent use of "SKAD" (Self-Kinetic Agile Development)
 - **SEO Optimization**: Absolute URLs in AI meta tags for better web crawler discoverability
 
 ### 🔧 Workflow Creator & Validator (Major Feature)
@@ -346,8 +346,8 @@ More documentation updates coming soon.
 
 - **From Rules to Commands**: Complete refactor from rules-based to command-based system
 - **Command Generation**: Automatic generation of task and tool commands
-- **Commands Directory**: New `.cursor/commands/bmad/` structure for generated commands
-- **Cleanup Integration**: Automatic cleanup of old BMAD commands alongside rules
+- **Commands Directory**: New `.cursor/commands/skad/` structure for generated commands
+- **Cleanup Integration**: Automatic cleanup of old SKAD commands alongside rules
 - **Enhanced Logging**: Better feedback on agents, tasks, tools, and workflow commands generated
 
 ### 🤖 Agent System Improvements
@@ -373,7 +373,7 @@ More documentation updates coming soon.
 
 **Workflow & Variable Fixes:**
 
-- **Variable Naming**: Standardized from {project_root} to {project-root} across CIS, BMGD, and BMM modules
+- **Variable Naming**: Standardized from {project_root} to {project-root} across CIS, BMGD, and SKM modules
 - **Workflow References**: Fixed broken .yaml → .md workflow references
 - **Advanced Elicitation Variables**: Fixed undefined variables in brainstorming
 - **Dependency Format**: Corrected dependency format and added missing frontmatter
@@ -383,7 +383,7 @@ More documentation updates coming soon.
 - **Dependency Updates**: Bumped qs from 6.14.0 to 6.14.1
 - **CodeRabbit Integration**: Enabled auto-review on new PRs
 - **TEA Fragment Counts**: Updated fragment counts for accuracy
-- **Documentation Links**: Fixed Discord channel references (#general-dev → #bmad-development)
+- **Documentation Links**: Fixed Discord channel references (#general-dev → #skad-development)
 
 ### 🚀 Installation & CLI Improvements
 
@@ -416,7 +416,7 @@ More documentation updates coming soon.
 2. **Agent Knowledge System**: Comprehensive data file architecture with persona properties, validation patterns, and crafting principles
 3. **Deep Language Integration**: All sharded progressive workflows now support language choice at every step
 4. **Core Module Documentation**: Extensive docs for core workflows (brainstorming, party mode, advanced elicitation)
-5. **BMAD Core Concepts**: New documentation structure explaining agents, workflows, modules, and installation
+5. **SKAD Core Concepts**: New documentation structure explaining agents, workflows, modules, and installation
 6. **Tech Spec Sharded**: create-tech-spec workflow converted to sharded format with orient-first pattern
 
 ### 🤖 Unified Agent Workflow (Major Feature)
@@ -471,7 +471,7 @@ Located in `src/modules/bmb/workflows/agent/data/`:
   - Core workflows (brainstorming, party mode, advanced elicitation)
   - BMB workflows (create-agent, create-module, create-workflow, edit-workflow, etc.)
   - BMGD workflows (game-brief, gdd, narrative, game-architecture, etc.)
-  - BMM workflows (research, create-ux-design, prd, create-architecture, etc.)
+  - SKM workflows (research, create-ux-design, prd, create-architecture, etc.)
 - **Tested Languages**: Verified working with Spanish and Pirate Speak
 - **Natural Conversations**: AI agents respond in configured language throughout workflow
 
@@ -496,21 +496,21 @@ Located in `src/modules/bmb/workflows/agent/data/`:
 - **To**: `src/core/workflows/advanced-elicitation/`
 - **Status**: Now a proper core workflow with methods.csv
 
-### 📚 BMAD Core Concepts Documentation
+### 📚 SKAD Core Concepts Documentation
 
 **New Documentation Structure:**
 
-`docs/bmad-core-concepts/`:
+`docs/skad-core-concepts/`:
 
 - **index.md** - Core concepts introduction
-- **agents.md** (93 lines) - Understanding agents in BMAD
-- **workflows.md** (89 lines) - Understanding workflows in BMAD
-- **modules.md** (76 lines) - Understanding modules (BMM, BMGD, CIS, BMB, Core)
+- **agents.md** (93 lines) - Understanding agents in SKAD
+- **workflows.md** (89 lines) - Understanding workflows in SKAD
+- **modules.md** (76 lines) - Understanding modules (SKM, BMGD, CIS, BMB, Core)
 - **installing/index.md** (77 lines) - Installation guide
 - **installing/upgrading.md** (144 lines) - Upgrading guide
-- **bmad-customization/index.md** - Customization overview
-- **bmad-customization/agents.md** - Agent customization guide
-- **bmad-customization/workflows.md** (30 lines) - Workflow customization guide
+- **skad-customization/index.md** - Customization overview
+- **skad-customization/agents.md** - Agent customization guide
+- **skad-customization/workflows.md** (30 lines) - Workflow customization guide
 - **web-bundles/index.md** (34 lines) - Web bundle distribution guide
 
 **Documentation Cleanup:**
@@ -518,7 +518,7 @@ Located in `src/modules/bmb/workflows/agent/data/`:
 - **Removed v4-to-v6-upgrade.md** - Outdated upgrade guide
 - **Removed document-sharding-guide.md** from docs root (moved to core)
 - **Removed web-bundles-gemini-gpt-guide.md** - Consolidated into web-bundles/index.md
-- **Removed getting-started/installation.md** - Migrated to bmad-core-concepts
+- **Removed getting-started/installation.md** - Migrated to skad-core-concepts
 - **Removed all ide-info/*.md files** - Consolidated into web-bundles documentation
 
 ### 🔧 Create-Tech-Spec Sharded Conversion
@@ -540,7 +540,7 @@ Located in `src/modules/bmb/workflows/agent/data/`:
 
 - **BMB Agent Creation Guide**: Comprehensive 166-line guide for agent creation
 - **Workflow Vendoring Doc**: New 42-line guide on workflow customization and inheritance
-- **Document Project Reference**: Moved from BMM docs to shared location
+- **Document Project Reference**: Moved from SKM docs to shared location
 - **Workflows Planning Guide**: New 89-line guide for planning workflows
 
 **BMB Documentation Streamlining:**
@@ -555,8 +555,8 @@ Located in `src/modules/bmb/workflows/agent/data/`:
 
 **Code Quality:**
 
-- **Removed Old BMM README**: Consolidated module documentation
-- **Removed BMM Troubleshooting**: 661-line doc moved to shared location
+- **Removed Old SKM README**: Consolidated module documentation
+- **Removed SKM Troubleshooting**: 661-line doc moved to shared location
 - **Removed Enterprise Agentic Development**: 686-line doc consolidated
 - **Removed Scale Adaptive System**: 618-line doc consolidated
 
@@ -578,18 +578,18 @@ Located in `src/modules/bmb/workflows/agent/data/`:
 
 **Standardized 2-Letter Codes:**
 
-- **Compound Menu Triggers**: All agents now use consistent 2-letter compound trigger format (e.g., `bmm-rd`, `bmm-ca`)
+- **Compound Menu Triggers**: All agents now use consistent 2-letter compound trigger format (e.g., `skm-rd`, `skm-ca`)
 - **Improved UX**: Shorter, more memorable command shortcuts across all modules
-- **Module Prefixing**: Menu items properly scoped by module prefix (bmm-, bmgd-, cis-, bmb-)
+- **Module Prefixing**: Menu items properly scoped by module prefix (skm-, bmgd-, cis-, bmb-)
 - **Universal Pattern**: All 22 agents updated to follow the same menu structure
 
 **Agent Updates:**
 
-- **BMM Module**: 9 agents with standardized menus (pm, analyst, architect, dev, ux-designer, tech-writer, sm, tea, quick-flow-solo-dev)
+- **SKM Module**: 9 agents with standardized menus (pm, analyst, architect, dev, ux-designer, tech-writer, sm, tea, quick-flow-solo-dev)
 - **BMGD Module**: 6 agents with standardized menus (game-architect, game-designer, game-dev, game-qa, game-scrum-master, game-solo-dev)
 - **CIS Module**: 6 agents with standardized menus (innovation-strategist, design-thinking-coach, creative-problem-solver, brainstorming-coach, presentation-master, storyteller)
-- **BMB Module**: 3 agents with standardized menus (bmad-builder, agent-builder, module-builder, workflow-builder)
-- **Core Module**: BMAD Master agent updated with consistent menu patterns
+- **BMB Module**: 3 agents with standardized menus (skad-builder, agent-builder, module-builder, workflow-builder)
+- **Core Module**: SKAD Master agent updated with consistent menu patterns
 
 ### 📁 Planning Artifacts Architecture
 
@@ -610,7 +610,7 @@ Located in `src/modules/bmb/workflows/agent/data/`:
 
 - **Planning Artifacts**: Ephemeral planning documents (prd.md, product-brief.md, ux-design.md, architecture.md)
 - **Documentation**: Long-term project documentation (separate from planning)
-- **Module Configuration**: BMM and BMGD modules updated with proper default paths
+- **Module Configuration**: SKM and BMGD modules updated with proper default paths
 
 ### 🪟 Windows Installer Fixes
 
@@ -647,7 +647,7 @@ Located in `src/modules/bmb/workflows/agent/data/`:
 
 - **Schema Improvements**: Enhanced agent schema validation with better error messages
 - **Removed Redundancy**: Cleaned up duplicate and obsolete agent definitions
-- **Installer Cleanup**: Removed unused configuration code from BMM installer
+- **Installer Cleanup**: Removed unused configuration code from SKM installer
 
 **Planning Artifacts Path:**
 - Default: `planning_artifacts/` (configurable in module.yaml)
@@ -682,7 +682,7 @@ Located in `src/modules/bmb/workflows/agent/data/`:
 
 **Revolutionary Content Organization:**
 
-- **Phase 1-4 Path Segregation**: Implemented new BM paths across all BMM and BMGD workflows
+- **Phase 1-4 Path Segregation**: Implemented new BM paths across all SKM and BMGD workflows
 - **Planning vs Implementation Artifacts**: Separated ephemeral Phase 4 artifacts from permanent documentation
 - **Optimized File Organization**: Better structure differentiating planning artifacts from long-term project documentation
 - **Backward Compatible**: Existing installations continue working while preparing for optimized content organization
@@ -789,7 +789,7 @@ Located in `src/modules/bmb/workflows/agent/data/`:
 
 **Installer Stability:**
 
-- **Fixed \_bmad Folder Stutter**: Resolved issue with duplicate \_bmad folder creation when applying agent custom files
+- **Fixed \_skad Folder Stutter**: Resolved issue with duplicate \_skad folder creation when applying agent custom files
 - **Cleaner Installation**: Removed unnecessary backup file that was causing bloat in the installer
 - **Streamlined Agent Customization**: Fixed path handling for agent custom files to prevent folder duplication
 
@@ -818,7 +818,7 @@ Located in `src/modules/bmb/workflows/agent/data/`:
   - Quick-flow workflows optimized for solo/small team development
   - Streamlined development process for indie game creators
 
-- **Production Workflow Alignment**: BMGD 4-production now fully aligned with BMM 4-implementation
+- **Production Workflow Alignment**: BMGD 4-production now fully aligned with SKM 4-implementation
   - Removed obsolete workflows: story-done, story-ready, story-context, epic-tech-context
   - Added sprint-status workflow for project tracking
   - All workflows updated as standalone with proper XML instructions
@@ -886,7 +886,7 @@ Located in `src/modules/bmb/workflows/agent/data/`:
 - **28,350+ lines added** across testing documentation and workflows
 - **2 new agents** added to BMGD module
 - **15 comprehensive testing guides** created
-- **Complete alignment** between BMGD and BMM production workflows
+- **Complete alignment** between BMGD and SKM production workflows
 
 ### 🌟 Key Highlights
 
@@ -924,14 +924,14 @@ Located in `src/modules/bmb/workflows/agent/data/`:
 
 **Breaking Through Dot-Folder Limitations:**
 
-- **Dot-Folder to Underscore Migration**: Critical change from `.bmad` to `_bmad` ensures LLMs (Codex, Claude, and others) can no longer ignore or skip BMAD content - dot folders are commonly filtered out by AI systems
-- **Universal Content Visibility**: Underscore folders are treated as regular content, ensuring full AI agent access to all BMAD resources and configurations
+- **Dot-Folder to Underscore Migration**: Critical change from `.skad` to `_skad` ensures LLMs (Codex, Claude, and others) can no longer ignore or skip SKAD content - dot folders are commonly filtered out by AI systems
+- **Universal Content Visibility**: Underscore folders are treated as regular content, ensuring full AI agent access to all SKAD resources and configurations
 - **Agent Memory Architecture**: Rolled out comprehensive agent memory support for installed agents with `-sidecar` folders
-- **Persistent Agent Learning**: Sidecar content installs to `_bmad/_memory`, giving each agent the ability to learn and remember important information specific to its role
+- **Persistent Agent Learning**: Sidecar content installs to `_skad/_memory`, giving each agent the ability to learn and remember important information specific to its role
 
 **Content Location Strategy:**
 
-- **Standardized Memory Location**: All sidecar content now uses `_bmad/_memory` as the unified location for agent memories
+- **Standardized Memory Location**: All sidecar content now uses `_skad/_memory` as the unified location for agent memories
 - **Segregated Output System**: New architecture supports differentiating between ephemeral Phase 4 artifacts and long-term documentation
 - **Forward Compatibility**: Existing installations continue working with content in docs folder, with optimization coming in next release
 - **Configuration Cleanup**: Renamed `_cfg` to `_config` for clearer naming conventions
@@ -944,7 +944,7 @@ Located in `src/modules/bmb/workflows/agent/data/`:
 - **Phase 4 Artifact Segregation**: Infrastructure ready for separating ephemeral workflow artifacts from permanent documentation
 - **Planning vs Implementation Docs**: New system will differentiate between planning artifacts and long-term project documentation
 - **Backward Compatibility**: Current installs maintain full functionality while preparing for optimized content organization
-- **Quick Update Path**: Tomorrow's quick update will fully optimize all BMM workflows to use new segregated output locations
+- **Quick Update Path**: Tomorrow's quick update will fully optimize all SKM workflows to use new segregated output locations
 
 ### 🎯 Sample Modules & Documentation
 
@@ -970,7 +970,7 @@ Located in `src/modules/bmb/workflows/agent/data/`:
 - **Removed Unused Code**: Cleaned up deprecated and unused functionality
 - **Release Workflow Restoration**: Fixed automated release workflow for v6
 
-**BMM Phase 4 Workflow Improvements:**
+**SKM Phase 4 Workflow Improvements:**
 
 - **Sprint Status Enhancement**: Improved sprint-status validation with interactive correction for unknown values and better epic status handling
 - **Story Status Standardization**: Normalized all story status references to lowercase kebab-case (ready-for-dev, in-progress, review, done)
@@ -989,8 +989,8 @@ Located in `src/modules/bmb/workflows/agent/data/`:
 
 1. **Installer Revolution**: The installation system has been completely overhauled for better user experience, reliability, and speed
 2. **Custom Content Freedom**: Users can now easily create, share, and install custom content through the streamlined installer
-3. **AI Visibility Breakthrough**: Migration from `.bmad` to `_bmad` ensures LLMs can access all BMAD content (dot folders are commonly ignored by AI systems)
-4. **Agent Memory System**: Rolled out persistent agent memory support - agents with `-sidecar` folders can now learn and remember important information in `_bmad/_memory`
+3. **AI Visibility Breakthrough**: Migration from `.skad` to `_skad` ensures LLMs can access all SKAD content (dot folders are commonly ignored by AI systems)
+4. **Agent Memory System**: Rolled out persistent agent memory support - agents with `-sidecar` folders can now learn and remember important information in `_skad/_memory`
 5. **Quick Default Selection**: Installation is now faster with smart default selections for popular configurations
 6. **Future-Ready Architecture**: Infrastructure in place for segregating ephemeral artifacts from permanent documentation (full optimization coming in next release)
 
@@ -1066,8 +1066,8 @@ Located in `src/modules/bmb/workflows/agent/data/`:
 
 **Memory Management:**
 
-- **Removed Hardcoded .bmad Folders**: Cleaned up demo content to use configurable paths
-- **Sidecar File Cleanup**: Removed old .bmad-user-memory folders from wellness modules
+- **Removed Hardcoded .skad Folders**: Cleaned up demo content to use configurable paths
+- **Sidecar File Cleanup**: Removed old .skad-user-memory folders from wellness modules
 - **Example Content Organization**: Better organization of example-custom-content directory
 
 **Installer Improvements:**
@@ -1128,10 +1128,10 @@ Located in `src/modules/bmb/workflows/agent/data/`:
 
 - **11-Step Module Creation**: Comprehensive step-by-step module generation process
 - **Production-Ready Templates**: Complete templates for agents, installers, and workflow plans
-- **Built-in Validation System**: Ensures module quality and BMad Core compliance
+- **Built-in Validation System**: Ensures module quality and SKAD Core compliance
 - **Professional Documentation**: Auto-generated module documentation and structure
 
-### 🚀 BMad Method (BMM) Enhancements
+### 🚀 SKAD Method (SKM) Enhancements
 
 **Workflow Improvements:**
 
@@ -1151,7 +1151,7 @@ Located in `src/modules/bmb/workflows/agent/data/`:
 **Kiro-Cli Installer:**
 
 - **Intelligent Routing**: Smart routing to quick-dev workflow
-- **BMad Core Compliance**: Full compliance with BMad standards
+- **SKAD Core Compliance**: Full compliance with SKAD standards
 
 **Discord Notifications:**
 
@@ -1224,7 +1224,7 @@ Located in `src/modules/bmb/workflows/agent/data/`:
 
 ### 🐛 Bug Fixes
 
-- Added missing `yaml` dependency to fix `MODULE_NOT_FOUND` error when running `npx bmad-method install`
+- Added missing `yaml` dependency to fix `MODULE_NOT_FOUND` error when running `npx skad-method install`
 
 ## [6.0.0-alpha.11]
 
@@ -1232,7 +1232,7 @@ Located in `src/modules/bmb/workflows/agent/data/`:
 
 ### 🚀 Agent Installation Revolution
 
-- **bmad agent-install CLI**: Interactive agent installation with persona customization
+- **skad agent-install CLI**: Interactive agent installation with persona customization
 - **4 Reference Agents**: commit-poet, journal-keeper, security-engineer, trend-analyst
 - **Agent Compilation Engine**: YAML → XML with smart handler injection
 - **60 Communication Presets**: Pure communication styles for agent personas
@@ -1242,7 +1242,7 @@ Located in `src/modules/bmb/workflows/agent/data/`:
 - **Complete Documentation Suite**: 7 new guides for agent architecture and creation
 - **Expert Agent Sidecar Support**: Multi-file agents with templates and knowledge bases
 - **Unified Validation**: 160-line checklist shared across workflows
-- **BMM Agent Voices**: All 9 agents enhanced with distinct communication styles
+- **SKM Agent Voices**: All 9 agents enhanced with distinct communication styles
 
 ### 🎯 Workflow Architecture Change
 
@@ -1253,7 +1253,7 @@ Located in `src/modules/bmb/workflows/agent/data/`:
 ### ⚠️ Breaking Changes
 
 1. **Frame Expert Retired**: Use role-appropriate agents for diagrams
-2. **Agent Installation**: New bmad agent-install command replaces manual installation
+2. **Agent Installation**: New skad agent-install command replaces manual installation
 3. **Epic Creation Phase**: Moved from Phase 2 to Phase 3
 
 ## [6.0.0-alpha.10]
@@ -1274,17 +1274,17 @@ Located in `src/modules/bmb/workflows/agent/data/`:
 - **3-Track System**: Simplified from 5 levels to 3 intuitive tracks
 - **Web Bundles Guide**: Comprehensive documentation with 60-80% cost savings strategies
 - **Unified Output Structure**: Eliminated .ephemeral/ folders - single configurable output folder
-- **BMGD Phase 4**: Added 10 game development workflows with BMM patterns
+- **BMGD Phase 4**: Added 10 game development workflows with SKM patterns
 
 ## [6.0.0-alpha.8]
 
 **Release: November 9, 2025**
 
-- **Configurable Installation**: Custom directories with .bmad hidden folder default
+- **Configurable Installation**: Custom directories with .skad hidden folder default
 - **Optimized Agent Loading**: CLI loads from installed files, eliminating duplication
 - **Party Mode Everywhere**: All web bundles include multi-agent collaboration
 - **Phase 4 Artifact Separation**: Stories, code reviews, sprint plans configurable outside docs
-- **Expanded Web Bundles**: All BMM, BMGD, CIS agents bundled with elicitation integration
+- **Expanded Web Bundles**: All SKM, BMGD, CIS agents bundled with elicitation integration
 
 ## [6.0.0-alpha.7]
 
@@ -1320,7 +1320,7 @@ Located in `src/modules/bmb/workflows/agent/data/`:
 **Release: November 2, 2025**
 
 - **Documentation Hub**: Created 18 comprehensive guides (7000+ lines) with professional standards
-- **Paige Agent**: New technical documentation specialist across all BMM phases
+- **Paige Agent**: New technical documentation specialist across all SKM phases
 - **Quick Spec Flow**: Intelligent Level 0-1 planning with auto-stack detection
 - **Universal Shard-Doc**: Split large markdown documents with dual-strategy loading
 - **Intent-Driven Planning**: PRD and Product Brief transformed from template-filling to conversation
@@ -1337,13 +1337,13 @@ Located in `src/modules/bmb/workflows/agent/data/`:
 
 **Release: September 28, 2025**
 
-- **Lean Core**: Simple common tasks and agents (bmad-web-orchestrator, bmad-master)
-- **BMad Method (BMM)**: Complete scale-adaptive rewrite supporting projects from small enhancements to massive undertakings
-- **BoMB**: BMad Builder for creating and converting modules, workflows, and agents
+- **Lean Core**: Simple common tasks and agents (skad-web-orchestrator, skad-master)
+- **SKAD Method (SKM)**: Complete scale-adaptive rewrite supporting projects from small enhancements to massive undertakings
+- **BoMB**: SKAD Builder for creating and converting modules, workflows, and agents
 - **CIS**: Creative Intelligence Suite for ideation and creative workflows
 - **Game Development**: Full subclass of game-specific development patterns**Note**: Version 5.0.0 was skipped due to NPX registry issues that corrupted the version. Development continues with v6.0.0-alpha.0.
 
-## [v4.43.0](https://github.com/bmad-code-org/BMAD-METHOD/releases/tag/v4.43.0)
+## [v4.43.0](https://github.com/skad-code-org/SKAD-METHOD/releases/tag/v4.43.0)
 
 **Release: August-September 2025 (v4.31.0 - v4.43.1)**
 
@@ -1366,7 +1366,7 @@ Focus on stability, ecosystem growth, and professional tooling.
 
 - **AGENTS.md Generation**: Auto-generated agent documentation
 - **NPM Script Injection**: Automatic package.json updates
-- **File Exclusion**: `.bmad-flattenignore` support for flattener
+- **File Exclusion**: `.skad-flattenignore` support for flattener
 - **JSON-only Integration**: Compact integration mode
 
 ### Quality & Stability
@@ -1374,7 +1374,7 @@ Focus on stability, ecosystem growth, and professional tooling.
 - **PR Validation Workflow**: Automated contribution checks
 - **Fork-Friendly CI/CD**: Opt-in mechanism for forks
 - **Code Formatting**: Prettier integration with pre-commit hooks
-- **Update Checker**: `npx bmad-method update-check` command
+- **Update Checker**: `npx skad-method update-check` command
 
 ### Flattener Improvements
 
@@ -1397,9 +1397,9 @@ Focus on stability, ecosystem growth, and professional tooling.
 - Automatic release notes generation
 - Changelog file path configuration
 
-[View v4.43.1 tag](https://github.com/bmad-code-org/BMAD-METHOD/tree/v4.43.1)
+[View v4.43.1 tag](https://github.com/skad-code-org/SKAD-METHOD/tree/v4.43.1)
 
-## [v4.30.0](https://github.com/bmad-code-org/BMAD-METHOD/releases/tag/v4.30.0)
+## [v4.30.0](https://github.com/skad-code-org/SKAD-METHOD/releases/tag/v4.30.0)
 
 **Release: July 2025 (v4.21.0 - v4.30.4)**
 
@@ -1409,12 +1409,12 @@ Introduction of advanced IDE integrations and command systems.
 
 - **Slash Commands**: Native Claude Code slash command support for agents
 - **Task Commands**: Direct task invocation via slash commands
-- **BMad Subdirectory**: Organized command structure
+- **SKAD Subdirectory**: Organized command structure
 - **Nested Organization**: Clean command hierarchy
 
 ### Agent Enhancements
 
-- BMad-master knowledge base loading
+- SKAD-master knowledge base loading
 - Improved brainstorming facilitation
 - Better agent task following with cost-saving model combinations
 - Direct commands in agent definitions
@@ -1438,9 +1438,9 @@ Introduction of advanced IDE integrations and command systems.
 - Improved expansion pack documentation
 - Better isolated expansion pack installations
 
-[View v4.30.4 tag](https://github.com/bmad-code-org/BMAD-METHOD/tree/v4.30.4)
+[View v4.30.4 tag](https://github.com/skad-code-org/SKAD-METHOD/tree/v4.30.4)
 
-## [v4.20.0](https://github.com/bmad-code-org/BMAD-METHOD/releases/tag/v4.20.0)
+## [v4.20.0](https://github.com/skad-code-org/SKAD-METHOD/releases/tag/v4.20.0)
 
 **Release: June 2025 (v4.11.0 - v4.20.0)**
 
@@ -1480,13 +1480,13 @@ Major focus on documentation quality and expanding QA agent capabilities.
 - Common files moved to shared locations
 - Hardcoded dependencies removed from installer
 
-[View v4.20.0 tag](https://github.com/bmad-code-org/BMAD-METHOD/tree/v4.20.0)
+[View v4.20.0 tag](https://github.com/skad-code-org/SKAD-METHOD/tree/v4.20.0)
 
-## [v4.10.0](https://github.com/bmad-code-org/BMAD-METHOD/releases/tag/v4.10.0)
+## [v4.10.0](https://github.com/skad-code-org/SKAD-METHOD/releases/tag/v4.10.0)
 
 **Release: June 2025 (v4.3.0 - v4.10.3)**
 
-This release focused on making BMAD more configurable and adaptable to different project structures.
+This release focused on making SKAD more configurable and adaptable to different project structures.
 
 ### Configuration System
 
@@ -1516,18 +1516,18 @@ This release focused on making BMAD more configurable and adaptable to different
 - Bundle build improvements
 - Template formatting fixes
 
-[View v4.10.3 tag](https://github.com/bmad-code-org/BMAD-METHOD/tree/v4.10.3)
+[View v4.10.3 tag](https://github.com/skad-code-org/SKAD-METHOD/tree/v4.10.3)
 
-## [v4.0.0](https://github.com/bmad-code-org/BMAD-METHOD/releases/tag/v4.0.0)
+## [v4.0.0](https://github.com/skad-code-org/SKAD-METHOD/releases/tag/v4.0.0)
 
 **Release: June 20, 2025 (v4.0.0 - v4.2.0)**
 
-Version 4 represented a complete architectural overhaul, transforming BMAD from a collection of prompts into a professional, distributable framework.
+Version 4 represented a complete architectural overhaul, transforming SKAD from a collection of prompts into a professional, distributable framework.
 
 ### Framework Transformation
 
-- **NPM Package**: Professional distribution and simple installation via `npx bmad-method install`
-- **Modular Architecture**: Move to `.bmad-core` hidden folder structure
+- **NPM Package**: Professional distribution and simple installation via `npx skad-method install`
+- **Modular Architecture**: Move to `.skad-core` hidden folder structure
 - **Multi-IDE Support**: Unified support for Claude Code, Cursor, Roo, Windsurf, and many more
 - **Schema Standardization**: YAML-based agent and team definitions
 - **Automated Installation**: One-command setup with upgrade detection
@@ -1554,9 +1554,9 @@ Version 4 represented a complete architectural overhaul, transforming BMAD from 
 - VSCode settings and markdown linting
 - Comprehensive documentation restructure
 
-[View v4.2.0 tag](https://github.com/bmad-code-org/BMAD-METHOD/tree/v4.2.0)
+[View v4.2.0 tag](https://github.com/skad-code-org/SKAD-METHOD/tree/v4.2.0)
 
-## [v3.0.0](https://github.com/bmad-code-org/BMAD-METHOD/releases/tag/v3.0.0)
+## [v3.0.0](https://github.com/skad-code-org/SKAD-METHOD/releases/tag/v3.0.0)
 
 **Release: May 20, 2025**
 
@@ -1564,7 +1564,7 @@ Version 3 introduced the revolutionary orchestrator concept, creating a unified 
 
 ### Major Features
 
-- **BMad Orchestrator**: Uber-agent that orchestrates all specialized agents
+- **SKAD Orchestrator**: Uber-agent that orchestrates all specialized agents
 - **Web-First Approach**: Streamlined web setup with pre-compiled agent bundles
 - **Simplified Onboarding**: Complete setup in minutes with clear quick-start guide
 - **Build System**: Scripts to compile web agents from modular components
@@ -1583,9 +1583,9 @@ Version 3 introduced the revolutionary orchestrator concept, creating a unified 
 - Integrated method explanation within the agent itself
 - Cross-platform consistency (Gemini Gems, Custom GPTs)
 
-[View V3 Branch](https://github.com/bmad-code-org/BMAD-METHOD/tree/V3)
+[View V3 Branch](https://github.com/skad-code-org/SKAD-METHOD/tree/V3)
 
-## [v2.0.0](https://github.com/bmad-code-org/BMAD-METHOD/releases/tag/v2.0.0)
+## [v2.0.0](https://github.com/skad-code-org/SKAD-METHOD/releases/tag/v2.0.0)
 
 **Release: April 17, 2025**
 
@@ -1612,13 +1612,13 @@ Version 2 addressed the major shortcomings of V1 by introducing separation of co
 - Manual export/import workflow between agents
 - Creating each web agent separately was tedious
 
-[View V2 Branch](https://github.com/bmad-code-org/BMAD-METHOD/tree/V2)
+[View V2 Branch](https://github.com/skad-code-org/SKAD-METHOD/tree/V2)
 
-## [v1.0.0](https://github.com/bmad-code-org/BMAD-METHOD/releases/tag/v1.0.0)
+## [v1.0.0](https://github.com/skad-code-org/SKAD-METHOD/releases/tag/v1.0.0)
 
 **Initial Release: April 6, 2025**
 
-The original BMAD Method was a tech demo showcasing how different custom agile personas could be used to build out artifacts for planning and executing complex applications from scratch. This initial version established the foundation of the AI-driven agile development approach.
+The original SKAD Method was a tech demo showcasing how different custom agile personas could be used to build out artifacts for planning and executing complex applications from scratch. This initial version established the foundation of the AI-driven agile development approach.
 
 ### Key Features
 
@@ -1635,12 +1635,12 @@ The original BMAD Method was a tech demo showcasing how different custom agile p
 - Rigid scope and purpose with templates coupled to agents
 - Not optimized for IDE integration
 
-[View V1 Branch](https://github.com/bmad-code-org/BMAD-METHOD/tree/V1)
+[View V1 Branch](https://github.com/skad-code-org/SKAD-METHOD/tree/V1)
 
 ## Installation
 
 ```bash
-npx bmad-method
+npx skad-method
 ```
 
-For detailed release notes, see the [GitHub releases page](https://github.com/bmad-code-org/BMAD-METHOD/releases).
+For detailed release notes, see the [GitHub releases page](https://github.com/skad-code-org/SKAD-METHOD/releases).

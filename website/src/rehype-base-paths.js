@@ -2,8 +2,8 @@
  * Rehype plugin to prepend base path to absolute URLs
  *
  * Transforms:
- *   /img/foo.png → /BMAD-METHOD/img/foo.png (when base is /BMAD-METHOD/)
- *   /llms.txt → /BMAD-METHOD/llms.txt
+ *   /img/foo.png → /SKAD-METHOD/img/foo.png (when base is /SKAD-METHOD/)
+ *   /llms.txt → /SKAD-METHOD/llms.txt
  *
  * Supported elements:
  *   - img[src], iframe[src], video[src], source[src], audio[src]
@@ -19,14 +19,14 @@ import { visit } from 'unist-util-visit';
  * Create a rehype plugin that prepends the base path to absolute URLs.
  *
  * @param {Object} options - Plugin options
- * @param {string} options.base - The base path to prepend (e.g., '/BMAD-METHOD/')
+ * @param {string} options.base - The base path to prepend (e.g., '/SKAD-METHOD/')
  * @returns {function} A HAST tree transformer
  */
 export default function rehypeBasePaths(options = {}) {
   const base = options.base || '/';
 
   // Normalize base: ensure trailing slash so concatenation with path.slice(1) (no leading /)
-  // produces correct paths like /BMAD-METHOD/img/foo.png.
+  // produces correct paths like /SKAD-METHOD/img/foo.png.
   // Note: rehype-markdown-links uses the opposite convention (strips trailing slash) because
   // it concatenates with paths that start with /.
   const normalizedBase = base === '/' ? '/' : base.endsWith('/') ? base : base + '/';

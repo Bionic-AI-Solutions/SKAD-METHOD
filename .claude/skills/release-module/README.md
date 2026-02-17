@@ -6,7 +6,7 @@ Automates the complete release process for npm modules.
 
 Run from project root or pass project path:
 ```
-bmad-utility-skills:release-module
+skad-utility-skills:release-module
 ```
 
 ## Prerequisite

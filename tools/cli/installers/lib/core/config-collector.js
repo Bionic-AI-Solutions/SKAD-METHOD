@@ -13,16 +13,16 @@ class ConfigCollector {
   }
 
   /**
-   * Find the bmad installation directory in a project
+   * Find the skad installation directory in a project
    * V6+ installations can use ANY folder name but ALWAYS have _config/manifest.yaml
    * @param {string} projectDir - Project directory
-   * @returns {Promise<string>} Path to bmad directory
+   * @returns {Promise<string>} Path to skad directory
    */
-  async findBmadDir(projectDir) {
+  async findSkadDir(projectDir) {
     // Check if project directory exists
     if (!(await fs.pathExists(projectDir))) {
       // Project doesn't exist yet, return default
-      return path.join(projectDir, 'bmad');
+      return path.join(projectDir, 'skad');
     }
 
     // V6+ strategy: Look for ANY directory with _config/manifest.yaml
@@ -44,15 +44,15 @@ class ConfigCollector {
 
     // No V6+ installation found, return default
     // This will be used for new installations
-    return path.join(projectDir, 'bmad');
+    return path.join(projectDir, 'skad');
   }
 
   /**
-   * Detect the existing BMAD folder name in a project
+   * Detect the existing SKAD folder name in a project
    * @param {string} projectDir - Project directory
    * @returns {Promise<string|null>} Folder name (just the name, not full path) or null if not found
    */
-  async detectExistingBmadFolder(projectDir) {
+  async detectExistingSkadFolder(projectDir) {
     // Check if project directory exists
     if (!(await fs.pathExists(projectDir))) {
       return null;
@@ -89,18 +89,18 @@ class ConfigCollector {
       return false;
     }
 
-    // Find the actual bmad directory (handles custom folder names)
-    const bmadDir = await this.findBmadDir(projectDir);
+    // Find the actual skad directory (handles custom folder names)
+    const skadDir = await this.findSkadDir(projectDir);
 
-    // Check if bmad directory exists
-    if (!(await fs.pathExists(bmadDir))) {
+    // Check if skad directory exists
+    if (!(await fs.pathExists(skadDir))) {
       return false;
     }
 
-    // Dynamically discover all installed modules by scanning bmad directory
+    // Dynamically discover all installed modules by scanning skad directory
     // A directory is a module ONLY if it contains a config.yaml file
     let foundAny = false;
-    const entries = await fs.readdir(bmadDir, { withFileTypes: true });
+    const entries = await fs.readdir(skadDir, { withFileTypes: true });
 
     for (const entry of entries) {
       if (entry.isDirectory()) {
@@ -109,7 +109,7 @@ class ConfigCollector {
           continue;
         }
 
-        const moduleConfigPath = path.join(bmadDir, entry.name, 'config.yaml');
+        const moduleConfigPath = path.join(skadDir, entry.name, 'config.yaml');
 
         if (await fs.pathExists(moduleConfigPath)) {
           try {
@@ -466,7 +466,7 @@ class ConfigCollector {
    * @returns {string} Capitalized username\
    */
   getDefaultUsername() {
-    let result = 'BMad';
+    let result = 'SKAD';
     try {
       const os = require('node:os');
       const userInfo = os.userInfo();
@@ -475,7 +475,7 @@ class ConfigCollector {
         result = username.charAt(0).toUpperCase() + username.slice(1);
       }
     } catch {
-      // Do nothing, just return 'BMad'
+      // Do nothing, just return 'SKAD'
     }
     return result;
   }

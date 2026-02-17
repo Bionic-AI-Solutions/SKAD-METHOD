@@ -9,7 +9,7 @@ const { TaskToolCommandGenerator } = require('./shared/task-tool-command-generat
 /**
  * Config-driven IDE setup handler
  *
- * This class provides a standardized way to install BMAD artifacts to IDEs
+ * This class provides a standardized way to install SKAD artifacts to IDEs
  * based on configuration in platform-codes.yaml. It eliminates the need for
  * individual installer files for each IDE.
  *
@@ -29,14 +29,14 @@ class ConfigDrivenIdeSetup extends BaseIdeSetup {
   /**
    * Main setup method - called by IdeManager
    * @param {string} projectDir - Project directory
-   * @param {string} bmadDir - BMAD installation directory
+   * @param {string} skadDir - SKAD installation directory
    * @param {Object} options - Setup options
    * @returns {Promise<Object>} Setup result
    */
-  async setup(projectDir, bmadDir, options = {}) {
+  async setup(projectDir, skadDir, options = {}) {
     if (!options.silent) await prompts.log.info(`Setting up ${this.name}...`);
 
-    // Clean up any old BMAD installation first
+    // Clean up any old SKAD installation first
     await this.cleanup(projectDir, options);
 
     if (!this.installerConfig) {
@@ -45,12 +45,12 @@ class ConfigDrivenIdeSetup extends BaseIdeSetup {
 
     // Handle multi-target installations (e.g., GitHub Copilot)
     if (this.installerConfig.targets) {
-      return this.installToMultipleTargets(projectDir, bmadDir, this.installerConfig.targets, options);
+      return this.installToMultipleTargets(projectDir, skadDir, this.installerConfig.targets, options);
     }
 
     // Handle single-target installations
     if (this.installerConfig.target_dir) {
-      return this.installToTarget(projectDir, bmadDir, this.installerConfig, options);
+      return this.installToTarget(projectDir, skadDir, this.installerConfig, options);
     }
 
     return { success: false, reason: 'invalid-config' };
@@ -59,12 +59,12 @@ class ConfigDrivenIdeSetup extends BaseIdeSetup {
   /**
    * Install to a single target directory
    * @param {string} projectDir - Project directory
-   * @param {string} bmadDir - BMAD installation directory
+   * @param {string} skadDir - SKAD installation directory
    * @param {Object} config - Installation configuration
    * @param {Object} options - Setup options
    * @returns {Promise<Object>} Installation result
    */
-  async installToTarget(projectDir, bmadDir, config, options) {
+  async installToTarget(projectDir, skadDir, config, options) {
     const { target_dir, template_type, artifact_types } = config;
 
     // Skip targets with explicitly empty artifact_types array
@@ -81,22 +81,22 @@ class ConfigDrivenIdeSetup extends BaseIdeSetup {
 
     // Install agents
     if (!artifact_types || artifact_types.includes('agents')) {
-      const agentGen = new AgentCommandGenerator(this.bmadFolderName);
-      const { artifacts } = await agentGen.collectAgentArtifacts(bmadDir, selectedModules);
+      const agentGen = new AgentCommandGenerator(this.skadFolderName);
+      const { artifacts } = await agentGen.collectAgentArtifacts(skadDir, selectedModules);
       results.agents = await this.writeAgentArtifacts(targetPath, artifacts, template_type, config);
     }
 
     // Install workflows
     if (!artifact_types || artifact_types.includes('workflows')) {
-      const workflowGen = new WorkflowCommandGenerator(this.bmadFolderName);
-      const { artifacts } = await workflowGen.collectWorkflowArtifacts(bmadDir);
+      const workflowGen = new WorkflowCommandGenerator(this.skadFolderName);
+      const { artifacts } = await workflowGen.collectWorkflowArtifacts(skadDir);
       results.workflows = await this.writeWorkflowArtifacts(targetPath, artifacts, template_type, config);
     }
 
     // Install tasks and tools using template system (supports TOML for Gemini, MD for others)
     if (!artifact_types || artifact_types.includes('tasks') || artifact_types.includes('tools')) {
-      const taskToolGen = new TaskToolCommandGenerator(this.bmadFolderName);
-      const { artifacts } = await taskToolGen.collectTaskToolArtifacts(bmadDir);
+      const taskToolGen = new TaskToolCommandGenerator(this.skadFolderName);
+      const { artifacts } = await taskToolGen.collectTaskToolArtifacts(skadDir);
       const taskToolResult = await this.writeTaskToolArtifacts(targetPath, artifacts, template_type, config);
       results.tasks = taskToolResult.tasks || 0;
       results.tools = taskToolResult.tools || 0;
@@ -109,16 +109,16 @@ class ConfigDrivenIdeSetup extends BaseIdeSetup {
   /**
    * Install to multiple target directories
    * @param {string} projectDir - Project directory
-   * @param {string} bmadDir - BMAD installation directory
+   * @param {string} skadDir - SKAD installation directory
    * @param {Array} targets - Array of target configurations
    * @param {Object} options - Setup options
    * @returns {Promise<Object>} Installation result
    */
-  async installToMultipleTargets(projectDir, bmadDir, targets, options) {
+  async installToMultipleTargets(projectDir, skadDir, targets, options) {
     const allResults = { agents: 0, workflows: 0, tasks: 0, tools: 0 };
 
     for (const target of targets) {
-      const result = await this.installToTarget(projectDir, bmadDir, target, options);
+      const result = await this.installToTarget(projectDir, skadDir, target, options);
       if (result.success) {
         allResults.agents += result.results.agents || 0;
         allResults.workflows += result.results.workflows || 0;
@@ -344,7 +344,7 @@ disable-model-invocation: true
 You must fully embody this agent's persona and follow all activation instructions exactly as specified.
 
 <agent-activation CRITICAL="TRUE">
-1. LOAD the FULL agent file from {project-root}/{{bmadFolderName}}/{{path}}
+1. LOAD the FULL agent file from {project-root}/{{skadFolderName}}/{{path}}
 2. READ its entire contents - this contains the complete agent persona, menu, and instructions
 3. FOLLOW every step in the <activation> section precisely
 </agent-activation>
@@ -358,7 +358,7 @@ disable-model-invocation: true
 
 # {{name}}
 
-LOAD and execute from: {project-root}/{{bmadFolderName}}/{{path}}
+LOAD and execute from: {project-root}/{{skadFolderName}}/{{path}}
 `;
   }
 
@@ -398,11 +398,11 @@ LOAD and execute from: {project-root}/{{bmadFolderName}}/{{path}}
       .replaceAll('{{description}}', artifact.description || `${artifact.name} ${artifact.type || ''}`)
       .replaceAll('{{workflow_path}}', pathToUse);
 
-    // Replace _bmad placeholder with actual folder name
-    rendered = rendered.replaceAll('_bmad', this.bmadFolderName);
+    // Replace _skad placeholder with actual folder name
+    rendered = rendered.replaceAll('_skad', this.skadFolderName);
 
-    // Replace {{bmadFolderName}} placeholder if present
-    rendered = rendered.replaceAll('{{bmadFolderName}}', this.bmadFolderName);
+    // Replace {{skadFolderName}} placeholder if present
+    rendered = rendered.replaceAll('{{skadFolderName}}', this.skadFolderName);
 
     return rendered;
   }
@@ -424,7 +424,7 @@ LOAD and execute from: {project-root}/{{bmadFolderName}}/{{path}}
     // This handles any extensions that might slip through toDashPath()
     const baseName = standardName.replace(/\.(md|yaml|yml|json|xml|toml)\.md$/i, '.md');
 
-    // If using default markdown, preserve the bmad-agent- prefix for agents
+    // If using default markdown, preserve the skad-agent- prefix for agents
     if (extension === '.md') {
       return baseName;
     }
@@ -476,7 +476,7 @@ LOAD and execute from: {project-root}/{{bmadFolderName}}/{{path}}
       return;
     }
 
-    // Remove all bmad* files
+    // Remove all skad* files
     let entries;
     try {
       entries = await fs.readdir(targetPath);
@@ -495,7 +495,7 @@ LOAD and execute from: {project-root}/{{bmadFolderName}}/{{path}}
       if (!entry || typeof entry !== 'string') {
         continue;
       }
-      if (entry.startsWith('bmad')) {
+      if (entry.startsWith('skad')) {
         const entryPath = path.join(targetPath, entry);
         try {
           await fs.remove(entryPath);
@@ -507,7 +507,7 @@ LOAD and execute from: {project-root}/{{bmadFolderName}}/{{path}}
     }
 
     if (removedCount > 0 && !options.silent) {
-      await prompts.log.message(`  Cleaned ${removedCount} BMAD files from ${targetDir}`);
+      await prompts.log.message(`  Cleaned ${removedCount} SKAD files from ${targetDir}`);
     }
   }
 }

@@ -1,6 +1,6 @@
 ---
 title: Fix Documentation References
-description: Corrects workflow, agent, and command references in BMad documentation
+description: Corrects workflow, agent, and command references in SKAD documentation
 ---
 
 # Fix Documentation References
@@ -11,7 +11,7 @@ Fix reference patterns ONLY. Do not modify links, formatting, structure, or othe
 
 ## Purpose
 
-Fix incorrect references to workflows, agents, and commands in BMad documentation files.
+Fix incorrect references to workflows, agents, and commands in SKAD documentation files.
 
 ## Step 1: Establish Target Audience
 
@@ -23,9 +23,9 @@ Before fixing references, determine who the document is for:
 | **Experienced** | reference/, explanation/ | Drop "workflow", no platform hints |
 | **How-To** | how-to/ | **Ask** — depends on the task |
 
-**How-To guides require judgment**: Don't assume experienced. Ask: "Does this task require prior BMad knowledge?" Early-journey tasks (first PRD, first sprint) are newbie docs. Customization and advanced features are experienced.
+**How-To guides require judgment**: Don't assume experienced. Ask: "Does this task require prior SKAD knowledge?" Early-journey tasks (first PRD, first sprint) are newbie docs. Customization and advanced features are experienced.
 
-**If unclear**: Ask the user "Who is the target audience for this document — new users learning BMad, or experienced users who know the system?"
+**If unclear**: Ask the user "Who is the target audience for this document — new users learning SKAD, or experienced users who know the system?"
 
 This determines whether helper words like "workflow" and platform hints are helpful context or just noise.
 
@@ -37,7 +37,7 @@ This determines whether helper words like "workflow" and platform hints are help
 |---------|---------|---------|
 | `*workflow` | `*prd` | Obsolete menu shortcut notation |
 | `/workflow` | `/workflow-init` | Platform-specific slash command |
-| `bmad_bmm_*` | `bmad_bmm_workflow-init` | Internal slash command name, platform-specific |
+| `skad_skm_*` | `skad_skm_workflow-init` | Internal slash command name, platform-specific |
 
 ### Correct Format
 
@@ -50,7 +50,7 @@ Use backticks with plain workflow name:
 - **Other docs**: "Run `prd`" — they already know, so "workflow" is noise
 
 **Platform hint**: Only in newbie docs, and only on the **first** workflow mention:
-- First mention: Run the `help` workflow (`/bmad-help` on most platforms)
+- First mention: Run the `help` workflow (`/skad-help` on most platforms)
 - Subsequent mentions: Run `prd` — no hint, no "workflow" needed after they've seen the pattern
 
 In experienced docs, the hint is always noise — just use the workflow name.
@@ -59,18 +59,18 @@ In experienced docs, the hint is always noise — just use the workflow name.
 
 | Old Name | New Name | Notes |
 |----------|----------|-------|
-| `workflow-init` | `bmad-help` | DEPRECATED - help system replaces initialization |
-| `workflow-status` | `bmad-help` | DEPRECATED - help system replaces status checking |
+| `workflow-init` | `skad-help` | DEPRECATED - help system replaces initialization |
+| `workflow-status` | `skad-help` | DEPRECATED - help system replaces status checking |
 
 ### The Help System
 
-The `bmad-help` workflow is the modern replacement for both `workflow-init` and `workflow-status`:
+The `skad-help` workflow is the modern replacement for both `workflow-init` and `workflow-status`:
 - **Universal**: Works regardless of workflow state or module
 - **Contextual**: Infers completion from artifacts and conversation
 - **Adaptive**: Guides users through workflows based on phase ordering
 - **Anytime**: Can be run at any point, no pre-initialization needed
 
-Users can run `bmad-help` to get guidance on what to do next. It detects:
+Users can run `skad-help` to get guidance on what to do next. It detects:
 - What workflows have been completed (by checking for output artifacts)
 - What module is active
 - What the next recommended/required step is
@@ -79,7 +79,7 @@ Users can run `bmad-help` to get guidance on what to do next. It detects:
 
 1. **Platform-agnostic**: Docs should never include platform-specific invocation patterns (slashes, prefixes)
 2. **Backtick the name**: Use backticks around workflow names: `workflow-name`
-3. **Simple names**: Just the workflow name, no `bmad_bmm_` prefix, no `/` prefix
+3. **Simple names**: Just the workflow name, no `skad_skm_` prefix, no `/` prefix
 
 ## Self-Check
 

@@ -1,13 +1,13 @@
 ---
 title: Autonomous Agent Harness Overview
-description: Introduction to autonomous agent capabilities in BMAD
+description: Introduction to autonomous agent capabilities in SKAD
 ---
 
 # Autonomous Agent Harness - Overview
 
 ## What is the Autonomous Agent Harness?
 
-The Autonomous Agent Harness integrates Claude's native Task tool with BMAD's workflow execution engine, enabling **truly autonomous development** where specialized AI agents work independently to complete complex tasks.
+The Autonomous Agent Harness integrates Claude's native Task tool with SKAD's workflow execution engine, enabling **truly autonomous development** where specialized AI agents work independently to complete complex tasks.
 
 ## Key Capabilities
 
@@ -37,7 +37,7 @@ A single development agent works continuously until 100% complete:
 ## Architecture
 
 ```
-BMAD Workflow Layer
+SKAD Workflow Layer
     ↓
 workflow.xml (Enhanced with subagent tags)
     ↓

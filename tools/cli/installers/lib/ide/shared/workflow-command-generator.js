@@ -2,24 +2,24 @@ const path = require('node:path');
 const fs = require('fs-extra');
 const csv = require('csv-parse/sync');
 const prompts = require('../../../../lib/prompts');
-const { toColonPath, toDashPath, customAgentColonName, customAgentDashName, BMAD_FOLDER_NAME } = require('./path-utils');
+const { toColonPath, toDashPath, customAgentColonName, customAgentDashName, SKAD_FOLDER_NAME } = require('./path-utils');
 
 /**
  * Generates command files for each workflow in the manifest
  */
 class WorkflowCommandGenerator {
-  constructor(bmadFolderName = BMAD_FOLDER_NAME) {
+  constructor(skadFolderName = SKAD_FOLDER_NAME) {
     this.templatePath = path.join(__dirname, '../templates/workflow-command-template.md');
-    this.bmadFolderName = bmadFolderName;
+    this.skadFolderName = skadFolderName;
   }
 
   /**
    * Generate workflow commands from the manifest CSV
    * @param {string} projectDir - Project directory
-   * @param {string} bmadDir - BMAD installation directory
+   * @param {string} skadDir - SKAD installation directory
    */
-  async generateWorkflowCommands(projectDir, bmadDir) {
-    const workflows = await this.loadWorkflowManifest(bmadDir);
+  async generateWorkflowCommands(projectDir, skadDir) {
+    const workflows = await this.loadWorkflowManifest(skadDir);
 
     if (!workflows) {
       await prompts.log.warn('Workflow manifest not found. Skipping command generation.');
@@ -30,7 +30,7 @@ class WorkflowCommandGenerator {
     const allWorkflows = workflows;
 
     // Base commands directory
-    const baseCommandsDir = path.join(projectDir, '.claude', 'commands', 'bmad');
+    const baseCommandsDir = path.join(projectDir, '.claude', 'commands', 'skad');
 
     let generatedCount = 0;
 
@@ -39,7 +39,7 @@ class WorkflowCommandGenerator {
       const moduleWorkflowsDir = path.join(baseCommandsDir, workflow.module, 'workflows');
       await fs.ensureDir(moduleWorkflowsDir);
 
-      const commandContent = await this.generateCommandContent(workflow, bmadDir);
+      const commandContent = await this.generateCommandContent(workflow, skadDir);
       const commandPath = path.join(moduleWorkflowsDir, `${workflow.name}.md`);
 
       await fs.writeFile(commandPath, commandContent);
@@ -53,8 +53,8 @@ class WorkflowCommandGenerator {
     return { generated: generatedCount };
   }
 
-  async collectWorkflowArtifacts(bmadDir) {
-    const workflows = await this.loadWorkflowManifest(bmadDir);
+  async collectWorkflowArtifacts(skadDir) {
+    const workflows = await this.loadWorkflowManifest(skadDir);
 
     if (!workflows) {
       return { artifacts: [], counts: { commands: 0, launchers: 0 } };
@@ -66,20 +66,20 @@ class WorkflowCommandGenerator {
     const artifacts = [];
 
     for (const workflow of allWorkflows) {
-      const commandContent = await this.generateCommandContent(workflow, bmadDir);
-      // Calculate the relative workflow path (e.g., bmm/workflows/4-implementation/sprint-planning/workflow.yaml)
+      const commandContent = await this.generateCommandContent(workflow, skadDir);
+      // Calculate the relative workflow path (e.g., skm/workflows/4-implementation/sprint-planning/workflow.yaml)
       let workflowRelPath = workflow.path || '';
       // Normalize path separators for cross-platform compatibility
       workflowRelPath = workflowRelPath.replaceAll('\\', '/');
-      // Remove _bmad/ prefix if present to get relative path from project root
-      // Handle both absolute paths (/path/to/_bmad/...) and relative paths (_bmad/...)
-      if (workflowRelPath.includes('_bmad/')) {
-        const parts = workflowRelPath.split(/_bmad\//);
+      // Remove _skad/ prefix if present to get relative path from project root
+      // Handle both absolute paths (/path/to/_skad/...) and relative paths (_skad/...)
+      if (workflowRelPath.includes('_skad/')) {
+        const parts = workflowRelPath.split(/_skad\//);
         if (parts.length > 1) {
           workflowRelPath = parts.slice(1).join('/');
         }
       } else if (workflowRelPath.includes('/src/')) {
-        // Normalize source paths (e.g. .../src/bmm/...) to relative module path (e.g. bmm/...)
+        // Normalize source paths (e.g. .../src/skm/...) to relative module path (e.g. skm/...)
         const match = workflowRelPath.match(/\/src\/([^/]+)\/(.+)/);
         if (match) {
           workflowRelPath = `${match[1]}/${match[2]}`;
@@ -123,7 +123,7 @@ class WorkflowCommandGenerator {
   /**
    * Generate command content for a workflow
    */
-  async generateCommandContent(workflow, bmadDir) {
+  async generateCommandContent(workflow, skadDir) {
     // Determine template based on workflow file type
     const isMarkdownWorkflow = workflow.path.endsWith('workflow.md');
     const templateName = isMarkdownWorkflow ? 'workflow-commander.md' : 'workflow-command-template.md';
@@ -133,21 +133,21 @@ class WorkflowCommandGenerator {
     const template = await fs.readFile(templatePath, 'utf8');
 
     // Convert source path to installed path
-    // From: /Users/.../src/bmm/workflows/.../workflow.yaml
-    // To: {project-root}/_bmad/bmm/workflows/.../workflow.yaml
+    // From: /Users/.../src/skm/workflows/.../workflow.yaml
+    // To: {project-root}/_skad/skm/workflows/.../workflow.yaml
     let workflowPath = workflow.path;
 
     // Extract the relative path from source
-    if (workflowPath.includes('/src/bmm/')) {
-      // bmm is directly under src/
-      const match = workflowPath.match(/\/src\/bmm\/(.+)/);
+    if (workflowPath.includes('/src/skm/')) {
+      // skm is directly under src/
+      const match = workflowPath.match(/\/src\/skm\/(.+)/);
       if (match) {
-        workflowPath = `${this.bmadFolderName}/bmm/${match[1]}`;
+        workflowPath = `${this.skadFolderName}/skm/${match[1]}`;
       }
     } else if (workflowPath.includes('/src/core/')) {
       const match = workflowPath.match(/\/src\/core\/(.+)/);
       if (match) {
-        workflowPath = `${this.bmadFolderName}/core/${match[1]}`;
+        workflowPath = `${this.skadFolderName}/core/${match[1]}`;
       }
     }
 
@@ -157,7 +157,7 @@ class WorkflowCommandGenerator {
       .replaceAll('{{module}}', workflow.module)
       .replaceAll('{{description}}', workflow.description)
       .replaceAll('{{workflow_path}}', workflowPath)
-      .replaceAll('_bmad', this.bmadFolderName);
+      .replaceAll('_skad', this.skadFolderName);
   }
 
   /**
@@ -217,7 +217,7 @@ class WorkflowCommandGenerator {
 ## Execution
 
 When running any workflow:
-1. LOAD {project-root}/${this.bmadFolderName}/core/tasks/workflow.xml
+1. LOAD {project-root}/${this.skadFolderName}/core/tasks/workflow.xml
 2. Pass the workflow path as 'workflow-config' parameter
 3. Follow workflow.xml instructions EXACTLY
 4. Save outputs after EACH section
@@ -233,23 +233,23 @@ When running any workflow:
   transformWorkflowPath(workflowPath) {
     let transformed = workflowPath;
 
-    if (workflowPath.includes('/src/bmm/')) {
-      const match = workflowPath.match(/\/src\/bmm\/(.+)/);
+    if (workflowPath.includes('/src/skm/')) {
+      const match = workflowPath.match(/\/src\/skm\/(.+)/);
       if (match) {
-        transformed = `{project-root}/${this.bmadFolderName}/bmm/${match[1]}`;
+        transformed = `{project-root}/${this.skadFolderName}/skm/${match[1]}`;
       }
     } else if (workflowPath.includes('/src/core/')) {
       const match = workflowPath.match(/\/src\/core\/(.+)/);
       if (match) {
-        transformed = `{project-root}/${this.bmadFolderName}/core/${match[1]}`;
+        transformed = `{project-root}/${this.skadFolderName}/core/${match[1]}`;
       }
     }
 
     return transformed;
   }
 
-  async loadWorkflowManifest(bmadDir) {
-    const manifestPath = path.join(bmadDir, '_config', 'workflow-manifest.csv');
+  async loadWorkflowManifest(skadDir) {
+    const manifestPath = path.join(skadDir, '_config', 'workflow-manifest.csv');
 
     if (!(await fs.pathExists(manifestPath))) {
       return null;
@@ -264,7 +264,7 @@ When running any workflow:
 
   /**
    * Write workflow command artifacts using underscore format (Windows-compatible)
-   * Creates flat files like: bmad_bmm_correct-course.md
+   * Creates flat files like: skad_skm_correct-course.md
    *
    * @param {string} baseCommandsDir - Base commands directory for the IDE
    * @param {Array} artifacts - Workflow artifacts
@@ -275,7 +275,7 @@ When running any workflow:
 
     for (const artifact of artifacts) {
       if (artifact.type === 'workflow-command') {
-        // Convert relativePath to underscore format: bmm/workflows/correct-course.md → bmad_bmm_correct-course.md
+        // Convert relativePath to underscore format: skm/workflows/correct-course.md → skad_skm_correct-course.md
         const flatName = toColonPath(artifact.relativePath);
         const commandPath = path.join(baseCommandsDir, flatName);
         await fs.ensureDir(path.dirname(commandPath));
@@ -289,9 +289,9 @@ When running any workflow:
 
   /**
    * Write workflow command artifacts using dash format (NEW STANDARD)
-   * Creates flat files like: bmad-bmm-correct-course.md
+   * Creates flat files like: skad-skm-correct-course.md
    *
-   * Note: Workflows do NOT have bmad-agent- prefix - only agents do.
+   * Note: Workflows do NOT have skad-agent- prefix - only agents do.
    *
    * @param {string} baseCommandsDir - Base commands directory for the IDE
    * @param {Array} artifacts - Workflow artifacts
@@ -302,7 +302,7 @@ When running any workflow:
 
     for (const artifact of artifacts) {
       if (artifact.type === 'workflow-command') {
-        // Convert relativePath to dash format: bmm/workflows/correct-course.md → bmad-bmm-correct-course.md
+        // Convert relativePath to dash format: skm/workflows/correct-course.md → skad-skm-correct-course.md
         const flatName = toDashPath(artifact.relativePath);
         const commandPath = path.join(baseCommandsDir, flatName);
         await fs.ensureDir(path.dirname(commandPath));

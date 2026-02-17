@@ -9,7 +9,7 @@ We release security patches for the following versions:
 | Latest  | :white_check_mark: |
 | < Latest | :x:               |
 
-We recommend always using the latest version of BMad Method to ensure you have the most recent security updates.
+We recommend always using the latest version of SKAD Method to ensure you have the most recent security updates.
 
 ## Reporting a Vulnerability
 
@@ -21,7 +21,7 @@ We take security vulnerabilities seriously. If you discover a security issue, pl
 
 Instead, please report them via one of these methods:
 
-1. **GitHub Security Advisories** (Preferred): Use [GitHub's private vulnerability reporting](https://github.com/bmad-code-org/BMAD-METHOD/security/advisories/new) to submit a confidential report.
+1. **GitHub Security Advisories** (Preferred): Use [GitHub's private vulnerability reporting](https://github.com/skad-code-org/SKAD-METHOD/security/advisories/new) to submit a confidential report.
 
 2. **Discord**: Contact a maintainer directly via DM on our [Discord server](https://discord.gg/gk8jAdXWmj).
 
@@ -52,7 +52,7 @@ Please include as much of the following information as possible:
 
 ### In Scope
 
-- Vulnerabilities in BMad Method core framework code
+- Vulnerabilities in SKAD Method core framework code
 - Security issues in agent definitions or workflows that could lead to unintended behavior
 - Path traversal or file system access issues
 - Prompt injection vulnerabilities that bypass intended agent behavior
@@ -68,7 +68,7 @@ Please include as much of the following information as possible:
 
 ## Security Best Practices for Users
 
-When using BMad Method:
+When using SKAD Method:
 
 1. **Review Agent Outputs**: Always review AI-generated code before executing it
 2. **Limit File Access**: Configure your AI IDE to limit file system access where possible
@@ -78,8 +78,8 @@ When using BMad Method:
 
 ## Acknowledgments
 
-We appreciate the security research community's efforts in helping keep BMad Method secure. Contributors who report valid security issues will be acknowledged in our security advisories.
+We appreciate the security research community's efforts in helping keep SKAD Method secure. Contributors who report valid security issues will be acknowledged in our security advisories.
 
 ---
 
-Thank you for helping keep BMad Method and our community safe.
+Thank you for helping keep SKAD Method and our community safe.

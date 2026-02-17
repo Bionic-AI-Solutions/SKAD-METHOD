@@ -6,10 +6,10 @@ const { XmlHandler } = require('../../../lib/xml-handler');
 const { getProjectRoot, getSourcePath, getModulePath } = require('../../../lib/project-root');
 const { filterCustomizationData } = require('../../../lib/agent/compiler');
 const { ExternalModuleManager } = require('./external-manager');
-const { BMAD_FOLDER_NAME } = require('../ide/shared/path-utils');
+const { SKAD_FOLDER_NAME } = require('../ide/shared/path-utils');
 
 /**
- * Manages the installation, updating, and removal of BMAD modules.
+ * Manages the installation, updating, and removal of SKAD modules.
  * Handles module discovery, dependency resolution, configuration processing,
  * and agent file management including XML activation block injection.
  *
@@ -22,22 +22,22 @@ const { BMAD_FOLDER_NAME } = require('../ide/shared/path-utils');
  * @example
  * const manager = new ModuleManager();
  * const modules = await manager.listAvailable();
- * await manager.install('core-module', '/path/to/bmad');
+ * await manager.install('core-module', '/path/to/skad');
  */
 class ModuleManager {
   constructor(options = {}) {
     this.xmlHandler = new XmlHandler();
-    this.bmadFolderName = BMAD_FOLDER_NAME; // Default, can be overridden
+    this.skadFolderName = SKAD_FOLDER_NAME; // Default, can be overridden
     this.customModulePaths = new Map(); // Initialize custom module paths
     this.externalModuleManager = new ExternalModuleManager(); // For external official modules
   }
 
   /**
-   * Set the bmad folder name for placeholder replacement
-   * @param {string} bmadFolderName - The bmad folder name
+   * Set the skad folder name for placeholder replacement
+   * @param {string} skadFolderName - The skad folder name
    */
-  setBmadFolderName(bmadFolderName) {
-    this.bmadFolderName = bmadFolderName;
+  setSkadFolderName(skadFolderName) {
+    this.skadFolderName = skadFolderName;
   }
 
   /**
@@ -89,26 +89,26 @@ class ModuleManager {
   }
 
   /**
-   * Copy sidecar directory to _bmad/_memory location with update-safe handling
+   * Copy sidecar directory to _skad/_memory location with update-safe handling
    * @param {string} sourceSidecarPath - Source sidecar directory path
    * @param {string} agentName - Name of the agent (for naming)
-   * @param {string} bmadMemoryPath - This should ALWAYS be _bmad/_memory
+   * @param {string} skadMemoryPath - This should ALWAYS be _skad/_memory
    * @param {boolean} isUpdate - Whether this is an update (default: false)
-   * @param {string} bmadDir - BMAD installation directory
+   * @param {string} skadDir - SKAD installation directory
    * @param {Object} installer - Installer instance for file tracking
    */
-  async copySidecarToMemory(sourceSidecarPath, agentName, bmadMemoryPath, isUpdate = false, bmadDir = null, installer = null) {
+  async copySidecarToMemory(sourceSidecarPath, agentName, skadMemoryPath, isUpdate = false, skadDir = null, installer = null) {
     const crypto = require('node:crypto');
-    const sidecarTargetDir = path.join(bmadMemoryPath, `${agentName}-sidecar`);
+    const sidecarTargetDir = path.join(skadMemoryPath, `${agentName}-sidecar`);
 
     // Ensure target directory exists
-    await fs.ensureDir(bmadMemoryPath);
+    await fs.ensureDir(skadMemoryPath);
     await fs.ensureDir(sidecarTargetDir);
 
     // Get existing files manifest for update checking
     let existingFilesManifest = [];
     if (isUpdate && installer) {
-      existingFilesManifest = await installer.readFilesManifest(bmadDir);
+      existingFilesManifest = await installer.readFilesManifest(skadDir);
     }
 
     // Build map of existing sidecar files with their hashes
@@ -132,8 +132,8 @@ class ModuleManager {
         .update(await fs.readFile(sourceFilePath))
         .digest('hex');
 
-      // Path relative to bmad directory
-      const relativeToBmad = path.join('_memory', `${agentName}-sidecar`, file);
+      // Path relative to skad directory
+      const relativeToSkad = path.join('_memory', `${agentName}-sidecar`, file);
 
       if (isUpdate && (await fs.pathExists(targetFilePath))) {
         // Calculate current target file hash
@@ -143,34 +143,34 @@ class ModuleManager {
           .digest('hex');
 
         // Get the last known hash from files-manifest
-        const lastKnownHash = existingSidecarFiles.get(relativeToBmad);
+        const lastKnownHash = existingSidecarFiles.get(relativeToSkad);
 
         if (lastKnownHash) {
           // We have a record of this file
           if (currentTargetHash === lastKnownHash) {
             // File hasn't been modified by user, safe to update
             await this.copyFileWithPlaceholderReplacement(sourceFilePath, targetFilePath, true);
-            if (process.env.BMAD_VERBOSE_INSTALL === 'true') {
-              await prompts.log.message(`    Updated sidecar file: ${relativeToBmad}`);
+            if (process.env.SKAD_VERBOSE_INSTALL === 'true') {
+              await prompts.log.message(`    Updated sidecar file: ${relativeToSkad}`);
             }
           } else {
             // User has modified the file, preserve it
-            if (process.env.BMAD_VERBOSE_INSTALL === 'true') {
-              await prompts.log.message(`    Preserving user-modified file: ${relativeToBmad}`);
+            if (process.env.SKAD_VERBOSE_INSTALL === 'true') {
+              await prompts.log.message(`    Preserving user-modified file: ${relativeToSkad}`);
             }
           }
         } else {
           // First time seeing this file in manifest, copy it
           await this.copyFileWithPlaceholderReplacement(sourceFilePath, targetFilePath, true);
-          if (process.env.BMAD_VERBOSE_INSTALL === 'true') {
-            await prompts.log.message(`    Added new sidecar file: ${relativeToBmad}`);
+          if (process.env.SKAD_VERBOSE_INSTALL === 'true') {
+            await prompts.log.message(`    Added new sidecar file: ${relativeToSkad}`);
           }
         }
       } else {
         // New installation
         await this.copyFileWithPlaceholderReplacement(sourceFilePath, targetFilePath, true);
-        if (process.env.BMAD_VERBOSE_INSTALL === 'true') {
-          await prompts.log.message(`    Copied sidecar file: ${relativeToBmad}`);
+        if (process.env.SKAD_VERBOSE_INSTALL === 'true') {
+          await prompts.log.message(`    Copied sidecar file: ${relativeToSkad}`);
         }
       }
 
@@ -187,7 +187,7 @@ class ModuleManager {
 
   /**
    * List all available modules (excluding core which is always installed)
-   * bmm is the only built-in module, directly under src/bmm
+   * skm is the only built-in module, directly under src/skm
    * All other modules come from external-official-modules.yaml
    * @returns {Object} Object with modules array and customModules array
    */
@@ -195,18 +195,18 @@ class ModuleManager {
     const modules = [];
     const customModules = [];
 
-    // Add built-in bmm module (directly under src/bmm)
-    const bmmPath = getSourcePath('bmm');
-    if (await fs.pathExists(bmmPath)) {
-      const bmmInfo = await this.getModuleInfo(bmmPath, 'bmm', 'src/bmm');
-      if (bmmInfo) {
-        modules.push(bmmInfo);
+    // Add built-in skm module (directly under src/skm)
+    const skmPath = getSourcePath('skm');
+    if (await fs.pathExists(skmPath)) {
+      const skmInfo = await this.getModuleInfo(skmPath, 'skm', 'src/skm');
+      if (skmInfo) {
+        modules.push(skmInfo);
       }
     }
 
     // Check for cached custom modules in _config/custom/
-    if (this.bmadDir) {
-      const customCacheDir = path.join(this.bmadDir, '_config', 'custom');
+    if (this.skadDir) {
+      const customCacheDir = path.join(this.skadDir, '_config', 'custom');
       if (await fs.pathExists(customCacheDir)) {
         const cacheEntries = await fs.readdir(customCacheDir, { withFileTypes: true });
         for (const entry of cacheEntries) {
@@ -256,8 +256,8 @@ class ModuleManager {
       return null;
     }
 
-    // Mark as custom if it's using custom.yaml OR if it's outside src/bmm or src/core
-    const isCustomSource = sourceDescription !== 'src/bmm' && sourceDescription !== 'src/core' && sourceDescription !== 'src/modules';
+    // Mark as custom if it's using custom.yaml OR if it's outside src/skm or src/core
+    const isCustomSource = sourceDescription !== 'src/skm' && sourceDescription !== 'src/core' && sourceDescription !== 'src/modules';
     const moduleInfo = {
       id: defaultName,
       path: modulePath,
@@ -265,7 +265,7 @@ class ModuleManager {
         .split('-')
         .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
         .join(' '),
-      description: 'BMAD Module',
+      description: 'SKAD Module',
       version: '5.0.0',
       source: sourceDescription,
       isCustom: configPath === customConfigPath || configPath === rootCustomConfigPath || isCustomSource,
@@ -306,11 +306,11 @@ class ModuleManager {
       return this.customModulePaths.get(moduleCode);
     }
 
-    // Check for built-in bmm module (directly under src/bmm)
-    if (moduleCode === 'bmm') {
-      const bmmPath = getSourcePath('bmm');
-      if (await fs.pathExists(bmmPath)) {
-        return bmmPath;
+    // Check for built-in skm module (directly under src/skm)
+    if (moduleCode === 'skm') {
+      const skmPath = getSourcePath('skm');
+      if (await fs.pathExists(skmPath)) {
+        return skmPath;
       }
     }
 
@@ -338,7 +338,7 @@ class ModuleManager {
    */
   getExternalCacheDir() {
     const os = require('node:os');
-    const cacheDir = path.join(os.homedir(), '.bmad', 'cache', 'external-modules');
+    const cacheDir = path.join(os.homedir(), '.skad', 'cache', 'external-modules');
     return cacheDir;
   }
 
@@ -519,16 +519,16 @@ class ModuleManager {
   /**
    * Install a module
    * @param {string} moduleName - Code of the module to install (from module.yaml)
-   * @param {string} bmadDir - Target bmad directory
+   * @param {string} skadDir - Target skad directory
    * @param {Function} fileTrackingCallback - Optional callback to track installed files
    * @param {Object} options - Additional installation options
    * @param {Array<string>} options.installedIDEs - Array of IDE codes that were installed
    * @param {Object} options.moduleConfig - Module configuration from config collector
    * @param {Object} options.logger - Logger instance for output
    */
-  async install(moduleName, bmadDir, fileTrackingCallback = null, options = {}) {
+  async install(moduleName, skadDir, fileTrackingCallback = null, options = {}) {
     const sourcePath = await this.findModuleSource(moduleName, { silent: options.silent });
-    const targetPath = path.join(bmadDir, moduleName);
+    const targetPath = path.join(skadDir, moduleName);
 
     // Check if source module exists
     if (!sourcePath) {
@@ -580,22 +580,22 @@ class ModuleManager {
     await this.copyModuleWithFiltering(sourcePath, targetPath, fileTrackingCallback, options.moduleConfig);
 
     // Compile any .agent.yaml files to .md format
-    await this.compileModuleAgents(sourcePath, targetPath, moduleName, bmadDir, options.installer);
+    await this.compileModuleAgents(sourcePath, targetPath, moduleName, skadDir, options.installer);
 
     // Process agent files to inject activation block
     await this.processAgentFiles(targetPath, moduleName);
 
     // Call module-specific installer if it exists (unless explicitly skipped)
     if (!options.skipModuleInstaller) {
-      await this.runModuleInstaller(moduleName, bmadDir, options);
+      await this.runModuleInstaller(moduleName, skadDir, options);
     }
 
     // Capture version info for manifest
     const { Manifest } = require('../core/manifest');
     const manifestObj = new Manifest();
-    const versionInfo = await manifestObj.getModuleVersionInfo(moduleName, bmadDir, sourcePath);
+    const versionInfo = await manifestObj.getModuleVersionInfo(moduleName, skadDir, sourcePath);
 
-    await manifestObj.addModule(bmadDir, moduleName, {
+    await manifestObj.addModule(skadDir, moduleName, {
       version: versionInfo.version,
       source: versionInfo.source,
       npmPackage: versionInfo.npmPackage,
@@ -613,12 +613,12 @@ class ModuleManager {
   /**
    * Update an existing module
    * @param {string} moduleName - Name of the module to update
-   * @param {string} bmadDir - Target bmad directory
+   * @param {string} skadDir - Target skad directory
    * @param {boolean} force - Force update (overwrite modifications)
    */
-  async update(moduleName, bmadDir, force = false, options = {}) {
+  async update(moduleName, skadDir, force = false, options = {}) {
     const sourcePath = await this.findModuleSource(moduleName);
-    const targetPath = path.join(bmadDir, moduleName);
+    const targetPath = path.join(skadDir, moduleName);
 
     // Check if source module exists
     if (!sourcePath) {
@@ -633,13 +633,13 @@ class ModuleManager {
     if (force) {
       // Force update - remove and reinstall
       await fs.remove(targetPath);
-      return await this.install(moduleName, bmadDir, null, { installer: options.installer });
+      return await this.install(moduleName, skadDir, null, { installer: options.installer });
     } else {
       // Selective update - preserve user modifications
       await this.syncModule(sourcePath, targetPath);
 
       // Recompile agents (#1133)
-      await this.compileModuleAgents(sourcePath, targetPath, moduleName, bmadDir, options.installer);
+      await this.compileModuleAgents(sourcePath, targetPath, moduleName, skadDir, options.installer);
       await this.processAgentFiles(targetPath, moduleName);
     }
 
@@ -653,10 +653,10 @@ class ModuleManager {
   /**
    * Remove a module
    * @param {string} moduleName - Name of the module to remove
-   * @param {string} bmadDir - Target bmad directory
+   * @param {string} skadDir - Target skad directory
    */
-  async remove(moduleName, bmadDir) {
-    const targetPath = path.join(bmadDir, moduleName);
+  async remove(moduleName, skadDir) {
+    const targetPath = path.join(skadDir, moduleName);
 
     if (!(await fs.pathExists(targetPath))) {
       throw new Error(`Module '${moduleName}' is not installed`);
@@ -673,22 +673,22 @@ class ModuleManager {
   /**
    * Check if a module is installed
    * @param {string} moduleName - Name of the module
-   * @param {string} bmadDir - Target bmad directory
+   * @param {string} skadDir - Target skad directory
    * @returns {boolean} True if module is installed
    */
-  async isInstalled(moduleName, bmadDir) {
-    const targetPath = path.join(bmadDir, moduleName);
+  async isInstalled(moduleName, skadDir) {
+    const targetPath = path.join(skadDir, moduleName);
     return await fs.pathExists(targetPath);
   }
 
   /**
    * Get installed module info
    * @param {string} moduleName - Name of the module
-   * @param {string} bmadDir - Target bmad directory
+   * @param {string} skadDir - Target skad directory
    * @returns {Object|null} Module info or null if not installed
    */
-  async getInstalledInfo(moduleName, bmadDir) {
-    const targetPath = path.join(bmadDir, moduleName);
+  async getInstalledInfo(moduleName, skadDir) {
+    const targetPath = path.join(skadDir, moduleName);
 
     if (!(await fs.pathExists(targetPath))) {
       return null;
@@ -802,7 +802,7 @@ class ModuleManager {
 
     // IMPORTANT: Replace escape sequence and placeholder BEFORE parsing YAML
     // Otherwise parsing will fail on the placeholder
-    yamlContent = yamlContent.replaceAll('_bmad', this.bmadFolderName);
+    yamlContent = yamlContent.replaceAll('_skad', this.skadFolderName);
 
     try {
       // First check if web_bundle exists by parsing
@@ -881,13 +881,13 @@ class ModuleManager {
    * @param {string} sourcePath - Source module path
    * @param {string} targetPath - Target module path
    * @param {string} moduleName - Module name
-   * @param {string} bmadDir - BMAD installation directory
+   * @param {string} skadDir - SKAD installation directory
    * @param {Object} installer - Installer instance for file tracking
    */
-  async compileModuleAgents(sourcePath, targetPath, moduleName, bmadDir, installer = null) {
+  async compileModuleAgents(sourcePath, targetPath, moduleName, skadDir, installer = null) {
     const sourceAgentsPath = path.join(sourcePath, 'agents');
     const targetAgentsPath = path.join(targetPath, 'agents');
-    const cfgAgentsDir = path.join(bmadDir, '_config', 'agents');
+    const cfgAgentsDir = path.join(skadDir, '_config', 'agents');
 
     // Check if agents directory exists in source
     if (!(await fs.pathExists(sourceAgentsPath))) {
@@ -922,7 +922,7 @@ class ModuleManager {
           if (await fs.pathExists(genericTemplatePath)) {
             await this.copyFileWithPlaceholderReplacement(genericTemplatePath, customizePath);
             // Only show customize creation in verbose mode
-            if (process.env.BMAD_VERBOSE_INSTALL === 'true') {
+            if (process.env.SKAD_VERBOSE_INSTALL === 'true') {
               await prompts.log.message(`  Created customize: ${moduleName}-${agentName}.customize.yaml`);
             }
 
@@ -932,7 +932,7 @@ class ModuleManager {
             const originalHash = crypto.createHash('sha256').update(customizeContent).digest('hex');
 
             // Store in main manifest
-            const manifestPath = path.join(bmadDir, '_config', 'manifest.yaml');
+            const manifestPath = path.join(skadDir, '_config', 'manifest.yaml');
             let manifestData = {};
             if (await fs.pathExists(manifestPath)) {
               const manifestContent = await fs.readFile(manifestPath, 'utf8');
@@ -942,7 +942,7 @@ class ModuleManager {
             if (!manifestData.agentCustomizations) {
               manifestData.agentCustomizations = {};
             }
-            manifestData.agentCustomizations[path.relative(bmadDir, customizePath)] = originalHash;
+            manifestData.agentCustomizations[path.relative(skadDir, customizePath)] = originalHash;
 
             // Write back to manifest
             const yaml = require('yaml');
@@ -1013,19 +1013,19 @@ class ModuleManager {
 
           // Check if sidecar directory exists
           if (await fs.pathExists(sourceSidecarPath)) {
-            // Memory is always in _bmad/_memory
-            const bmadMemoryPath = path.join(bmadDir, '_memory');
+            // Memory is always in _skad/_memory
+            const skadMemoryPath = path.join(skadDir, '_memory');
 
             // Determine if this is an update (by checking if agent already exists)
             const isUpdate = await fs.pathExists(targetMdPath);
 
             // Copy sidecar to memory location with update-safe handling
-            const copiedFiles = await this.copySidecarToMemory(sourceSidecarPath, agentName, bmadMemoryPath, isUpdate, bmadDir, installer);
+            const copiedFiles = await this.copySidecarToMemory(sourceSidecarPath, agentName, skadMemoryPath, isUpdate, skadDir, installer);
 
-            if (process.env.BMAD_VERBOSE_INSTALL === 'true' && copiedFiles.length > 0) {
+            if (process.env.SKAD_VERBOSE_INSTALL === 'true' && copiedFiles.length > 0) {
               await prompts.log.message(`    Sidecar files processed: ${copiedFiles.length} files`);
             }
-          } else if (process.env.BMAD_VERBOSE_INSTALL === 'true') {
+          } else if (process.env.SKAD_VERBOSE_INSTALL === 'true') {
             await prompts.log.warn(`    Warning: Agent marked as having sidecar but ${sidecarDirName} directory not found`);
           }
         }
@@ -1044,7 +1044,7 @@ class ModuleManager {
         }
 
         // Only show compilation details in verbose mode
-        if (process.env.BMAD_VERBOSE_INSTALL === 'true') {
+        if (process.env.SKAD_VERBOSE_INSTALL === 'true') {
           await prompts.log.message(
             `    Compiled agent: ${agentName} -> ${path.relative(targetPath, targetMdPath)}${hasSidecar ? ' (with sidecar)' : ''}`,
           );
@@ -1181,10 +1181,10 @@ class ModuleManager {
         const installWorkflowPath = item['workflow-install']; // Where to copy TO
 
         // Parse SOURCE workflow path
-        // Handle both _bmad placeholder and hardcoded 'bmad'
-        // Example: {project-root}/_bmad/bmm/workflows/4-implementation/create-story/workflow.yaml
-        // Or: {project-root}/bmad/bmm/workflows/4-implementation/create-story/workflow.yaml
-        const sourceMatch = sourceWorkflowPath.match(/\{project-root\}\/(?:_bmad)\/([^/]+)\/workflows\/(.+)/);
+        // Handle both _skad placeholder and hardcoded 'skad'
+        // Example: {project-root}/_skad/skm/workflows/4-implementation/create-story/workflow.yaml
+        // Or: {project-root}/skad/skm/workflows/4-implementation/create-story/workflow.yaml
+        const sourceMatch = sourceWorkflowPath.match(/\{project-root\}\/(?:_skad)\/([^/]+)\/workflows\/(.+)/);
         if (!sourceMatch) {
           await prompts.log.warn(`      Could not parse workflow path: ${sourceWorkflowPath}`);
           continue;
@@ -1193,9 +1193,9 @@ class ModuleManager {
         const [, sourceModule, sourceWorkflowSubPath] = sourceMatch;
 
         // Parse INSTALL workflow path
-        // Handle_bmad
-        // Example: {project-root}/_bmad/bmgd/workflows/4-production/create-story/workflow.yaml
-        const installMatch = installWorkflowPath.match(/\{project-root\}\/(_bmad)\/([^/]+)\/workflows\/(.+)/);
+        // Handle_skad
+        // Example: {project-root}/_skad/bmgd/workflows/4-production/create-story/workflow.yaml
+        const installMatch = installWorkflowPath.match(/\{project-root\}\/(_skad)\/([^/]+)\/workflows\/(.+)/);
         if (!installMatch) {
           await prompts.log.warn(`      Could not parse workflow-install path: ${installWorkflowPath}`);
           continue;
@@ -1244,27 +1244,27 @@ class ModuleManager {
   async updateWorkflowConfigSource(workflowYamlPath, newModuleName) {
     let yamlContent = await fs.readFile(workflowYamlPath, 'utf8');
 
-    // Replace config_source: "{project-root}/_bmad/OLD_MODULE/config.yaml"
-    // with config_source: "{project-root}/_bmad/NEW_MODULE/config.yaml"
-    // Note: At this point _bmad has already been replaced with actual folder name
+    // Replace config_source: "{project-root}/_skad/OLD_MODULE/config.yaml"
+    // with config_source: "{project-root}/_skad/NEW_MODULE/config.yaml"
+    // Note: At this point _skad has already been replaced with actual folder name
     const configSourcePattern = /config_source:\s*["']?\{project-root\}\/[^/]+\/[^/]+\/config\.yaml["']?/g;
-    const newConfigSource = `config_source: "{project-root}/${this.bmadFolderName}/${newModuleName}/config.yaml"`;
+    const newConfigSource = `config_source: "{project-root}/${this.skadFolderName}/${newModuleName}/config.yaml"`;
 
     const updatedYaml = yamlContent.replaceAll(configSourcePattern, newConfigSource);
 
     if (updatedYaml !== yamlContent) {
       await fs.writeFile(workflowYamlPath, updatedYaml, 'utf8');
-      await prompts.log.message(`      Updated config_source to: ${this.bmadFolderName}/${newModuleName}/config.yaml`);
+      await prompts.log.message(`      Updated config_source to: ${this.skadFolderName}/${newModuleName}/config.yaml`);
     }
   }
 
   /**
    * Run module-specific installer if it exists
    * @param {string} moduleName - Name of the module
-   * @param {string} bmadDir - Target bmad directory
+   * @param {string} skadDir - Target skad directory
    * @param {Object} options - Installation options
    */
-  async runModuleInstaller(moduleName, bmadDir, options = {}) {
+  async runModuleInstaller(moduleName, skadDir, options = {}) {
     // Special handling for core module - it's in src/core not src/modules
     let sourcePath;
     if (moduleName === 'core') {
@@ -1304,8 +1304,8 @@ class ModuleManager {
       }
 
       if (typeof moduleInstaller.install === 'function') {
-        // Get project root (parent of bmad directory)
-        const projectRoot = path.dirname(bmadDir);
+        // Get project root (parent of skad directory)
+        const projectRoot = path.dirname(skadDir);
 
         // Prepare logger (use console if not provided)
         const logger = options.logger || {
@@ -1349,7 +1349,7 @@ class ModuleManager {
         let configContent = await fs.readFile(configPath, 'utf8');
 
         // Replace path placeholders
-        configContent = configContent.replaceAll('{project-root}', `bmad/${moduleName}`);
+        configContent = configContent.replaceAll('{project-root}', `skad/${moduleName}`);
         configContent = configContent.replaceAll('{module}', moduleName);
 
         await fs.writeFile(configPath, configContent, 'utf8');

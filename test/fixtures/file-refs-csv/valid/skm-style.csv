@@ -1,0 +1,3 @@
+module,phase,name,code,sequence,workflow-file,command,required,agent,options,description,output-location,outputs,
+skm,anytime,Document Project,DP,,_skad/skm/workflows/document-project/workflow.yaml,skad-skm-document-project,false,analyst,Create Mode,"Analyze project",project-knowledge,*,
+skm,1-analysis,Brainstorm Project,BP,10,_skad/core/workflows/brainstorming/workflow.md,skad-brainstorming,false,analyst,data=template.md,"Brainstorming",planning_artifacts,"session",

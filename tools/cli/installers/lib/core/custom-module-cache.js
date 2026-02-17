@@ -9,9 +9,9 @@ const path = require('node:path');
 const crypto = require('node:crypto');
 
 class CustomModuleCache {
-  constructor(bmadDir) {
-    this.bmadDir = bmadDir;
-    this.customCacheDir = path.join(bmadDir, '_config', 'custom');
+  constructor(skadDir) {
+    this.skadDir = skadDir;
+    this.customCacheDir = path.join(skadDir, '_config', 'custom');
     this.manifestPath = path.join(this.customCacheDir, 'cache-manifest.yaml');
   }
 

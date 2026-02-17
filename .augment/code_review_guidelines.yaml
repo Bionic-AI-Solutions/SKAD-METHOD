@@ -1,4 +1,4 @@
-# Augment Code Review Guidelines for BMAD-METHOD
+# Augment Code Review Guidelines for SKAD-METHOD
 # https://docs.augmentcode.com/codereview/overview
 # Focus: Workflow validation and quality
 
@@ -27,7 +27,7 @@ file_paths_to_ignore:
   - "test/template-test-generator/**"
   - "tools/template-test-generator/test-scenarios/**"
   # --- Shared baseline: non-project dirs ---
-  - "_bmad*/**"
+  - "_skad*/**"
   - "website/**"
   - "z*/**"
   - "sample-project/**"
@@ -90,7 +90,7 @@ areas:
         severity: "high"
 
       - id: "workflow_config_source"
-        description: "Workflows should reference config_source for variable resolution (e.g., {project-root}/_bmad/module/config.yaml)"
+        description: "Workflows should reference config_source for variable resolution (e.g., {project-root}/_skad/module/config.yaml)"
         severity: "medium"
 
       - id: "workflow_installed_path"

@@ -4,7 +4,7 @@
 
 agent:
   metadata:
-    id: bmm-missing-module
+    id: skm-missing-module
     name: No Module
     title: Optional Module
     icon: ✅

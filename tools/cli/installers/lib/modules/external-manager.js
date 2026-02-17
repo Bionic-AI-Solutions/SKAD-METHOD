@@ -53,7 +53,7 @@ class ExternalModuleManager {
         subheader: moduleConfig.subheader,
         description: moduleConfig.description || '',
         defaultSelected: moduleConfig.defaultSelected === true,
-        type: moduleConfig.type || 'community', // bmad-org or community
+        type: moduleConfig.type || 'community', // skad-org or community
         npmPackage: moduleConfig.npmPackage || null, // Include npm package name
         isExternal: true,
       });
@@ -74,7 +74,7 @@ class ExternalModuleManager {
 
   /**
    * Get module info by key
-   * @param {string} key - The module key (e.g., 'bmad-creative-intelligence-suite')
+   * @param {string} key - The module key (e.g., 'skad-creative-intelligence-suite')
    * @returns {Object|null} Module info or null if not found
    */
   async getModuleByKey(key) {
@@ -95,7 +95,7 @@ class ExternalModuleManager {
       subheader: moduleConfig.subheader,
       description: moduleConfig.description || '',
       defaultSelected: moduleConfig.defaultSelected === true,
-      type: moduleConfig.type || 'community', // bmad-org or community
+      type: moduleConfig.type || 'community', // skad-org or community
       npmPackage: moduleConfig.npmPackage || null, // Include npm package name
       isExternal: true,
     };

@@ -62,7 +62,7 @@ async function runTests() {
 
   try {
     const builder = new YamlXmlBuilder();
-    const pmAgentPath = path.join(projectRoot, 'src/bmm/agents/pm.agent.yaml');
+    const pmAgentPath = path.join(projectRoot, 'src/skm/agents/pm.agent.yaml');
 
     // Create temp output path
     const tempOutput = path.join(__dirname, 'temp-pm-agent.md');
@@ -143,8 +143,8 @@ async function runTests() {
     // Test path resolution logic (if exposed)
     // This would test {project-root}, {installed_path}, {config_source} resolution
 
-    const testPath = '{project-root}/bmad/bmm/config.yaml';
-    const expectedPattern = /\/bmad\/bmm\/config\.yaml$/;
+    const testPath = '{project-root}/skad/skm/config.yaml';
+    const expectedPattern = /\/skad\/skm\/config\.yaml$/;
 
     assert(
       true, // Placeholder - would test actual resolution
@@ -164,7 +164,7 @@ async function runTests() {
 
   try {
     const builder = new YamlXmlBuilder();
-    const qaAgentPath = path.join(projectRoot, 'src/bmm/agents/qa.agent.yaml');
+    const qaAgentPath = path.join(projectRoot, 'src/skm/agents/qa.agent.yaml');
     const tempOutput = path.join(__dirname, 'temp-qa-agent.md');
 
     try {

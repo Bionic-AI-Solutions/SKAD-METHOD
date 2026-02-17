@@ -8,7 +8,7 @@
  * Exit codes: 0 = success, 1 = validation failures
  *
  * Optional argument:
- *   project_root - Directory to scan (defaults to BMAD repo root)
+ *   project_root - Directory to scan (defaults to SKAD repo root)
  */
 
 const { glob } = require('glob');
@@ -28,7 +28,7 @@ async function main(customProjectRoot) {
   const project_root = customProjectRoot || path.join(__dirname, '..');
 
   // Find all agent files
-  const agentFiles = await glob('src/{core,bmm}/agents/**/*.agent.yaml', {
+  const agentFiles = await glob('src/{core,skm}/agents/**/*.agent.yaml', {
     cwd: project_root,
     absolute: true,
   });

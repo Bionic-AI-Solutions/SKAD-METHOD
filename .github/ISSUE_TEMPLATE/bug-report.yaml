@@ -1,5 +1,5 @@
 name: Bug Report
-description: File a bug report to help us improve BMad Method
+description: File a bug report to help us improve SKAD Method
 title: "[BUG] "
 labels: bug
 assignees: []
@@ -24,7 +24,7 @@ body:
       label: Steps to reproduce
       description: Step-by-step instructions to reproduce the behavior
       placeholder: |
-        1. Run 'npx bmad-method install'
+        1. Run 'npx skad-method install'
         2. Select option X
         3. Run workflow Y
         4. See error
@@ -60,10 +60,10 @@ body:
     id: module
     attributes:
       label: Which module is this for?
-      description: Select the BMad module this issue relates to
+      description: Select the SKAD module this issue relates to
       options:
-        - BMad Method (BMM) - Core Framework
-        - BMad Builder (BMB) - Agent Builder Tool
+        - SKAD Method (SKM) - Core Framework
+        - SKAD Builder (BMB) - Agent Builder Tool
         - Test Architect (TEA) - Test Strategy Module
         - Game Dev Studio (BMGD) - Game Development Module
         - Creative Intelligence Suite (CIS) - Innovation Module
@@ -74,8 +74,8 @@ body:
   - type: input
     id: version
     attributes:
-      label: BMad Version
-      description: "Check with: npx bmad-method --version or check package.json"
+      label: SKAD Version
+      description: "Check with: npx skad-method --version or check package.json"
       placeholder: e.g., 6.0.0-Beta.4
     validations:
       required: true

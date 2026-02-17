@@ -2,21 +2,21 @@ const path = require('node:path');
 const fs = require('fs-extra');
 
 /**
- * Find the BMAD project root directory by looking for package.json
- * or specific BMAD markers
+ * Find the SKAD project root directory by looking for package.json
+ * or specific SKAD markers
  */
 function findProjectRoot(startPath = __dirname) {
   let currentPath = path.resolve(startPath);
 
-  // Keep going up until we find package.json with bmad-method
+  // Keep going up until we find package.json with skad-method
   while (currentPath !== path.dirname(currentPath)) {
     const packagePath = path.join(currentPath, 'package.json');
 
     if (fs.existsSync(packagePath)) {
       try {
         const pkg = fs.readJsonSync(packagePath);
-        // Check if this is the BMAD project
-        if (pkg.name === 'bmad-method' || fs.existsSync(path.join(currentPath, 'src', 'core'))) {
+        // Check if this is the SKAD project
+        if (pkg.name === 'skad-method' || fs.existsSync(path.join(currentPath, 'src', 'core'))) {
           return currentPath;
         }
       } catch {
@@ -55,7 +55,7 @@ function getSourcePath(...segments) {
 
 /**
  * Get path to a module's directory
- * bmm is a built-in module directly under src/
+ * skm is a built-in module directly under src/
  * core is also directly under src/
  * All other modules are stored remote
  */
@@ -63,8 +63,8 @@ function getModulePath(moduleName, ...segments) {
   if (moduleName === 'core') {
     return getSourcePath('core', ...segments);
   }
-  if (moduleName === 'bmm') {
-    return getSourcePath('bmm', ...segments);
+  if (moduleName === 'skm') {
+    return getSourcePath('skm', ...segments);
   }
   return getSourcePath('modules', moduleName, ...segments);
 }

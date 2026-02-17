@@ -14,7 +14,7 @@ const AgentPartyGenerator = {
 
     // Group agents by module
     const agentsByModule = {
-      bmm: [],
+      skm: [],
       cis: [],
       core: [],
       custom: [],
@@ -26,12 +26,12 @@ const AgentPartyGenerator = {
     }
 
     // Build XML content
-    let xmlContent = `<!-- Powered by BMAD-CORE™ -->
-<!-- Agent Manifest - Generated during BMAD ${forWeb ? 'bundling' : 'installation'} -->
+    let xmlContent = `<!-- Powered by SKAD-CORE™ -->
+<!-- Agent Manifest - Generated during SKAD ${forWeb ? 'bundling' : 'installation'} -->
 <!-- This file contains a summary of all ${forWeb ? 'bundled' : 'installed'} agents for quick reference -->
-<manifest id="bmad/_config/agent-manifest.csv" version="1.0" generated="${new Date().toISOString()}">
+<manifest id="skad/_config/agent-manifest.csv" version="1.0" generated="${new Date().toISOString()}">
   <description>
-    Complete roster of ${forWeb ? 'bundled' : 'installed'} BMAD agents with summarized personas for efficient multi-agent orchestration.
+    Complete roster of ${forWeb ? 'bundled' : 'installed'} SKAD agents with summarized personas for efficient multi-agent orchestration.
     Used by party-mode and other multi-agent coordination features.
   </description>
 `;
@@ -41,7 +41,7 @@ const AgentPartyGenerator = {
       if (agents.length === 0) continue;
 
       const moduleTitle =
-        module === 'bmm' ? 'BMM Module' : module === 'cis' ? 'CIS Module' : module === 'core' ? 'Core Module' : 'Custom Module';
+        module === 'skm' ? 'SKM Module' : module === 'cis' ? 'CIS Module' : module === 'core' ? 'Core Module' : 'Custom Module';
 
       xmlContent += `\n  <!-- ${moduleTitle} Agents -->\n`;
 
@@ -100,7 +100,7 @@ const AgentPartyGenerator = {
       const principlesMatch = agentXml.match(/<principles>([\s\S]*?)<\/principles>/);
 
       return {
-        id: `bmad/${moduleName}/agents/${agentName}.md`,
+        id: `skad/${moduleName}/agents/${agentName}.md`,
         name: nameMatch ? nameMatch[1] : agentName,
         title: titleMatch ? titleMatch[1] : 'Agent',
         icon: iconMatch ? iconMatch[1] : '🤖',

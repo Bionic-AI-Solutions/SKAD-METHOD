@@ -5,7 +5,7 @@ const yaml = require('yaml');
 const prompts = require('../../../lib/prompts');
 
 /**
- * Dependency Resolver for BMAD modules
+ * Dependency Resolver for SKAD modules
  * Handles cross-module dependencies and ensures all required files are included
  */
 class DependencyResolver {
@@ -17,12 +17,12 @@ class DependencyResolver {
 
   /**
    * Resolve all dependencies for selected modules
-   * @param {string} bmadDir - BMAD installation directory
+   * @param {string} skadDir - SKAD installation directory
    * @param {Array} selectedModules - Modules explicitly selected by user
    * @param {Object} options - Resolution options
    * @returns {Object} Resolution results with all required files
    */
-  async resolve(bmadDir, selectedModules = [], options = {}) {
+  async resolve(skadDir, selectedModules = [], options = {}) {
     if (options.verbose) {
       await prompts.log.info('Resolving module dependencies...');
     }
@@ -31,22 +31,22 @@ class DependencyResolver {
     const modulesToProcess = new Set(['core', ...selectedModules]);
 
     // First pass: collect all explicitly selected files
-    const primaryFiles = await this.collectPrimaryFiles(bmadDir, modulesToProcess, options);
+    const primaryFiles = await this.collectPrimaryFiles(skadDir, modulesToProcess, options);
 
     // Second pass: parse and resolve dependencies
     const allDependencies = await this.parseDependencies(primaryFiles);
 
     // Third pass: resolve dependency paths and collect files
-    const resolvedDeps = await this.resolveDependencyPaths(bmadDir, allDependencies);
+    const resolvedDeps = await this.resolveDependencyPaths(skadDir, allDependencies);
 
     // Fourth pass: check for transitive dependencies
-    const transitiveDeps = await this.resolveTransitiveDependencies(bmadDir, resolvedDeps);
+    const transitiveDeps = await this.resolveTransitiveDependencies(skadDir, resolvedDeps);
 
     // Combine all files
     const allFiles = new Set([...primaryFiles.map((f) => f.path), ...resolvedDeps, ...transitiveDeps]);
 
     // Organize by module
-    const organizedFiles = this.organizeByModule(bmadDir, allFiles);
+    const organizedFiles = this.organizeByModule(skadDir, allFiles);
 
     // Report results (only in verbose mode)
     if (options.verbose) {
@@ -66,7 +66,7 @@ class DependencyResolver {
   /**
    * Collect primary files from selected modules
    */
-  async collectPrimaryFiles(bmadDir, modules, options = {}) {
+  async collectPrimaryFiles(skadDir, modules, options = {}) {
     const files = [];
     const { moduleManager } = options;
 
@@ -76,17 +76,17 @@ class DependencyResolver {
         continue;
       }
 
-      // Handle both source (src/) and installed (bmad/) directory structures
+      // Handle both source (src/) and installed (skad/) directory structures
       let moduleDir;
 
       // Check if this is a source directory (has 'src' subdirectory)
-      const srcDir = path.join(bmadDir, 'src');
+      const srcDir = path.join(skadDir, 'src');
       if (await fs.pathExists(srcDir)) {
-        // Source directory structure: src/core or src/bmm
+        // Source directory structure: src/core or src/skm
         if (module === 'core') {
           moduleDir = path.join(srcDir, 'core');
-        } else if (module === 'bmm') {
-          moduleDir = path.join(srcDir, 'bmm');
+        } else if (module === 'skm') {
+          moduleDir = path.join(srcDir, 'skm');
         }
       }
 
@@ -201,8 +201,8 @@ class DependencyResolver {
       const fileRefs = this.parseFileReferences(content);
       for (const ref of fileRefs) {
         // Determine type based on path format
-        // Paths starting with bmad/ are absolute references to the bmad installation
-        const depType = ref.startsWith('bmad/') ? 'bmad-path' : 'file';
+        // Paths starting with skad/ are absolute references to the skad installation
+        const depType = ref.startsWith('skad/') ? 'skad-path' : 'file';
         allDeps.add({
           from: file.path,
           dependency: ref,
@@ -221,15 +221,15 @@ class DependencyResolver {
     const refs = new Set();
 
     // Match @task-{name} or @agent-{name} or @{module}-{type}-{name}
-    const commandPattern = /@(task-|agent-|bmad-)([a-z0-9-]+)/g;
+    const commandPattern = /@(task-|agent-|skad-)([a-z0-9-]+)/g;
     let match;
 
     while ((match = commandPattern.exec(content)) !== null) {
       refs.add(match[0]);
     }
 
-    // Match file paths like bmad/core/agents/analyst
-    const pathPattern = /bmad\/(core|bmm|cis)\/(agents|tasks)\/([a-z0-9-]+)/g;
+    // Match file paths like skad/core/agents/analyst
+    const pathPattern = /skad\/(core|skm|cis)\/(agents|tasks)\/([a-z0-9-]+)/g;
 
     while ((match = pathPattern.exec(content)) !== null) {
       refs.add(match[0]);
@@ -258,7 +258,7 @@ class DependencyResolver {
       let execPath = match[1];
       if (execPath && execPath !== '*') {
         // Remove {project-root} prefix to get the actual path
-        // Usage is like {project-root}/bmad/core/tasks/foo.md
+        // Usage is like {project-root}/skad/core/tasks/foo.md
         if (execPath.includes('{project-root}')) {
           execPath = execPath.replace('{project-root}', '');
         }
@@ -272,7 +272,7 @@ class DependencyResolver {
       let tmplPath = match[1];
       if (tmplPath && tmplPath !== '*') {
         // Remove {project-root} prefix to get the actual path
-        // Usage is like {project-root}/bmad/core/tasks/foo.md
+        // Usage is like {project-root}/skad/core/tasks/foo.md
         if (tmplPath.includes('{project-root}')) {
           tmplPath = tmplPath.replace('{project-root}', '');
         }
@@ -286,11 +286,11 @@ class DependencyResolver {
   /**
    * Resolve dependency paths to actual files
    */
-  async resolveDependencyPaths(bmadDir, dependencies) {
+  async resolveDependencyPaths(skadDir, dependencies) {
     const resolved = new Set();
 
     for (const dep of dependencies) {
-      const resolvedPaths = await this.resolveSingleDependency(bmadDir, dep);
+      const resolvedPaths = await this.resolveSingleDependency(skadDir, dep);
       for (const path of resolvedPaths) {
         resolved.add(path);
       }
@@ -302,7 +302,7 @@ class DependencyResolver {
   /**
    * Resolve a single dependency to file paths
    */
-  async resolveSingleDependency(bmadDir, dep) {
+  async resolveSingleDependency(skadDir, dep) {
     const paths = [];
 
     switch (dep.type) {
@@ -312,25 +312,25 @@ class DependencyResolver {
 
         // Handle {project-root} prefix if present
         if (depPath.includes('{project-root}')) {
-          // Remove {project-root} and resolve as bmad path
+          // Remove {project-root} and resolve as skad path
           depPath = depPath.replace('{project-root}', '');
 
-          if (depPath.startsWith('bmad/')) {
-            const bmadPath = depPath.replace(/^bmad\//, '');
+          if (depPath.startsWith('skad/')) {
+            const skadPath = depPath.replace(/^skad\//, '');
 
             // Handle glob patterns
             if (depPath.includes('*')) {
               // Extract the base path and pattern
-              const pathParts = bmadPath.split('/');
+              const pathParts = skadPath.split('/');
               const module = pathParts[0];
               const filePattern = pathParts.at(-1);
               const middlePath = pathParts.slice(1, -1).join('/');
 
               let basePath;
               if (module === 'core') {
-                basePath = path.join(bmadDir, 'core', middlePath);
+                basePath = path.join(skadDir, 'core', middlePath);
               } else {
-                basePath = path.join(bmadDir, 'modules', module, middlePath);
+                basePath = path.join(skadDir, 'modules', module, middlePath);
               }
 
               if (await fs.pathExists(basePath)) {
@@ -341,16 +341,16 @@ class DependencyResolver {
               }
             } else {
               // Direct path
-              if (bmadPath.startsWith('core/')) {
-                const corePath = path.join(bmadDir, bmadPath);
+              if (skadPath.startsWith('core/')) {
+                const corePath = path.join(skadDir, skadPath);
                 if (await fs.pathExists(corePath)) {
                   paths.push(corePath);
                 }
               } else {
-                const parts = bmadPath.split('/');
+                const parts = skadPath.split('/');
                 const module = parts[0];
                 const rest = parts.slice(1).join('/');
-                const modulePath = path.join(bmadDir, 'modules', module, rest);
+                const modulePath = path.join(skadDir, 'modules', module, rest);
 
                 if (await fs.pathExists(modulePath)) {
                   paths.push(modulePath);
@@ -388,42 +388,42 @@ class DependencyResolver {
       }
       case 'command': {
         // Resolve command references to actual files
-        const commandPath = await this.resolveCommandToPath(bmadDir, dep.dependency);
+        const commandPath = await this.resolveCommandToPath(skadDir, dep.dependency);
         if (commandPath) {
           paths.push(commandPath);
         }
 
         break;
       }
-      case 'bmad-path': {
-        // Resolve bmad/ paths (from {project-root}/bmad/... references)
+      case 'skad-path': {
+        // Resolve skad/ paths (from {project-root}/skad/... references)
         // These are paths relative to the src directory structure
-        const bmadPath = dep.dependency.replace(/^bmad\//, '');
+        const skadPath = dep.dependency.replace(/^skad\//, '');
 
         // Try to resolve as if it's in src structure
-        // bmad/core/tasks/foo.md -> src/core/tasks/foo.md
-        // bmad/bmm/tasks/bar.md -> src/bmm/tasks/bar.md (bmm is directly under src/)
-        // bmad/cis/agents/bar.md -> src/modules/cis/agents/bar.md
+        // skad/core/tasks/foo.md -> src/core/tasks/foo.md
+        // skad/skm/tasks/bar.md -> src/skm/tasks/bar.md (skm is directly under src/)
+        // skad/cis/agents/bar.md -> src/modules/cis/agents/bar.md
 
-        if (bmadPath.startsWith('core/')) {
-          const corePath = path.join(bmadDir, bmadPath);
+        if (skadPath.startsWith('core/')) {
+          const corePath = path.join(skadDir, skadPath);
           if (await fs.pathExists(corePath)) {
             paths.push(corePath);
           } else {
             // Not found, but don't report as missing since it might be installed later
           }
         } else {
-          // It's a module path like bmm/tasks/foo.md or cis/agents/bar.md
-          const parts = bmadPath.split('/');
+          // It's a module path like skm/tasks/foo.md or cis/agents/bar.md
+          const parts = skadPath.split('/');
           const module = parts[0];
           const rest = parts.slice(1).join('/');
           let modulePath;
-          if (module === 'bmm') {
-            // bmm is directly under src/
-            modulePath = path.join(bmadDir, module, rest);
+          if (module === 'skm') {
+            // skm is directly under src/
+            modulePath = path.join(skadDir, module, rest);
           } else {
             // Other modules are under modules/
-            modulePath = path.join(bmadDir, 'modules', module, rest);
+            modulePath = path.join(skadDir, 'modules', module, rest);
           }
 
           if (await fs.pathExists(modulePath)) {
@@ -441,24 +441,24 @@ class DependencyResolver {
 
         // Handle {project-root} prefix if present
         if (templateDep.includes('{project-root}')) {
-          // Remove {project-root} and treat as bmad-path
+          // Remove {project-root} and treat as skad-path
           templateDep = templateDep.replace('{project-root}', '');
 
-          // Now resolve as a bmad path
-          if (templateDep.startsWith('bmad/')) {
-            const bmadPath = templateDep.replace(/^bmad\//, '');
+          // Now resolve as a skad path
+          if (templateDep.startsWith('skad/')) {
+            const skadPath = templateDep.replace(/^skad\//, '');
 
-            if (bmadPath.startsWith('core/')) {
-              const corePath = path.join(bmadDir, bmadPath);
+            if (skadPath.startsWith('core/')) {
+              const corePath = path.join(skadDir, skadPath);
               if (await fs.pathExists(corePath)) {
                 paths.push(corePath);
               }
             } else {
               // Module path like cis/templates/brainstorm.md
-              const parts = bmadPath.split('/');
+              const parts = skadPath.split('/');
               const module = parts[0];
               const rest = parts.slice(1).join('/');
-              const modulePath = path.join(bmadDir, 'modules', module, rest);
+              const modulePath = path.join(skadDir, 'modules', module, rest);
 
               if (await fs.pathExists(modulePath)) {
                 paths.push(modulePath);
@@ -488,17 +488,17 @@ class DependencyResolver {
   /**
    * Resolve command reference to file path
    */
-  async resolveCommandToPath(bmadDir, command) {
-    // Parse command format: @task-name or @agent-name or bmad/module/type/name
+  async resolveCommandToPath(skadDir, command) {
+    // Parse command format: @task-name or @agent-name or skad/module/type/name
 
     if (command.startsWith('@task-')) {
       const taskName = command.slice(6);
       // Search all modules for this task
-      for (const module of ['core', 'bmm', 'cis']) {
+      for (const module of ['core', 'skm', 'cis']) {
         const taskPath =
           module === 'core'
-            ? path.join(bmadDir, 'core', 'tasks', `${taskName}.md`)
-            : path.join(bmadDir, 'modules', module, 'tasks', `${taskName}.md`);
+            ? path.join(skadDir, 'core', 'tasks', `${taskName}.md`)
+            : path.join(skadDir, 'modules', module, 'tasks', `${taskName}.md`);
         if (await fs.pathExists(taskPath)) {
           return taskPath;
         }
@@ -506,16 +506,16 @@ class DependencyResolver {
     } else if (command.startsWith('@agent-')) {
       const agentName = command.slice(7);
       // Search all modules for this agent
-      for (const module of ['core', 'bmm', 'cis']) {
+      for (const module of ['core', 'skm', 'cis']) {
         const agentPath =
           module === 'core'
-            ? path.join(bmadDir, 'core', 'agents', `${agentName}.md`)
-            : path.join(bmadDir, 'modules', module, 'agents', `${agentName}.md`);
+            ? path.join(skadDir, 'core', 'agents', `${agentName}.md`)
+            : path.join(skadDir, 'modules', module, 'agents', `${agentName}.md`);
         if (await fs.pathExists(agentPath)) {
           return agentPath;
         }
       }
-    } else if (command.startsWith('bmad/')) {
+    } else if (command.startsWith('skad/')) {
       // Direct path reference
       const parts = command.split('/');
       if (parts.length >= 4) {
@@ -526,7 +526,7 @@ class DependencyResolver {
         const fileName = name.endsWith('.md') ? name : `${name}.md`;
 
         const filePath =
-          module === 'core' ? path.join(bmadDir, 'core', type, fileName) : path.join(bmadDir, 'modules', module, type, fileName);
+          module === 'core' ? path.join(skadDir, 'core', type, fileName) : path.join(skadDir, 'modules', module, type, fileName);
         if (await fs.pathExists(filePath)) {
           return filePath;
         }
@@ -544,7 +544,7 @@ class DependencyResolver {
   /**
    * Resolve transitive dependencies (dependencies of dependencies)
    */
-  async resolveTransitiveDependencies(bmadDir, directDeps) {
+  async resolveTransitiveDependencies(skadDir, directDeps) {
     const transitive = new Set();
     const processed = new Set();
 
@@ -560,12 +560,12 @@ class DependencyResolver {
           {
             path: depPath,
             type: 'dependency',
-            module: this.getModuleFromPath(bmadDir, depPath),
+            module: this.getModuleFromPath(skadDir, depPath),
             name: path.basename(depPath),
           },
         ]);
 
-        const resolvedSubDeps = await this.resolveDependencyPaths(bmadDir, subDeps);
+        const resolvedSubDeps = await this.resolveDependencyPaths(skadDir, subDeps);
         for (const subDep of resolvedSubDeps) {
           if (!directDeps.has(subDep)) {
             transitive.add(subDep);
@@ -580,16 +580,16 @@ class DependencyResolver {
   /**
    * Get module name from file path
    */
-  getModuleFromPath(bmadDir, filePath) {
-    const relative = path.relative(bmadDir, filePath);
+  getModuleFromPath(skadDir, filePath) {
+    const relative = path.relative(skadDir, filePath);
     const parts = relative.split(path.sep);
 
-    // Handle source directory structure (src/core, src/bmm, or src/modules/xxx)
+    // Handle source directory structure (src/core, src/skm, or src/modules/xxx)
     if (parts[0] === 'src') {
       if (parts[1] === 'core') {
         return 'core';
-      } else if (parts[1] === 'bmm') {
-        return 'bmm';
+      } else if (parts[1] === 'skm') {
+        return 'skm';
       } else if (parts[1] === 'modules' && parts.length > 2) {
         return parts[2];
       }
@@ -611,11 +611,11 @@ class DependencyResolver {
   /**
    * Organize files by module
    */
-  organizeByModule(bmadDir, files) {
+  organizeByModule(skadDir, files) {
     const organized = {};
 
     for (const file of files) {
-      const module = this.getModuleFromPath(bmadDir, file);
+      const module = this.getModuleFromPath(skadDir, file);
       if (!organized[module]) {
         organized[module] = {
           agents: [],
@@ -631,14 +631,14 @@ class DependencyResolver {
       let moduleBase;
 
       // Check if file is in source directory structure
-      if (file.includes('/src/core/') || file.includes('/src/bmm/')) {
+      if (file.includes('/src/core/') || file.includes('/src/skm/')) {
         if (module === 'core') {
-          moduleBase = path.join(bmadDir, 'src', 'core');
-        } else if (module === 'bmm') {
-          moduleBase = path.join(bmadDir, 'src', 'bmm');
+          moduleBase = path.join(skadDir, 'src', 'core');
+        } else if (module === 'skm') {
+          moduleBase = path.join(skadDir, 'src', 'skm');
         }
       } else {
-        moduleBase = module === 'core' ? path.join(bmadDir, 'core') : path.join(bmadDir, 'modules', module);
+        moduleBase = module === 'core' ? path.join(skadDir, 'core') : path.join(skadDir, 'modules', module);
       }
 
       const relative = path.relative(moduleBase, file);

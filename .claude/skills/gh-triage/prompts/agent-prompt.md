@@ -44,7 +44,7 @@ Read the issues in your batch and provide DEEP analysis:
     }
   ],
   "cross_repo_issues": [
-    {"number": 123, "target_repo": "bmad-builder", "reason": "about agent builder"}
+    {"number": 123, "target_repo": "skad-builder", "reason": "about agent builder"}
   ],
   "cleanup_candidates": [
     {"number": 456, "reason": "v4-related/outdated/duplicate"}

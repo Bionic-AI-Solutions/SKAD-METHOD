@@ -1,28 +1,28 @@
 const path = require('node:path');
 const fs = require('fs-extra');
-const { toColonPath, toDashPath, customAgentColonName, customAgentDashName, BMAD_FOLDER_NAME } = require('./path-utils');
+const { toColonPath, toDashPath, customAgentColonName, customAgentDashName, SKAD_FOLDER_NAME } = require('./path-utils');
 
 /**
  * Generates launcher command files for each agent
  * Similar to WorkflowCommandGenerator but for agents
  */
 class AgentCommandGenerator {
-  constructor(bmadFolderName = BMAD_FOLDER_NAME) {
+  constructor(skadFolderName = SKAD_FOLDER_NAME) {
     this.templatePath = path.join(__dirname, '../templates/agent-command-template.md');
-    this.bmadFolderName = bmadFolderName;
+    this.skadFolderName = skadFolderName;
   }
 
   /**
    * Collect agent artifacts for IDE installation
-   * @param {string} bmadDir - BMAD installation directory
+   * @param {string} skadDir - SKAD installation directory
    * @param {Array} selectedModules - Modules to include
    * @returns {Object} Artifacts array with metadata
    */
-  async collectAgentArtifacts(bmadDir, selectedModules = []) {
-    const { getAgentsFromBmad } = require('./bmad-artifacts');
+  async collectAgentArtifacts(skadDir, selectedModules = []) {
+    const { getAgentsFromSkad } = require('./skad-artifacts');
 
-    // Get agents from INSTALLED bmad/ directory
-    const agents = await getAgentsFromBmad(bmadDir, selectedModules);
+    // Get agents from INSTALLED skad/ directory
+    const agents = await getAgentsFromSkad(skadDir, selectedModules);
 
     const artifacts = [];
 
@@ -30,14 +30,14 @@ class AgentCommandGenerator {
       const launcherContent = await this.generateLauncherContent(agent);
       // Use relativePath if available (for nested agents), otherwise just name with .md
       const agentPathInModule = agent.relativePath || `${agent.name}.md`;
-      // Calculate the relative agent path (e.g., bmm/agents/pm.md)
+      // Calculate the relative agent path (e.g., skm/agents/pm.md)
       let agentRelPath = agent.path || '';
       // Normalize path separators for cross-platform compatibility
       agentRelPath = agentRelPath.replaceAll('\\', '/');
-      // Remove _bmad/ prefix if present to get relative path from project root
-      // Handle both absolute paths (/path/to/_bmad/...) and relative paths (_bmad/...)
-      if (agentRelPath.includes('_bmad/')) {
-        const parts = agentRelPath.split(/_bmad\//);
+      // Remove _skad/ prefix if present to get relative path from project root
+      // Handle both absolute paths (/path/to/_skad/...) and relative paths (_skad/...)
+      if (agentRelPath.includes('_skad/')) {
+        const parts = agentRelPath.split(/_skad\//);
         if (parts.length > 1) {
           agentRelPath = parts.slice(1).join('/');
         }
@@ -79,8 +79,8 @@ class AgentCommandGenerator {
       .replaceAll('{{module}}', agent.module)
       .replaceAll('{{path}}', agentPathInModule)
       .replaceAll('{{description}}', agent.description || `${agent.name} agent`)
-      .replaceAll('_bmad', this.bmadFolderName)
-      .replaceAll('_bmad', '_bmad');
+      .replaceAll('_skad', this.skadFolderName)
+      .replaceAll('_skad', '_skad');
   }
 
   /**
@@ -108,7 +108,7 @@ class AgentCommandGenerator {
 
   /**
    * Write agent launcher artifacts using underscore format (Windows-compatible)
-   * Creates flat files like: bmad_bmm_pm.md
+   * Creates flat files like: skad_skm_pm.md
    *
    * @param {string} baseCommandsDir - Base commands directory for the IDE
    * @param {Array} artifacts - Agent launcher artifacts
@@ -119,7 +119,7 @@ class AgentCommandGenerator {
 
     for (const artifact of artifacts) {
       if (artifact.type === 'agent-launcher') {
-        // Convert relativePath to underscore format: bmm/agents/pm.md → bmad_bmm_pm.md
+        // Convert relativePath to underscore format: skm/agents/pm.md → skad_skm_pm.md
         const flatName = toColonPath(artifact.relativePath);
         const launcherPath = path.join(baseCommandsDir, flatName);
         await fs.ensureDir(path.dirname(launcherPath));
@@ -133,9 +133,9 @@ class AgentCommandGenerator {
 
   /**
    * Write agent launcher artifacts using dash format (NEW STANDARD)
-   * Creates flat files like: bmad-agent-bmm-pm.md
+   * Creates flat files like: skad-agent-skm-pm.md
    *
-   * The bmad-agent- prefix distinguishes agents from workflows/tasks/tools.
+   * The skad-agent- prefix distinguishes agents from workflows/tasks/tools.
    *
    * @param {string} baseCommandsDir - Base commands directory for the IDE
    * @param {Array} artifacts - Agent launcher artifacts
@@ -146,7 +146,7 @@ class AgentCommandGenerator {
 
     for (const artifact of artifacts) {
       if (artifact.type === 'agent-launcher') {
-        // Convert relativePath to dash format: bmm/agents/pm.md → bmad-agent-bmm-pm.md
+        // Convert relativePath to dash format: skm/agents/pm.md → skad-agent-skm-pm.md
         const flatName = toDashPath(artifact.relativePath);
         const launcherPath = path.join(baseCommandsDir, flatName);
         await fs.ensureDir(path.dirname(launcherPath));

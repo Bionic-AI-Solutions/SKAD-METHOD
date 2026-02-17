@@ -1,10 +1,10 @@
 # Agent Schema Validation Test Suite
 
-Comprehensive test coverage for the BMAD agent schema validation system.
+Comprehensive test coverage for the SKAD agent schema validation system.
 
 ## Overview
 
-This test suite validates the Zod-based schema validator (`tools/schema/agent.js`) that ensures all `*.agent.yaml` files conform to the BMAD agent specification.
+This test suite validates the Zod-based schema validator (`tools/schema/agent.js`) that ensures all `*.agent.yaml` files conform to the SKAD agent specification.
 
 ## Test Statistics
 
@@ -224,7 +224,7 @@ See **[MANUAL-TESTING.md](./MANUAL-TESTING.md)** for detailed manual testing pro
 
 Edge cases covered include:
 
-- Malformed module paths (e.g., `src/bmm` without `/agents/`)
+- Malformed module paths (e.g., `src/skm` without `/agents/`)
 - Empty module names in paths (e.g., `src/modules//agents/`)
 - Whitespace-only module field values
 - All validation error paths
@@ -240,7 +240,7 @@ To add new test cases:
    ```yaml
    # Test: Description of what this tests
    # Expected: PASS (or FAIL - error description)
-   # Path context: src/bmm/agents/test.agent.yaml (if needed)
+   # Path context: src/skm/agents/test.agent.yaml (if needed)
    ```
 
 3. Run the test suite to verify: `npm test`

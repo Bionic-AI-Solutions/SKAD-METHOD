@@ -2,7 +2,7 @@
 
 ## Goal
 
-Create a reference documentation page at `docs/reference/modules.md` that lists all official external BMad modules with descriptions and links.
+Create a reference documentation page at `docs/reference/modules.md` that lists all official external SKAD modules with descriptions and links.
 
 ## Source of Truth
 
@@ -41,15 +41,15 @@ title: Official Modules
 
 ## Content Requirements
 
-- Start with a brief intro explaining that BMad extends through official modules selected during installation
+- Start with a brief intro explaining that SKAD extends through official modules selected during installation
 - For each module include:
   - `##` header with module name
   - 1-2 sentence description (sourced from GitHub README, not just the registry's short description)
   - Key info list: module code, npm package (linked), GitHub repo (linked)
   - Brief bullet list of what it provides (agents, workflows, key features) — keep to 3-5 bullets
-- Include a `:::tip` admonition about how to install modules (via `npx bmad-method` installer)
+- Include a `:::tip` admonition about how to install modules (via `npx skad-method` installer)
 - Mention that community modules and a marketplace are coming
-- Do NOT include built-in modules (core, bmm) — this page is specifically for external/add-on modules
+- Do NOT include built-in modules (core, skm) — this page is specifically for external/add-on modules
 
 ## Existing Pages for Reference
 

@@ -1,0 +1,12 @@
+# Ralph Loop Integration for Developer Agent
+# This file is copied to _skad/_config/agents/ during installation.
+# It appends memories and critical_actions to the Developer agent (Amelia).
+
+memories:
+  - "Ralph loop (ralph-skad.sh) runs Claude Code in fresh-context iterations for autonomous story execution"
+  - "Each ralph iteration reads PROMPT.md, works on ONE task from Ralph Tasks JSON, verifies, logs, commits, exits"
+  - "Ralph Tasks JSON uses passes:true/false alongside markdown checkboxes - both must stay in sync"
+  - "DS now triggers Ralph Dev Story by default. Use DSC for the classic in-context subagent workflow"
+
+critical_actions:
+  - "When DS is triggered, the Ralph Dev Story workflow generates PROMPT.md and launches ralph-skad.sh"

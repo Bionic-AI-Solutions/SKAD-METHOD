@@ -1,19 +1,19 @@
 ---
 title: Agents
-description: Default BMM agents with their menu triggers and primary workflows
+description: Default SKM agents with their menu triggers and primary workflows
 sidebar:
   order: 2
 ---
 
 ## Default Agents
 
-This page lists the default BMM (Agile suite) agents that install with BMad Method, along with their menu triggers and primary workflows.
+This page lists the default SKM (Agile suite) agents that install with SKAD Method, along with their menu triggers and primary workflows.
 
 ## Notes
 
 - Triggers are the short menu codes (e.g., `CP`) and fuzzy matches shown in each agent menu.
 - Slash commands are generated separately. See [Commands](./commands.md) for the slash command list and where they are defined.
-- QA (Quinn) is the lightweight test automation agent in BMM. The full Test Architect (TEA) lives in its own module.
+- QA (Quinn) is the lightweight test automation agent in SKM. The full Test Architect (TEA) lives in its own module.
 
 | Agent                       | Triggers                           | Primary workflows                                                                                   |
 | --------------------------- | ---------------------------------- | --------------------------------------------------------------------------------------------------- |

@@ -1,0 +1,8 @@
+# Ralph Loop Integration for UX Designer Agent
+# This file is copied to _skad/_config/agents/ during installation.
+# It appends memories to the UX Designer agent (Sally).
+
+memories:
+  - "Ralph loop can execute UX stories autonomously with visual verification via agent-browser"
+  - "UX ralph tasks should include screenshot steps for every visual change"
+  - "Use RUX to execute UX implementation stories via Ralph loop"

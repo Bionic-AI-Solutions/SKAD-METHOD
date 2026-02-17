@@ -1,19 +1,19 @@
 ---
 title: "Workflow Map"
-description: Visual reference for BMad Method workflow phases and outputs
+description: Visual reference for SKAD Method workflow phases and outputs
 sidebar:
   order: 1
 ---
 
-The BMad Method (BMM) is a module in the BMad Ecosystem, targeted at following the best practices of context engineering and planning. AI agents work best with clear, structured context. The BMM system builds that context progressively across 4 distinct phases - each phase, and multiple workflows optionally within each phase, produce documents that inform the next, so agents always know what to build and why.
+The SKAD Method (SKM) is a module in the SKAD Ecosystem, targeted at following the best practices of context engineering and planning. AI agents work best with clear, structured context. The SKM system builds that context progressively across 4 distinct phases - each phase, and multiple workflows optionally within each phase, produce documents that inform the next, so agents always know what to build and why.
 
 The rationale and concepts come from agile methodologies that have been used across the industry with great success as a mental framework.
 
-If at any time you are unsure what to do, the `/bmad-help` command will help you stay on track or know what to do next. You can always refer to this for reference also - but /bmad-help is fully interactive and much quicker if you have already installed the BMad Method. Additionally, if you are using different modules that have extended the BMad Method or added other complementary non-extension modules - the /bmad-help evolves to know all that is available to give you the best in-the-moment advice.
+If at any time you are unsure what to do, the `/skad-help` command will help you stay on track or know what to do next. You can always refer to this for reference also - but /skad-help is fully interactive and much quicker if you have already installed the SKAD Method. Additionally, if you are using different modules that have extended the SKAD Method or added other complementary non-extension modules - the /skad-help evolves to know all that is available to give you the best in-the-moment advice.
 
 Final important note: Every workflow below can be run directly with your tool of choice via slash command or by loading an agent first and using the entry from the agents menu.
 
-<iframe src="/workflow-map-diagram.html" title="BMad Method Workflow Map Diagram" width="100%" height="100%" style="border-radius: 8px; border: 1px solid #334155; min-height: 900px;"></iframe>
+<iframe src="/workflow-map-diagram.html" title="SKAD Method Workflow Map Diagram" width="100%" height="100%" style="border-radius: 8px; border: 1px solid #334155; min-height: 900px;"></iframe>
 
 <p style="font-size: 0.8rem; text-align: right; margin-top: -0.5rem; margin-bottom: 1rem;">
   <a href="/workflow-map-diagram.html" target="_blank" rel="noopener noreferrer">Open diagram in new tab ↗</a>
@@ -62,7 +62,7 @@ Build it, one story at a time.
 | `correct-course`  | Handle significant mid-sprint changes  | Updated plan or re-routing    |
 | `retrospective`   | Review after epic completion           | Lessons learned               |
 
-**Quinn (QA Agent):** Built-in QA agent for test automation. Trigger with `QA` or `bmad-bmm-qa-automate`. Generates standard API and E2E tests using your project's test framework. Beginner-friendly, no configuration needed. For advanced test strategy, install [Test Architect (TEA)](https://bmad-code-org.github.io/bmad-method-test-architecture-enterprise/) module.
+**Quinn (QA Agent):** Built-in QA agent for test automation. Trigger with `QA` or `skad-skm-qa-automate`. Generates standard API and E2E tests using your project's test framework. Beginner-friendly, no configuration needed. For advanced test strategy, install [Test Architect (TEA)](https://skad-code-org.github.io/skad-method-test-architecture-enterprise/) module.
 
 ## Quick Flow (Parallel Track)
 

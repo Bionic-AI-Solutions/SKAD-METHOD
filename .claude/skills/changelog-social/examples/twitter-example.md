@@ -1,4 +1,4 @@
-🚀 **BMad v6.0.0-alpha.23 RELEASED!**
+🚀 **SKAD v6.0.0-alpha.23 RELEASED!**
 
 Huge update - we're almost at Beta! 🎉
 
@@ -15,7 +15,7 @@ Huge update - we're almost at Beta! 🎉
 • Path violation checks ensure integrity
 • Beyond error checking - offers optimization & flow suggestions!
 
-📚 **NEW DOCS SITE** - docs.bmad-method.org
+📚 **NEW DOCS SITE** - docs.skad-method.org
 • Diataxis framework: Tutorials, How-To, Explanations, References
 • Current docs still being revised
 • Tutorials, blogs & explainers coming soon!
@@ -39,15 +39,15 @@ Huge update - we're almost at Beta! 🎉
 Community-driven FTW! 🌟
 
 📦 **INSTALL ALPHA:**
-`npx bmad-method install`
+`npx skad-method install`
 
 ⭐ **SUPPORT US:**
-🌟 GitHub: github.com/bmad-code-org/BMAD-METHOD/
-📺 YouTube: youtube.com/@BMadCode
+🌟 GitHub: github.com/skad-code-org/SKAD-METHOD/
+📺 YouTube: youtube.com/@SKADCode
 
 🎤 **SPEAKING & MEDIA**
 Available for conferences, podcasts, media appearances!
-Topics: AI-Native Organizations (Any Industry), BMad Method
+Topics: AI-Native Organizations (Any Industry), SKAD Method
 DM on Discord for inquiries!
 
 🔥 **V6 Beta is DAYS away!** January 22nd ETA!

@@ -7,7 +7,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        Help us improve the BMad Method documentation!
+        Help us improve the SKAD Method documentation!
 
   - type: dropdown
     id: doc-type
@@ -28,7 +28,7 @@ body:
     attributes:
       label: Documentation location
       description: Where is the documentation that needs improvement?
-      placeholder: e.g., http://docs.bmad-method.org/tutorials/getting-started/ or "In the README"
+      placeholder: e.g., http://docs.skad-method.org/tutorials/getting-started/ or "In the README"
     validations:
       required: true
 
@@ -51,5 +51,5 @@ body:
   - type: input
     id: version
     attributes:
-      label: BMad Version (if applicable)
+      label: SKAD Version (if applicable)
       placeholder: e.g., 6.0.0-Beta.4

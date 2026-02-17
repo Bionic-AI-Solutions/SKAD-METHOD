@@ -51,7 +51,7 @@ class UI {
       confirmedDirectory = await this.getConfirmedDirectory();
     }
 
-    // Preflight: Check for legacy BMAD v4 footprints immediately after getting directory
+    // Preflight: Check for legacy SKAD v4 footprints immediately after getting directory
     const { Detector } = require('../installers/lib/core/detector');
     const { Installer } = require('../installers/lib/core/installer');
     const detector = new Detector();
@@ -63,22 +63,22 @@ class UI {
 
     // Check for legacy folders and prompt for rename before showing any menus
     let hasLegacyCfg = false;
-    let hasLegacyBmadFolder = false;
-    let bmadDir = null;
-    let legacyBmadPath = null;
+    let hasLegacySkadFolder = false;
+    let skadDir = null;
+    let legacySkadPath = null;
 
-    // First check for legacy .bmad folder (instead of _bmad)
+    // First check for legacy .skad folder (instead of _skad)
     // Only check if directory exists
     if (await fs.pathExists(confirmedDirectory)) {
       const entries = await fs.readdir(confirmedDirectory, { withFileTypes: true });
       for (const entry of entries) {
-        if (entry.isDirectory() && (entry.name === '.bmad' || entry.name === 'bmad')) {
-          hasLegacyBmadFolder = true;
-          legacyBmadPath = path.join(confirmedDirectory, entry.name);
-          bmadDir = legacyBmadPath;
+        if (entry.isDirectory() && (entry.name === '.skad' || entry.name === 'skad')) {
+          hasLegacySkadFolder = true;
+          legacySkadPath = path.join(confirmedDirectory, entry.name);
+          skadDir = legacySkadPath;
 
           // Check if it has _cfg folder
-          const cfgPath = path.join(legacyBmadPath, '_cfg');
+          const cfgPath = path.join(legacySkadPath, '_cfg');
           if (await fs.pathExists(cfgPath)) {
             hasLegacyCfg = true;
           }
@@ -87,29 +87,29 @@ class UI {
       }
     }
 
-    // If no .bmad or bmad found, check for current installations _bmad
-    if (!hasLegacyBmadFolder) {
-      const bmadResult = await installer.findBmadDir(confirmedDirectory);
-      bmadDir = bmadResult.bmadDir;
-      hasLegacyCfg = bmadResult.hasLegacyCfg;
+    // If no .skad or skad found, check for current installations _skad
+    if (!hasLegacySkadFolder) {
+      const skadResult = await installer.findSkadDir(confirmedDirectory);
+      skadDir = skadResult.skadDir;
+      hasLegacyCfg = skadResult.hasLegacyCfg;
     }
 
-    // Handle legacy .bmad or _cfg folder - these are very old (v4 or alpha)
+    // Handle legacy .skad or _cfg folder - these are very old (v4 or alpha)
     // Show version warning instead of offering conversion
-    if (hasLegacyBmadFolder || hasLegacyCfg) {
+    if (hasLegacySkadFolder || hasLegacyCfg) {
       await prompts.log.warn('LEGACY INSTALLATION DETECTED');
       await prompts.note(
-        'Found a ".bmad"/"bmad" folder, or a legacy "_cfg" folder under the bmad folder -\n' +
-          'this is from an old BMAD version that is out of date for automatic upgrade,\n' +
+        'Found a ".skad"/"skad" folder, or a legacy "_cfg" folder under the skad folder -\n' +
+          'this is from an old SKAD version that is out of date for automatic upgrade,\n' +
           'manual intervention required.\n\n' +
           'You have a legacy version installed (v4 or alpha).\n' +
           'Legacy installations may have compatibility issues.\n\n' +
           'For the best experience, we strongly recommend:\n' +
-          '  1. Delete your current BMAD installation folder (.bmad or bmad)\n' +
+          '  1. Delete your current SKAD installation folder (.skad or skad)\n' +
           '  2. Run a fresh installation\n\n' +
           'If you do not want to start fresh, you can attempt to proceed beyond this\n' +
-          'point IF you have ensured the bmad folder is named _bmad, and under it there\n' +
-          'is a _config folder. If you have a folder under your bmad folder named _cfg,\n' +
+          'point IF you have ensured the skad folder is named _skad, and under it there\n' +
+          'is a _config folder. If you have a folder under your skad folder named _cfg,\n' +
           'you would need to rename it _config, and then restart the installer.\n\n' +
           'Benefits of a fresh install:\n' +
           '  \u2022 Cleaner configuration without legacy artifacts\n' +
@@ -138,7 +138,7 @@ class UI {
       });
 
       if (proceed === 'cancel') {
-        await prompts.note('1. Delete the existing bmad folder in your project\n' + "2. Run 'bmad install' again", 'To do a fresh install');
+        await prompts.note('1. Delete the existing skad folder in your project\n' + "2. Run 'skad install' again", 'To do a fresh install');
         process.exit(0);
         return;
       }
@@ -146,19 +146,19 @@ class UI {
       const s = await prompts.spinner();
       s.start('Updating folder structure...');
       try {
-        // Handle .bmad folder
-        if (hasLegacyBmadFolder) {
-          const newBmadPath = path.join(confirmedDirectory, '_bmad');
-          await fs.move(legacyBmadPath, newBmadPath);
-          bmadDir = newBmadPath;
-          s.stop(`Renamed "${path.basename(legacyBmadPath)}" to "_bmad"`);
+        // Handle .skad folder
+        if (hasLegacySkadFolder) {
+          const newSkadPath = path.join(confirmedDirectory, '_skad');
+          await fs.move(legacySkadPath, newSkadPath);
+          skadDir = newSkadPath;
+          s.stop(`Renamed "${path.basename(legacySkadPath)}" to "_skad"`);
         }
 
-        // Handle _cfg folder (either from .bmad or standalone)
-        const cfgPath = path.join(bmadDir, '_cfg');
+        // Handle _cfg folder (either from .skad or standalone)
+        const cfgPath = path.join(skadDir, '_cfg');
         if (await fs.pathExists(cfgPath)) {
           s.start('Renaming configuration folder...');
-          const newCfgPath = path.join(bmadDir, '_config');
+          const newCfgPath = path.join(skadDir, '_config');
           await fs.move(cfgPath, newCfgPath);
           s.stop('Renamed "_cfg" to "_config"');
         }
@@ -169,8 +169,8 @@ class UI {
       }
     }
 
-    // Check if there's an existing BMAD installation (after any folder renames)
-    const hasExistingInstall = await fs.pathExists(bmadDir);
+    // Check if there's an existing SKAD installation (after any folder renames)
+    const hasExistingInstall = await fs.pathExists(skadDir);
 
     let customContentConfig = { hasCustomContent: false };
     if (!hasExistingInstall) {
@@ -183,13 +183,13 @@ class UI {
     // Only show action menu if there's an existing installation
     if (hasExistingInstall) {
       // Get version information
-      const { existingInstall, bmadDir } = await this.getExistingInstallation(confirmedDirectory);
+      const { existingInstall, skadDir } = await this.getExistingInstallation(confirmedDirectory);
       const packageJsonPath = path.join(__dirname, '../../../package.json');
       const currentVersion = require(packageJsonPath).version;
       const installedVersion = existingInstall.version || 'unknown';
 
       // Check if version is pre beta
-      const shouldProceed = await this.showLegacyVersionWarning(installedVersion, currentVersion, path.basename(bmadDir));
+      const shouldProceed = await this.showLegacyVersionWarning(installedVersion, currentVersion, path.basename(skadDir));
 
       // If user chose to cancel, exit the installer
       if (!shouldProceed) {
@@ -217,7 +217,7 @@ class UI {
       }
 
       // Common actions
-      choices.push({ name: 'Modify BMAD Installation', value: 'update' });
+      choices.push({ name: 'Modify SKAD Installation', value: 'update' });
 
       // Check if action is provided via command-line
       if (options.action) {
@@ -342,9 +342,9 @@ class UI {
             // Preserve existing custom modules if user doesn't want to modify them
             const { Installer } = require('../installers/lib/core/installer');
             const installer = new Installer();
-            const { bmadDir } = await installer.findBmadDir(confirmedDirectory);
+            const { skadDir } = await installer.findSkadDir(confirmedDirectory);
 
-            const cacheDir = path.join(bmadDir, '_config', 'custom');
+            const cacheDir = path.join(skadDir, '_config', 'custom');
             if (await fs.pathExists(cacheDir)) {
               const entries = await fs.readdir(cacheDir, { withFileTypes: true });
               for (const entry of entries) {
@@ -494,14 +494,14 @@ class UI {
    * @returns {Object} Tool configuration
    */
   async promptToolSelection(projectDir, options = {}) {
-    // Check for existing configured IDEs - use findBmadDir to detect custom folder names
+    // Check for existing configured IDEs - use findSkadDir to detect custom folder names
     const { Detector } = require('../installers/lib/core/detector');
     const { Installer } = require('../installers/lib/core/installer');
     const detector = new Detector();
     const installer = new Installer();
-    const bmadResult = await installer.findBmadDir(projectDir || process.cwd());
-    const bmadDir = bmadResult.bmadDir;
-    const existingInstall = await detector.detect(bmadDir);
+    const skadResult = await installer.findSkadDir(projectDir || process.cwd());
+    const skadDir = skadResult.skadDir;
+    const existingInstall = await detector.detect(skadDir);
     const configuredIdes = existingInstall.ides || [];
 
     // Get IDE manager to fetch available IDEs dynamically
@@ -700,7 +700,7 @@ class UI {
     if (result.modules && result.modules.length > 0) {
       summary += `\nModules: ${result.modules.join(', ')}`;
     }
-    await prompts.note(summary, 'BMAD is ready to use!');
+    await prompts.note(summary, 'SKAD is ready to use!');
   }
 
   /**
@@ -723,19 +723,19 @@ class UI {
   /**
    * Get existing installation info and installed modules
    * @param {string} directory - Installation directory
-   * @returns {Object} Object with existingInstall, installedModuleIds, and bmadDir
+   * @returns {Object} Object with existingInstall, installedModuleIds, and skadDir
    */
   async getExistingInstallation(directory) {
     const { Detector } = require('../installers/lib/core/detector');
     const { Installer } = require('../installers/lib/core/installer');
     const detector = new Detector();
     const installer = new Installer();
-    const bmadDirResult = await installer.findBmadDir(directory);
-    const bmadDir = bmadDirResult.bmadDir;
-    const existingInstall = await detector.detect(bmadDir);
+    const skadDirResult = await installer.findSkadDir(directory);
+    const skadDir = skadDirResult.skadDir;
+    const existingInstall = await detector.detect(skadDir);
     const installedModuleIds = new Set(existingInstall.modules.map((mod) => mod.id));
 
-    return { existingInstall, installedModuleIds, bmadDir };
+    return { existingInstall, installedModuleIds, skadDir };
   }
 
   /**
@@ -800,7 +800,7 @@ class UI {
           user_name: defaultUsername,
           communication_language: 'English',
           document_output_language: 'English',
-          output_folder: '_bmad-output',
+          output_folder: '_skad-output',
         };
         await prompts.log.info('Using default configuration (--yes flag)');
       }
@@ -921,7 +921,7 @@ class UI {
     const lockedValues = ['core'];
 
     // Core module is always installed — show it locked at the top
-    allOptions.push({ label: 'BMad Core Module', value: 'core', hint: 'Core configuration and shared resources' });
+    allOptions.push({ label: 'SKAD Core Module', value: 'core', hint: 'Core configuration and shared resources' });
     initialValues.push('core');
 
     // Helper to build module entry with proper sorting and selection
@@ -936,7 +936,7 @@ class UI {
       };
     };
 
-    // Local modules (BMM, BMB, etc.)
+    // Local modules (SKM, BMB, etc.)
     const localEntries = [];
     for (const mod of localModules) {
       if (!mod.isCustom && mod.id !== 'core') {
@@ -949,10 +949,10 @@ class UI {
     }
     allOptions.push(...localEntries.map(({ label, value, hint }) => ({ label, value, hint })));
 
-    // Group 2: BMad Official Modules (type: bmad-org)
+    // Group 2: SKAD Official Modules (type: skad-org)
     const officialModules = [];
     for (const mod of externalModules) {
-      if (mod.type === 'bmad-org') {
+      if (mod.type === 'skad-org') {
         const entry = buildModuleEntry(mod, mod.code, 'Official');
         officialModules.push(entry);
         if (entry.selected) {
@@ -1010,16 +1010,16 @@ class UI {
 
     const defaultModules = [];
 
-    // Add default-selected local modules (typically BMM)
+    // Add default-selected local modules (typically SKM)
     for (const mod of localModules) {
       if (mod.defaultSelected === true || installedModuleIds.has(mod.id)) {
         defaultModules.push(mod.id);
       }
     }
 
-    // If no defaults found, use 'bmm' as the fallback default
+    // If no defaults found, use 'skm' as the fallback default
     if (defaultModules.length === 0) {
-      defaultModules.push('bmm');
+      defaultModules.push('skm');
     }
 
     return defaultModules;
@@ -1063,15 +1063,15 @@ class UI {
       if (stats.isDirectory()) {
         const files = await fs.readdir(directory);
         if (files.length > 0) {
-          // Check for any bmad installation (any folder with _config/manifest.yaml)
+          // Check for any skad installation (any folder with _config/manifest.yaml)
           const { Installer } = require('../installers/lib/core/installer');
           const installer = new Installer();
-          const bmadResult = await installer.findBmadDir(directory);
-          const hasBmadInstall =
-            (await fs.pathExists(bmadResult.bmadDir)) && (await fs.pathExists(path.join(bmadResult.bmadDir, '_config', 'manifest.yaml')));
+          const skadResult = await installer.findSkadDir(directory);
+          const hasSkadInstall =
+            (await fs.pathExists(skadResult.skadDir)) && (await fs.pathExists(path.join(skadResult.skadDir, '_config', 'manifest.yaml')));
 
-          const bmadNote = hasBmadInstall ? ` including existing BMAD installation (${path.basename(bmadResult.bmadDir)})` : '';
-          await prompts.log.message(`Directory exists and contains ${files.length} item(s)${bmadNote}`);
+          const skadNote = hasSkadInstall ? ` including existing SKAD installation (${path.basename(skadResult.skadDir)})` : '';
+          await prompts.log.message(`Directory exists and contains ${files.length} item(s)${skadNote}`);
         } else {
           await prompts.log.message('Directory exists and is empty');
         }
@@ -1341,8 +1341,8 @@ class UI {
     const { Installer } = require('../installers/lib/core/installer');
     const detector = new Detector();
     const installer = new Installer();
-    const bmadResult = await installer.findBmadDir(directory);
-    const existingInstall = await detector.detect(bmadResult.bmadDir);
+    const skadResult = await installer.findSkadDir(directory);
+    const existingInstall = await detector.detect(skadResult.skadDir);
     return existingInstall.ides || [];
   }
 
@@ -1490,9 +1490,9 @@ class UI {
     // Check if there are any custom modules in cache
     const { Installer } = require('../installers/lib/core/installer');
     const installer = new Installer();
-    const { bmadDir } = await installer.findBmadDir(directory);
+    const { skadDir } = await installer.findSkadDir(directory);
 
-    const cacheDir = path.join(bmadDir, '_config', 'custom');
+    const cacheDir = path.join(skadDir, '_config', 'custom');
     const cachedCustomModules = [];
 
     if (await fs.pathExists(cacheDir)) {
@@ -1639,17 +1639,17 @@ class UI {
    * Show warning for legacy version (v4 or alpha) and ask if user wants to proceed
    * @param {string} installedVersion - The installed version
    * @param {string} currentVersion - The current version
-   * @param {string} bmadFolderName - Name of the BMAD folder
+   * @param {string} skadFolderName - Name of the SKAD folder
    * @returns {Promise<boolean>} True if user wants to proceed, false if they cancel
    */
-  async showLegacyVersionWarning(installedVersion, currentVersion, bmadFolderName) {
+  async showLegacyVersionWarning(installedVersion, currentVersion, skadFolderName) {
     if (!this.isLegacyVersion(installedVersion)) {
       return true; // Not legacy, proceed
     }
 
     let warningContent;
     if (installedVersion === 'unknown') {
-      warningContent = 'Unable to detect your installed BMAD version.\n' + 'This appears to be a legacy or unsupported installation.';
+      warningContent = 'Unable to detect your installed SKAD version.\n' + 'This appears to be a legacy or unsupported installation.';
     } else {
       warningContent =
         `You are updating from ${installedVersion} to ${currentVersion}.\n` + 'You have a legacy version installed (v4 or alpha).';
@@ -1657,8 +1657,8 @@ class UI {
 
     warningContent +=
       '\n\nFor the best experience, we recommend:\n' +
-      '  1. Delete your current BMAD installation folder\n' +
-      `     (the "${bmadFolderName}/" folder in your project)\n` +
+      '  1. Delete your current SKAD installation folder\n' +
+      `     (the "${skadFolderName}/" folder in your project)\n` +
       '  2. Run a fresh installation\n\n' +
       'Benefits of a fresh install:\n' +
       '  \u2022 Cleaner configuration without legacy artifacts\n' +
@@ -1685,7 +1685,7 @@ class UI {
 
     if (proceed === 'cancel') {
       await prompts.note(
-        `1. Delete the "${bmadFolderName}/" folder in your project\n` + "2. Run 'bmad install' again",
+        `1. Delete the "${skadFolderName}/" folder in your project\n` + "2. Run 'skad install' again",
         'To do a fresh install',
       );
     }
@@ -1780,17 +1780,17 @@ class UI {
    * @param {Object} statusData - Status data with modules, installation info, and available updates
    */
   async displayStatus(statusData) {
-    const { installation, modules, availableUpdates, bmadDir } = statusData;
+    const { installation, modules, availableUpdates, skadDir } = statusData;
 
     // Installation info
     const infoLines = [
       `Version:       ${installation.version || 'unknown'}`,
-      `Location:      ${bmadDir}`,
+      `Location:      ${skadDir}`,
       `Installed:     ${new Date(installation.installDate).toLocaleDateString()}`,
       `Last Updated:  ${installation.lastUpdated ? new Date(installation.lastUpdated).toLocaleDateString() : 'unknown'}`,
     ];
 
-    await prompts.note(infoLines.join('\n'), 'BMAD Status');
+    await prompts.note(infoLines.join('\n'), 'SKAD Status');
 
     // Module versions
     await this.displayModuleVersions(modules, availableUpdates);
@@ -1798,7 +1798,7 @@ class UI {
     // Update summary
     if (availableUpdates.length > 0) {
       await prompts.log.warn(`${availableUpdates.length} update(s) available`);
-      await prompts.log.message('Run \'bmad install\' and select "Quick Update" to update');
+      await prompts.log.message('Run \'skad install\' and select "Quick Update" to update');
     } else {
       await prompts.log.success('All modules are up to date');
     }

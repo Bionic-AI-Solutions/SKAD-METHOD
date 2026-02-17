@@ -41,7 +41,7 @@ docs/
 ### 1. Run the Shard-Doc Tool
 
 ```bash
-/bmad-shard-doc
+/skad-shard-doc
 ```
 
 ### 2. Follow the Interactive Process
@@ -62,7 +62,7 @@ Agent: Sharding PRD.md...
 
 ## How Workflow Discovery Works
 
-BMad workflows use a **dual discovery system**:
+SKAD workflows use a **dual discovery system**:
 
 1. **Try whole document first** - Look for `document-name.md`
 2. **Check for sharded version** - Look for `document-name/index.md`
@@ -70,7 +70,7 @@ BMad workflows use a **dual discovery system**:
 
 ## Workflow Support
 
-All BMM workflows support both formats:
+All SKM workflows support both formats:
 
 - Whole documents
 - Sharded documents

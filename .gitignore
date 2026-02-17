@@ -39,8 +39,8 @@ CLAUDE.local.md
 
 z*/
 
-_bmad
-_bmad-output
+_skad
+_skad-output
 .clinerules
 # .augment/ is gitignored except tracked config files — add exceptions explicitly
 .augment/*

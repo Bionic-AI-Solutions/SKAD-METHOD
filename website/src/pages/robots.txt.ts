@@ -3,7 +3,7 @@ import type { APIRoute } from 'astro';
 export const GET: APIRoute = ({ site }) => {
   const siteUrl = site?.href.replace(/\/$/, '') ?? '';
 
-  const body = `# BMAD Method Documentation
+  const body = `# SKAD Method Documentation
 # ${siteUrl}/
 #
 # This file controls web crawler access to the documentation site.

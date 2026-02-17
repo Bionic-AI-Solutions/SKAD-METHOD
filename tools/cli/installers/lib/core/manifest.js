@@ -6,26 +6,26 @@ const { getProjectRoot } = require('../../../lib/project-root');
 class Manifest {
   /**
    * Create a new manifest
-   * @param {string} bmadDir - Path to bmad directory
+   * @param {string} skadDir - Path to skad directory
    * @param {Object} data - Manifest data
    * @param {Array} installedFiles - List of installed files (no longer used, files tracked in files-manifest.csv)
    */
-  async create(bmadDir, data, installedFiles = []) {
-    const manifestPath = path.join(bmadDir, '_config', 'manifest.yaml');
+  async create(skadDir, data, installedFiles = []) {
+    const manifestPath = path.join(skadDir, '_config', 'manifest.yaml');
     const yaml = require('yaml');
 
     // Ensure _config directory exists
     await fs.ensureDir(path.dirname(manifestPath));
 
-    // Get the BMad version from package.json
-    const bmadVersion = data.version || require(path.join(process.cwd(), 'package.json')).version;
+    // Get the SKAD version from package.json
+    const skadVersion = data.version || require(path.join(process.cwd(), 'package.json')).version;
 
     // Convert module list to new detailed format
     const moduleDetails = [];
     if (data.modules && Array.isArray(data.modules)) {
       for (const moduleName of data.modules) {
-        // Core and BMM modules use the BMad version
-        const moduleVersion = moduleName === 'core' || moduleName === 'bmm' ? bmadVersion : null;
+        // Core and SKM modules use the SKAD version
+        const moduleVersion = moduleName === 'core' || moduleName === 'skm' ? skadVersion : null;
         const now = data.installDate || new Date().toISOString();
 
         moduleDetails.push({
@@ -33,7 +33,7 @@ class Manifest {
           version: moduleVersion,
           installDate: now,
           lastUpdated: now,
-          source: moduleName === 'core' || moduleName === 'bmm' ? 'built-in' : 'unknown',
+          source: moduleName === 'core' || moduleName === 'skm' ? 'built-in' : 'unknown',
         });
       }
     }
@@ -41,7 +41,7 @@ class Manifest {
     // Structure the manifest data
     const manifestData = {
       installation: {
-        version: bmadVersion,
+        version: skadVersion,
         installDate: data.installDate || new Date().toISOString(),
         lastUpdated: data.lastUpdated || new Date().toISOString(),
       },
@@ -67,11 +67,11 @@ class Manifest {
 
   /**
    * Read existing manifest
-   * @param {string} bmadDir - Path to bmad directory
+   * @param {string} skadDir - Path to skad directory
    * @returns {Object|null} Manifest data or null if not found
    */
-  async read(bmadDir) {
-    const yamlPath = path.join(bmadDir, '_config', 'manifest.yaml');
+  async read(skadDir) {
+    const yamlPath = path.join(skadDir, '_config', 'manifest.yaml');
     const yaml = require('yaml');
 
     if (await fs.pathExists(yamlPath)) {
@@ -109,13 +109,13 @@ class Manifest {
 
   /**
    * Update existing manifest
-   * @param {string} bmadDir - Path to bmad directory
+   * @param {string} skadDir - Path to skad directory
    * @param {Object} updates - Fields to update
    * @param {Array} installedFiles - Updated list of installed files
    */
-  async update(bmadDir, updates, installedFiles = null) {
+  async update(skadDir, updates, installedFiles = null) {
     const yaml = require('yaml');
-    const manifest = (await this._readRaw(bmadDir)) || {
+    const manifest = (await this._readRaw(skadDir)) || {
       installation: {},
       modules: [],
       ides: [],
@@ -196,7 +196,7 @@ class Manifest {
       }
     }
 
-    const manifestPath = path.join(bmadDir, '_config', 'manifest.yaml');
+    const manifestPath = path.join(skadDir, '_config', 'manifest.yaml');
     await fs.ensureDir(path.dirname(manifestPath));
 
     // Clean the manifest data to remove any non-serializable values
@@ -218,11 +218,11 @@ class Manifest {
 
   /**
    * Read raw manifest data without flattening
-   * @param {string} bmadDir - Path to bmad directory
+   * @param {string} skadDir - Path to skad directory
    * @returns {Object|null} Raw manifest data or null if not found
    */
-  async _readRaw(bmadDir) {
-    const yamlPath = path.join(bmadDir, '_config', 'manifest.yaml');
+  async _readRaw(skadDir) {
+    const yamlPath = path.join(skadDir, '_config', 'manifest.yaml');
     const yaml = require('yaml');
 
     if (await fs.pathExists(yamlPath)) {
@@ -261,12 +261,12 @@ class Manifest {
   /**
    * Add a module to the manifest with optional version info
    * If module already exists, update its version info
-   * @param {string} bmadDir - Path to bmad directory
+   * @param {string} skadDir - Path to skad directory
    * @param {string} moduleName - Module name to add
    * @param {Object} options - Optional version info
    */
-  async addModule(bmadDir, moduleName, options = {}) {
-    const manifest = await this._readRaw(bmadDir);
+  async addModule(skadDir, moduleName, options = {}) {
+    const manifest = await this._readRaw(skadDir);
     if (!manifest) {
       throw new Error('No manifest found');
     }
@@ -301,16 +301,16 @@ class Manifest {
       };
     }
 
-    await this._writeRaw(bmadDir, manifest);
+    await this._writeRaw(skadDir, manifest);
   }
 
   /**
    * Remove a module from the manifest
-   * @param {string} bmadDir - Path to bmad directory
+   * @param {string} skadDir - Path to skad directory
    * @param {string} moduleName - Module name to remove
    */
-  async removeModule(bmadDir, moduleName) {
-    const manifest = await this._readRaw(bmadDir);
+  async removeModule(skadDir, moduleName) {
+    const manifest = await this._readRaw(skadDir);
     if (!manifest || !manifest.modules) {
       return;
     }
@@ -318,18 +318,18 @@ class Manifest {
     const index = manifest.modules.findIndex((m) => m.name === moduleName);
     if (index !== -1) {
       manifest.modules.splice(index, 1);
-      await this._writeRaw(bmadDir, manifest);
+      await this._writeRaw(skadDir, manifest);
     }
   }
 
   /**
    * Update a single module's version info
-   * @param {string} bmadDir - Path to bmad directory
+   * @param {string} skadDir - Path to skad directory
    * @param {string} moduleName - Module name
    * @param {Object} versionInfo - Version info to update
    */
-  async updateModuleVersion(bmadDir, moduleName, versionInfo) {
-    const manifest = await this._readRaw(bmadDir);
+  async updateModuleVersion(skadDir, moduleName, versionInfo) {
+    const manifest = await this._readRaw(skadDir);
     if (!manifest || !manifest.modules) {
       return;
     }
@@ -341,18 +341,18 @@ class Manifest {
         ...versionInfo,
         lastUpdated: new Date().toISOString(),
       };
-      await this._writeRaw(bmadDir, manifest);
+      await this._writeRaw(skadDir, manifest);
     }
   }
 
   /**
    * Get version info for a specific module
-   * @param {string} bmadDir - Path to bmad directory
+   * @param {string} skadDir - Path to skad directory
    * @param {string} moduleName - Module name
    * @returns {Object|null} Module version info or null
    */
-  async getModuleVersion(bmadDir, moduleName) {
-    const manifest = await this._readRaw(bmadDir);
+  async getModuleVersion(skadDir, moduleName) {
+    const manifest = await this._readRaw(skadDir);
     if (!manifest || !manifest.modules) {
       return null;
     }
@@ -362,11 +362,11 @@ class Manifest {
 
   /**
    * Get all modules with their version info
-   * @param {string} bmadDir - Path to bmad directory
+   * @param {string} skadDir - Path to skad directory
    * @returns {Array} Array of module info objects
    */
-  async getAllModuleVersions(bmadDir) {
-    const manifest = await this._readRaw(bmadDir);
+  async getAllModuleVersions(skadDir) {
+    const manifest = await this._readRaw(skadDir);
     if (!manifest || !manifest.modules) {
       return [];
     }
@@ -376,12 +376,12 @@ class Manifest {
 
   /**
    * Write raw manifest data to file
-   * @param {string} bmadDir - Path to bmad directory
+   * @param {string} skadDir - Path to skad directory
    * @param {Object} manifestData - Raw manifest data to write
    */
-  async _writeRaw(bmadDir, manifestData) {
+  async _writeRaw(skadDir, manifestData) {
     const yaml = require('yaml');
-    const manifestPath = path.join(bmadDir, '_config', 'manifest.yaml');
+    const manifestPath = path.join(skadDir, '_config', 'manifest.yaml');
 
     await fs.ensureDir(path.dirname(manifestPath));
 
@@ -399,11 +399,11 @@ class Manifest {
 
   /**
    * Add an IDE configuration to the manifest
-   * @param {string} bmadDir - Path to bmad directory
+   * @param {string} skadDir - Path to skad directory
    * @param {string} ideName - IDE name to add
    */
-  async addIde(bmadDir, ideName) {
-    const manifest = await this.read(bmadDir);
+  async addIde(skadDir, ideName) {
+    const manifest = await this.read(skadDir);
     if (!manifest) {
       throw new Error('No manifest found');
     }
@@ -414,7 +414,7 @@ class Manifest {
 
     if (!manifest.ides.includes(ideName)) {
       manifest.ides.push(ideName);
-      await this.update(bmadDir, { ides: manifest.ides });
+      await this.update(skadDir, { ides: manifest.ides });
     }
   }
 
@@ -435,16 +435,16 @@ class Manifest {
   /**
    * Parse installed files to extract metadata
    * @param {Array} installedFiles - List of installed file paths
-   * @param {string} bmadDir - Path to bmad directory for relative paths
+   * @param {string} skadDir - Path to skad directory for relative paths
    * @returns {Array} Array of file metadata objects
    */
-  async parseInstalledFiles(installedFiles, bmadDir) {
+  async parseInstalledFiles(installedFiles, skadDir) {
     const fileMetadata = [];
 
     for (const filePath of installedFiles) {
       const fileExt = path.extname(filePath).toLowerCase();
-      // Make path relative to parent of bmad directory, starting with 'bmad/'
-      const relativePath = 'bmad' + filePath.replace(bmadDir, '').replaceAll('\\', '/');
+      // Make path relative to parent of skad directory, starting with 'skad/'
+      const relativePath = 'skad' + filePath.replace(skadDir, '').replaceAll('\\', '/');
 
       // Calculate file hash
       const hash = await this.calculateFileHash(filePath);
@@ -494,7 +494,7 @@ class Manifest {
    * Extract XML node attributes from MD file content
    * @param {string} content - File content
    * @param {string} filePath - File path for context
-   * @param {string} relativePath - Relative path starting with 'bmad/'
+   * @param {string} relativePath - Relative path starting with 'skad/'
    * @returns {Object|null} Extracted metadata or null
    */
   extractXmlNodeAttributes(content, filePath, relativePath) {
@@ -540,7 +540,7 @@ class Manifest {
 
     // Header section
     csv.push(
-      '# BMAD Manifest',
+      '# SKAD Manifest',
       `# Generated: ${timestamp}`,
       '',
       '## Installation Info',
@@ -782,11 +782,11 @@ class Manifest {
   }
   /**
    * Add a custom module to the manifest with its source path
-   * @param {string} bmadDir - Path to bmad directory
+   * @param {string} skadDir - Path to skad directory
    * @param {Object} customModule - Custom module info
    */
-  async addCustomModule(bmadDir, customModule) {
-    const manifest = await this.read(bmadDir);
+  async addCustomModule(skadDir, customModule) {
+    const manifest = await this.read(skadDir);
     if (!manifest) {
       throw new Error('No manifest found');
     }
@@ -805,16 +805,16 @@ class Manifest {
       manifest.customModules[existingIndex] = customModule;
     }
 
-    await this.update(bmadDir, { customModules: manifest.customModules });
+    await this.update(skadDir, { customModules: manifest.customModules });
   }
 
   /**
    * Remove a custom module from the manifest
-   * @param {string} bmadDir - Path to bmad directory
+   * @param {string} skadDir - Path to skad directory
    * @param {string} moduleId - Module ID to remove
    */
-  async removeCustomModule(bmadDir, moduleId) {
-    const manifest = await this.read(bmadDir);
+  async removeCustomModule(skadDir, moduleId) {
+    const manifest = await this.read(skadDir);
     if (!manifest || !manifest.customModules) {
       return;
     }
@@ -822,26 +822,26 @@ class Manifest {
     const index = manifest.customModules.findIndex((m) => m.id === moduleId);
     if (index !== -1) {
       manifest.customModules.splice(index, 1);
-      await this.update(bmadDir, { customModules: manifest.customModules });
+      await this.update(skadDir, { customModules: manifest.customModules });
     }
   }
 
   /**
    * Get module version info from source
    * @param {string} moduleName - Module name/code
-   * @param {string} bmadDir - Path to bmad directory
+   * @param {string} skadDir - Path to skad directory
    * @param {string} moduleSourcePath - Optional source path for custom modules
    * @returns {Object} Version info object with version, source, npmPackage, repoUrl
    */
-  async getModuleVersionInfo(moduleName, bmadDir, moduleSourcePath = null) {
+  async getModuleVersionInfo(moduleName, skadDir, moduleSourcePath = null) {
     const os = require('node:os');
     const yaml = require('yaml');
 
-    // Built-in modules use BMad version (only core and bmm are in BMAD-METHOD repo)
-    if (['core', 'bmm'].includes(moduleName)) {
-      const bmadVersion = require(path.join(getProjectRoot(), 'package.json')).version;
+    // Built-in modules use SKAD version (only core and skm are in SKAD-METHOD repo)
+    if (['core', 'skm'].includes(moduleName)) {
+      const skadVersion = require(path.join(getProjectRoot(), 'package.json')).version;
       return {
-        version: bmadVersion,
+        version: skadVersion,
         source: 'built-in',
         npmPackage: null,
         repoUrl: null,
@@ -868,7 +868,7 @@ class Manifest {
 
       // If npm didn't work, try reading from cached repo's package.json
       if (!version) {
-        const cacheDir = path.join(os.homedir(), '.bmad', 'cache', 'external-modules', moduleName);
+        const cacheDir = path.join(os.homedir(), '.skad', 'cache', 'external-modules', moduleName);
         const packageJsonPath = path.join(cacheDir, 'package.json');
 
         if (await fs.pathExists(packageJsonPath)) {
@@ -890,7 +890,7 @@ class Manifest {
     }
 
     // Custom module - check cache directory
-    const cacheDir = path.join(bmadDir, '_config', 'custom', moduleName);
+    const cacheDir = path.join(skadDir, '_config', 'custom', moduleName);
     const moduleYamlPath = path.join(cacheDir, 'module.yaml');
 
     if (await fs.pathExists(moduleYamlPath)) {
@@ -961,11 +961,11 @@ class Manifest {
 
   /**
    * Check for available updates for installed modules
-   * @param {string} bmadDir - Path to bmad directory
+   * @param {string} skadDir - Path to skad directory
    * @returns {Array} Array of update info objects
    */
-  async checkForUpdates(bmadDir) {
-    const modules = await this.getAllModuleVersions(bmadDir);
+  async checkForUpdates(skadDir) {
+    const modules = await this.getAllModuleVersions(skadDir);
     const updates = [];
 
     for (const module of modules) {

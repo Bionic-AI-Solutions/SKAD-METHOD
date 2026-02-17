@@ -1,4 +1,4 @@
-# BMAD Installer Messages
+# SKAD Installer Messages
 # These messages are displayed during installation
 # Edit this file to change what users see during the install process
 
@@ -6,7 +6,7 @@
 startMessage: |
   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-  🎉 BETA IS HERE! Welcome to BMad Method V6 Beta!
+  🎉 BETA IS HERE! Welcome to SKAD Method V6 Beta!
 
   We've officially graduated from Alpha! This milestone represents:
     - 50+ workflows covering the full development lifecycle
@@ -14,16 +14,16 @@ startMessage: |
       but anticipate no massive breaking changes
     - Groundwork in place for customization and community modules
 
-  📚 New Docs Site: http://docs.bmad-method.org/
+  📚 New Docs Site: http://docs.skad-method.org/
     - High quality tutorials, guided walkthrough, and articles coming soon!
     - Everything is free. No paywalls. No gated content.
     - Knowledge should be shared, not sold.
 
-  💡 Love BMad? Please star us on GitHub & subscribe on YouTube!
-    - GitHub: https://github.com/bmad-code-org/BMAD-METHOD/
-    - YouTube: https://www.youtube.com/@BMadCode
+  💡 Love SKAD? Please star us on GitHub & subscribe on YouTube!
+    - GitHub: https://github.com/skad-code-org/SKAD-METHOD/
+    - YouTube: https://www.youtube.com/@SKADCode
 
-  Latest updates: https://github.com/bmad-code-org/BMAD-METHOD/CHANGELOG.md
+  Latest updates: https://github.com/skad-code-org/SKAD-METHOD/CHANGELOG.md
 
   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -31,29 +31,29 @@ startMessage: |
 endMessage: |
   ════════════════════════════════════════════════════════════════════════════════
 
-  ✨ BMAD V6 BETA IS INSTALLED! Thank you for being part of this journey!
+  ✨ SKAD V6 BETA IS INSTALLED! Thank you for being part of this journey!
 
-  🌟 BMad is 100% free and open source.
+  🌟 SKAD is 100% free and open source.
     - No gated Discord. No paywalls.
     - We believe in empowering everyone, not just those who can pay.
 
-  🙏 SUPPORT BMAD DEVELOPMENT:
+  🙏 SUPPORT SKAD DEVELOPMENT:
     - During the Beta, please give us feedback and raise issues on GitHub!
-    - Donate: https://buymeacoffee.com/bmad
+    - Donate: https://buymeacoffee.com/skad
     - Corporate Sponsorship available - DM on Discord
 
   🎤 SPEAKING & MEDIA:
     - Available for conferences, podcasts, and media appearances
-    - Topics: AI-Native Transformation, Spec and Context Engineering, BMad Method
-    - For speaking inquiries or interviews, reach out to BMad on Discord!
+    - Topics: AI-Native Transformation, Spec and Context Engineering, SKAD Method
+    - For speaking inquiries or interviews, reach out to SKAD on Discord!
 
   📚 RESOURCES:
-    - Docs: http://docs.bmad-method.org/ (bookmark it!)
-    - Changelog: https://github.com/bmad-code-org/BMAD-METHOD/CHANGELOG.md
+    - Docs: http://docs.skad-method.org/ (bookmark it!)
+    - Changelog: https://github.com/skad-code-org/SKAD-METHOD/CHANGELOG.md
 
   ⭐⭐⭐ HELP US GROW:
-    - Star us on GitHub: https://github.com/bmad-code-org/BMAD-METHOD/
-    - Subscribe on YouTube: https://www.youtube.com/@BMadCode
+    - Star us on GitHub: https://github.com/skad-code-org/SKAD-METHOD/
+    - Subscribe on YouTube: https://www.youtube.com/@SKADCode
     - Every star & sub helps us reach more developers!
 
   ════════════════════════════════════════════════════════════════════════════════

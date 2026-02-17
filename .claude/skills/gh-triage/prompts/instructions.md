@@ -17,7 +17,7 @@ Split issues into batches of ~10 issues each for parallel analysis.
 For EACH batch, use the Task tool with `subagent_type=general-purpose` to launch an agent with prompt from `prompts/agent-prompt.md`
 
 ### Step 4: Consolidate & Generate Report
-After all agents complete, create a comprehensive markdown report saved to `_bmad-output/triage-reports/triage-YYYY-MM-DD.md`
+After all agents complete, create a comprehensive markdown report saved to `_skad-output/triage-reports/triage-YYYY-MM-DD.md`
 
 ## Report Format
 

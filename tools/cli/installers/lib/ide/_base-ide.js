@@ -3,7 +3,7 @@ const fs = require('fs-extra');
 const { XmlHandler } = require('../../../lib/xml-handler');
 const prompts = require('../../../lib/prompts');
 const { getSourcePath } = require('../../../lib/project-root');
-const { BMAD_FOLDER_NAME } = require('./shared/path-utils');
+const { SKAD_FOLDER_NAME } = require('./shared/path-utils');
 
 /**
  * Base class for IDE-specific setup
@@ -19,15 +19,15 @@ class BaseIdeSetup {
     this.configFile = null; // Override in subclasses when detection is file-based
     this.detectionPaths = []; // Additional paths that indicate the IDE is configured
     this.xmlHandler = new XmlHandler();
-    this.bmadFolderName = BMAD_FOLDER_NAME; // Default, can be overridden
+    this.skadFolderName = SKAD_FOLDER_NAME; // Default, can be overridden
   }
 
   /**
-   * Set the bmad folder name for placeholder replacement
-   * @param {string} bmadFolderName - The bmad folder name
+   * Set the skad folder name for placeholder replacement
+   * @param {string} skadFolderName - The skad folder name
    */
-  setBmadFolderName(bmadFolderName) {
-    this.bmadFolderName = bmadFolderName;
+  setSkadFolderName(skadFolderName) {
+    this.skadFolderName = skadFolderName;
   }
 
   /**
@@ -42,10 +42,10 @@ class BaseIdeSetup {
   /**
    * Main setup method - must be implemented by subclasses
    * @param {string} projectDir - Project directory
-   * @param {string} bmadDir - BMAD installation directory
+   * @param {string} skadDir - SKAD installation directory
    * @param {Object} options - Setup options
    */
-  async setup(projectDir, bmadDir, options = {}) {
+  async setup(projectDir, skadDir, options = {}) {
     throw new Error(`setup() must be implemented by ${this.name} handler`);
   }
 
@@ -58,10 +58,10 @@ class BaseIdeSetup {
     if (this.configDir) {
       const configPath = path.join(projectDir, this.configDir);
       if (await fs.pathExists(configPath)) {
-        const bmadRulesPath = path.join(configPath, BMAD_FOLDER_NAME);
-        if (await fs.pathExists(bmadRulesPath)) {
-          await fs.remove(bmadRulesPath);
-          if (!options.silent) await prompts.log.message(`Removed ${this.name} BMAD configuration`);
+        const skadRulesPath = path.join(configPath, SKAD_FOLDER_NAME);
+        if (await fs.pathExists(skadRulesPath)) {
+          await fs.remove(skadRulesPath);
+          if (!options.silent) await prompts.log.message(`Removed ${this.name} SKAD configuration`);
         }
       }
     }
@@ -115,15 +115,15 @@ class BaseIdeSetup {
   }
 
   /**
-   * Get list of agents from BMAD installation
-   * @param {string} bmadDir - BMAD installation directory
+   * Get list of agents from SKAD installation
+   * @param {string} skadDir - SKAD installation directory
    * @returns {Array} List of agent files
    */
-  async getAgents(bmadDir) {
+  async getAgents(skadDir) {
     const agents = [];
 
     // Get core agents
-    const coreAgentsPath = path.join(bmadDir, 'core', 'agents');
+    const coreAgentsPath = path.join(skadDir, 'core', 'agents');
     if (await fs.pathExists(coreAgentsPath)) {
       const coreAgents = await this.scanDirectory(coreAgentsPath, '.md');
       agents.push(
@@ -135,10 +135,10 @@ class BaseIdeSetup {
     }
 
     // Get module agents
-    const entries = await fs.readdir(bmadDir, { withFileTypes: true });
+    const entries = await fs.readdir(skadDir, { withFileTypes: true });
     for (const entry of entries) {
       if (entry.isDirectory() && entry.name !== 'core' && entry.name !== '_config' && entry.name !== 'agents') {
-        const moduleAgentsPath = path.join(bmadDir, entry.name, 'agents');
+        const moduleAgentsPath = path.join(skadDir, entry.name, 'agents');
         if (await fs.pathExists(moduleAgentsPath)) {
           const moduleAgents = await this.scanDirectory(moduleAgentsPath, '.md');
           agents.push(
@@ -151,8 +151,8 @@ class BaseIdeSetup {
       }
     }
 
-    // Get standalone agents from bmad/agents/ directory
-    const standaloneAgentsDir = path.join(bmadDir, 'agents');
+    // Get standalone agents from skad/agents/ directory
+    const standaloneAgentsDir = path.join(skadDir, 'agents');
     if (await fs.pathExists(standaloneAgentsDir)) {
       const agentDirs = await fs.readdir(standaloneAgentsDir, { withFileTypes: true });
 
@@ -186,16 +186,16 @@ class BaseIdeSetup {
   }
 
   /**
-   * Get list of tasks from BMAD installation
-   * @param {string} bmadDir - BMAD installation directory
+   * Get list of tasks from SKAD installation
+   * @param {string} skadDir - SKAD installation directory
    * @param {boolean} standaloneOnly - If true, only return standalone tasks
    * @returns {Array} List of task files
    */
-  async getTasks(bmadDir, standaloneOnly = false) {
+  async getTasks(skadDir, standaloneOnly = false) {
     const tasks = [];
 
     // Get core tasks (scan for both .md and .xml)
-    const coreTasksPath = path.join(bmadDir, 'core', 'tasks');
+    const coreTasksPath = path.join(skadDir, 'core', 'tasks');
     if (await fs.pathExists(coreTasksPath)) {
       const coreTasks = await this.scanDirectoryWithStandalone(coreTasksPath, ['.md', '.xml']);
       tasks.push(
@@ -207,10 +207,10 @@ class BaseIdeSetup {
     }
 
     // Get module tasks
-    const entries = await fs.readdir(bmadDir, { withFileTypes: true });
+    const entries = await fs.readdir(skadDir, { withFileTypes: true });
     for (const entry of entries) {
       if (entry.isDirectory() && entry.name !== 'core' && entry.name !== '_config' && entry.name !== 'agents') {
-        const moduleTasksPath = path.join(bmadDir, entry.name, 'tasks');
+        const moduleTasksPath = path.join(skadDir, entry.name, 'tasks');
         if (await fs.pathExists(moduleTasksPath)) {
           const moduleTasks = await this.scanDirectoryWithStandalone(moduleTasksPath, ['.md', '.xml']);
           tasks.push(
@@ -232,16 +232,16 @@ class BaseIdeSetup {
   }
 
   /**
-   * Get list of tools from BMAD installation
-   * @param {string} bmadDir - BMAD installation directory
+   * Get list of tools from SKAD installation
+   * @param {string} skadDir - SKAD installation directory
    * @param {boolean} standaloneOnly - If true, only return standalone tools
    * @returns {Array} List of tool files
    */
-  async getTools(bmadDir, standaloneOnly = false) {
+  async getTools(skadDir, standaloneOnly = false) {
     const tools = [];
 
     // Get core tools (scan for both .md and .xml)
-    const coreToolsPath = path.join(bmadDir, 'core', 'tools');
+    const coreToolsPath = path.join(skadDir, 'core', 'tools');
     if (await fs.pathExists(coreToolsPath)) {
       const coreTools = await this.scanDirectoryWithStandalone(coreToolsPath, ['.md', '.xml']);
       tools.push(
@@ -253,10 +253,10 @@ class BaseIdeSetup {
     }
 
     // Get module tools
-    const entries = await fs.readdir(bmadDir, { withFileTypes: true });
+    const entries = await fs.readdir(skadDir, { withFileTypes: true });
     for (const entry of entries) {
       if (entry.isDirectory() && entry.name !== 'core' && entry.name !== '_config' && entry.name !== 'agents') {
-        const moduleToolsPath = path.join(bmadDir, entry.name, 'tools');
+        const moduleToolsPath = path.join(skadDir, entry.name, 'tools');
         if (await fs.pathExists(moduleToolsPath)) {
           const moduleTools = await this.scanDirectoryWithStandalone(moduleToolsPath, ['.md', '.xml']);
           tools.push(
@@ -278,16 +278,16 @@ class BaseIdeSetup {
   }
 
   /**
-   * Get list of workflows from BMAD installation
-   * @param {string} bmadDir - BMAD installation directory
+   * Get list of workflows from SKAD installation
+   * @param {string} skadDir - SKAD installation directory
    * @param {boolean} standaloneOnly - If true, only return standalone workflows
    * @returns {Array} List of workflow files
    */
-  async getWorkflows(bmadDir, standaloneOnly = false) {
+  async getWorkflows(skadDir, standaloneOnly = false) {
     const workflows = [];
 
     // Get core workflows
-    const coreWorkflowsPath = path.join(bmadDir, 'core', 'workflows');
+    const coreWorkflowsPath = path.join(skadDir, 'core', 'workflows');
     if (await fs.pathExists(coreWorkflowsPath)) {
       const coreWorkflows = await this.findWorkflowYamlFiles(coreWorkflowsPath);
       workflows.push(
@@ -299,10 +299,10 @@ class BaseIdeSetup {
     }
 
     // Get module workflows
-    const entries = await fs.readdir(bmadDir, { withFileTypes: true });
+    const entries = await fs.readdir(skadDir, { withFileTypes: true });
     for (const entry of entries) {
       if (entry.isDirectory() && entry.name !== 'core' && entry.name !== '_config' && entry.name !== 'agents') {
-        const moduleWorkflowsPath = path.join(bmadDir, entry.name, 'workflows');
+        const moduleWorkflowsPath = path.join(skadDir, entry.name, 'workflows');
         if (await fs.pathExists(moduleWorkflowsPath)) {
           const moduleWorkflows = await this.findWorkflowYamlFiles(moduleWorkflowsPath);
           workflows.push(
@@ -530,26 +530,26 @@ class BaseIdeSetup {
   }
 
   /**
-   * Write file with content (replaces _bmad placeholder)
+   * Write file with content (replaces _skad placeholder)
    * @param {string} filePath - File path
    * @param {string} content - File content
    */
   async writeFile(filePath, content) {
-    // Replace _bmad placeholder if present
-    if (typeof content === 'string' && content.includes('_bmad')) {
-      content = content.replaceAll('_bmad', this.bmadFolderName);
+    // Replace _skad placeholder if present
+    if (typeof content === 'string' && content.includes('_skad')) {
+      content = content.replaceAll('_skad', this.skadFolderName);
     }
 
-    // Replace escape sequence _bmad with literal _bmad
-    if (typeof content === 'string' && content.includes('_bmad')) {
-      content = content.replaceAll('_bmad', '_bmad');
+    // Replace escape sequence _skad with literal _skad
+    if (typeof content === 'string' && content.includes('_skad')) {
+      content = content.replaceAll('_skad', '_skad');
     }
     await this.ensureDir(path.dirname(filePath));
     await fs.writeFile(filePath, content, 'utf8');
   }
 
   /**
-   * Copy file from source to destination (replaces _bmad placeholder in text files)
+   * Copy file from source to destination (replaces _skad placeholder in text files)
    * @param {string} source - Source file path
    * @param {string} dest - Destination file path
    */
@@ -566,14 +566,14 @@ class BaseIdeSetup {
         // Read the file content
         let content = await fs.readFile(source, 'utf8');
 
-        // Replace _bmad placeholder with actual folder name
-        if (content.includes('_bmad')) {
-          content = content.replaceAll('_bmad', this.bmadFolderName);
+        // Replace _skad placeholder with actual folder name
+        if (content.includes('_skad')) {
+          content = content.replaceAll('_skad', this.skadFolderName);
         }
 
-        // Replace escape sequence _bmad with literal _bmad
-        if (content.includes('_bmad')) {
-          content = content.replaceAll('_bmad', '_bmad');
+        // Replace escape sequence _skad with literal _skad
+        if (content.includes('_skad')) {
+          content = content.replaceAll('_skad', '_skad');
         }
 
         // Write to dest with replaced content
@@ -630,23 +630,23 @@ class BaseIdeSetup {
   /**
    * Flatten a relative path to a single filename for flat slash command naming
    * @deprecated Use toColonPath() or toDashPath() from shared/path-utils.js instead
-   * Example: 'module/agents/name.md' -> 'bmad-module-agents-name.md'
+   * Example: 'module/agents/name.md' -> 'skad-module-agents-name.md'
    * Used by IDEs that ignore directory structure for slash commands (e.g., Antigravity, Codex)
    * @param {string} relativePath - Relative path to flatten
-   * @returns {string} Flattened filename with 'bmad-' prefix
+   * @returns {string} Flattened filename with 'skad-' prefix
    */
   flattenFilename(relativePath) {
     const sanitized = relativePath.replaceAll(/[/\\]/g, '-');
-    return `bmad-${sanitized}`;
+    return `skad-${sanitized}`;
   }
 
   /**
    * Create agent configuration file
-   * @param {string} bmadDir - BMAD installation directory
+   * @param {string} skadDir - SKAD installation directory
    * @param {Object} agent - Agent information
    */
-  async createAgentConfig(bmadDir, agent) {
-    const agentConfigDir = path.join(bmadDir, '_config', 'agents');
+  async createAgentConfig(skadDir, agent) {
+    const agentConfigDir = path.join(skadDir, '_config', 'agents');
     await this.ensureDir(agentConfigDir);
 
     // Load agent config template

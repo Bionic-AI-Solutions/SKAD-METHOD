@@ -328,7 +328,7 @@ function buildMenuItemSchema() {
                   });
                 }
               }),
-            // Format 2a: Object with array format (like bmad-builder.agent.yaml)
+            // Format 2a: Object with array format (like skad-builder.agent.yaml)
             z
               .object({})
               .passthrough()

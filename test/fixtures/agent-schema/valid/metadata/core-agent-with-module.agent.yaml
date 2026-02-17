@@ -8,7 +8,7 @@ agent:
     name: Core With Module
     title: Core Agent
     icon: ✅
-    module: bmm
+    module: skm
     hasSidecar: false
 
   persona:

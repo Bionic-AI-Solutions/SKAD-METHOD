@@ -5,7 +5,7 @@ description: Common patterns and best practices for using autonomous agents
 
 # Autonomous Agent Patterns
 
-Common patterns for using autonomous agents effectively in BMAD workflows.
+Common patterns for using autonomous agents effectively in SKAD workflows.
 
 ## Pattern 1: Parallel Context Gathering
 

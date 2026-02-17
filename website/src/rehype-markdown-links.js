@@ -17,7 +17,7 @@ import path from 'node:path';
 
 /**
  * @param {Object} options
- * @param {string} options.base - Site base path (e.g., '/BMAD-METHOD/')
+ * @param {string} options.base - Site base path (e.g., '/SKAD-METHOD/')
  * @param {string} [options.contentDir] - Absolute path to content root; auto-detected if omitted
  */
 export default function rehypeMarkdownLinks(options = {}) {

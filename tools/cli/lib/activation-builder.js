@@ -102,7 +102,7 @@ class ActivationBuilder {
   async buildSteps(metadata = {}, agentSpecificActions = [], forWebBundle = false) {
     const stepsTemplate = await this.loadFragment('activation-steps.txt');
 
-    // Extract basename from agent ID (e.g., "bmad/bmm/agents/pm.md" → "pm")
+    // Extract basename from agent ID (e.g., "skad/skm/agents/pm.md" → "pm")
     const agentBasename = metadata.id ? metadata.id.split('/').pop().replace('.md', '') : metadata.name || 'agent';
 
     // Build agent-specific steps

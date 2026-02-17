@@ -1,6 +1,6 @@
-@{{story_file_path}} @activity.md @_bmad/bmm/workflows/4-implementation/code-review/instructions.xml
+@{{story_file_path}} @activity.md @_skad/skm/workflows/4-implementation/code-review/instructions.xml
 
-You are performing an AUTOMATED Code Review (CR iteration {{cr_iteration}} of {{max_cr_iterations}}) for BMAD story {{story_key}}.
+You are performing an AUTOMATED Code Review (CR iteration {{cr_iteration}} of {{max_cr_iterations}}) for SKAD story {{story_key}}.
 
 This is a HEADLESS review — you make all decisions autonomously. There is no human to ask.
 
@@ -35,7 +35,7 @@ Follow the adversarial review approach from the loaded instructions.xml:
 - For EACH task marked [x]: verify it is actually done with code evidence. If not, CRITICAL finding.
 - For EACH changed file: check security, performance, error handling, code quality.
 - You MUST find at least 3 specific, actionable issues. If you find fewer, look harder.
-- Do NOT review files in `_bmad/`, `_bmad-output/`, `.cursor/`, `.windsurf/`, `.claude/` directories.
+- Do NOT review files in `_skad/`, `_skad-output/`, `.cursor/`, `.windsurf/`, `.claude/` directories.
 
 Categorize every finding as:
 - **HIGH** — Must fix (missing AC, false task completion, security vulnerability)

@@ -1,11 +1,11 @@
 /**
  * File Reference Validator
  *
- * Validates cross-file references in BMAD source files (agents, workflows, tasks, steps).
+ * Validates cross-file references in SKAD source files (agents, workflows, tasks, steps).
  * Catches broken file paths, missing referenced files, and absolute path leaks.
  *
  * What it checks:
- * - {project-root}/_bmad/ references in YAML and markdown resolve to real src/ files
+ * - {project-root}/_skad/ references in YAML and markdown resolve to real src/ files
  * - Relative path references (./file.md, ../data/file.csv) point to existing files
  * - exec="..." and <invoke-task> targets exist
  * - Step metadata (thisStepFile, nextStepFile) references are valid
@@ -44,11 +44,11 @@ const SCAN_EXTENSIONS = new Set(['.yaml', '.yml', '.md', '.xml', '.csv']);
 // Skip directories
 const SKIP_DIRS = new Set(['node_modules', '_module-installer', '.git']);
 
-// Pattern: {project-root}/_bmad/ references
-const PROJECT_ROOT_REF = /\{project-root\}\/_bmad\/([^\s'"<>})\]`]+)/g;
+// Pattern: {project-root}/_skad/ references
+const PROJECT_ROOT_REF = /\{project-root\}\/_skad\/([^\s'"<>})\]`]+)/g;
 
-// Pattern: {_bmad}/ shorthand references
-const BMAD_SHORTHAND_REF = /\{_bmad\}\/([^\s'"<>})\]`]+)/g;
+// Pattern: {_skad}/ shorthand references
+const SKAD_SHORTHAND_REF = /\{_skad\}\/([^\s'"<>})\]`]+)/g;
 
 // Pattern: exec="..." attributes
 const EXEC_ATTR = /exec="([^"]+)"/g;
@@ -147,17 +147,17 @@ function stripJsonExampleBlocks(content) {
 // --- Path Mapping ---
 
 function mapInstalledToSource(refPath) {
-  // Strip {project-root}/_bmad/ or {_bmad}/ prefix
-  let cleaned = refPath.replace(/^\{project-root\}\/_bmad\//, '').replace(/^\{_bmad\}\//, '');
+  // Strip {project-root}/_skad/ or {_skad}/ prefix
+  let cleaned = refPath.replace(/^\{project-root\}\/_skad\//, '').replace(/^\{_skad\}\//, '');
 
-  // Also handle bare _bmad/ prefix (seen in some invoke-task)
-  cleaned = cleaned.replace(/^_bmad\//, '');
+  // Also handle bare _skad/ prefix (seen in some invoke-task)
+  cleaned = cleaned.replace(/^_skad\//, '');
 
   // Skip install-only paths (generated at install time, not in source)
   if (isInstallOnly(cleaned)) return null;
 
-  // core/, bmm/, and utility/ are directly under src/
-  if (cleaned.startsWith('core/') || cleaned.startsWith('bmm/') || cleaned.startsWith('utility/')) {
+  // core/, skm/, and utility/ are directly under src/
+  if (cleaned.startsWith('core/') || cleaned.startsWith('skm/') || cleaned.startsWith('utility/')) {
     return path.join(SRC_DIR, cleaned);
   }
 
@@ -177,7 +177,7 @@ function isResolvable(refStr) {
 }
 
 function isInstallOnly(cleanedPath) {
-  // Skip paths that only exist in the installed _bmad/ structure, not in src/
+  // Skip paths that only exist in the installed _skad/ structure, not in src/
   for (const prefix of INSTALL_ONLY_PATHS) {
     if (cleanedPath.startsWith(prefix)) return true;
   }
@@ -205,16 +205,16 @@ function extractYamlRefs(filePath, content) {
 
     const line = range ? offsetToLine(content, range[0]) : undefined;
 
-    // Check for {project-root}/_bmad/ refs
-    const prMatch = value.match(/\{project-root\}\/_bmad\/[^\s'"<>})\]`]+/);
+    // Check for {project-root}/_skad/ refs
+    const prMatch = value.match(/\{project-root\}\/_skad\/[^\s'"<>})\]`]+/);
     if (prMatch) {
       refs.push({ file: filePath, raw: prMatch[0], type: 'project-root', line, key: keyPath });
     }
 
-    // Check for {_bmad}/ refs
-    const bmMatch = value.match(/\{_bmad\}\/[^\s'"<>})\]`]+/);
-    if (bmMatch) {
-      refs.push({ file: filePath, raw: bmMatch[0], type: 'project-root', line, key: keyPath });
+    // Check for {_skad}/ refs
+    const skadMatch = value.match(/\{_skad\}\/[^\s'"<>})\]`]+/);
+    if (skadMatch) {
+      refs.push({ file: filePath, raw: skadMatch[0], type: 'project-root', line, key: keyPath });
     }
 
     // Check for relative paths
@@ -268,11 +268,11 @@ function extractMarkdownRefs(filePath, content) {
     }
   }
 
-  // {project-root}/_bmad/ refs
+  // {project-root}/_skad/ refs
   runPattern(PROJECT_ROOT_REF, 'project-root');
 
-  // {_bmad}/ shorthand
-  runPattern(BMAD_SHORTHAND_REF, 'project-root');
+  // {_skad}/ shorthand
+  runPattern(SKAD_SHORTHAND_REF, 'project-root');
 
   // exec="..." attributes
   runPattern(EXEC_ATTR, 'exec-attr');
@@ -349,10 +349,10 @@ function resolveRef(ref) {
     if (execPath.includes('{project-root}')) {
       return mapInstalledToSource(execPath);
     }
-    if (execPath.includes('{_bmad}')) {
+    if (execPath.includes('{_skad}')) {
       return mapInstalledToSource(execPath);
     }
-    if (execPath.startsWith('_bmad/')) {
+    if (execPath.startsWith('_skad/')) {
       return mapInstalledToSource(execPath);
     }
     // Relative exec path
@@ -361,13 +361,13 @@ function resolveRef(ref) {
 
   if (ref.type === 'invoke-task') {
     // Extract file path from invoke-task content
-    const prMatch = ref.raw.match(/\{project-root\}\/_bmad\/([^\s'"<>})\]`]+)/);
+    const prMatch = ref.raw.match(/\{project-root\}\/_skad\/([^\s'"<>})\]`]+)/);
     if (prMatch) return mapInstalledToSource(prMatch[0]);
 
-    const bmMatch = ref.raw.match(/\{_bmad\}\/([^\s'"<>})\]`]+)/);
-    if (bmMatch) return mapInstalledToSource(bmMatch[0]);
+    const skadMatch = ref.raw.match(/\{_skad\}\/([^\s'"<>})\]`]+)/);
+    if (skadMatch) return mapInstalledToSource(skadMatch[0]);
 
-    const bareMatch = ref.raw.match(/_bmad\/([^\s'"<>})\]`]+)/);
+    const bareMatch = ref.raw.match(/_skad\/([^\s'"<>})\]`]+)/);
     if (bareMatch) return mapInstalledToSource(bareMatch[0]);
 
     return null; // Can't resolve — skip

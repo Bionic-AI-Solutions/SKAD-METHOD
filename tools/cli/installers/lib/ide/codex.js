@@ -5,7 +5,7 @@ const { BaseIdeSetup } = require('./_base-ide');
 const { WorkflowCommandGenerator } = require('./shared/workflow-command-generator');
 const { AgentCommandGenerator } = require('./shared/agent-command-generator');
 const { TaskToolCommandGenerator } = require('./shared/task-tool-command-generator');
-const { getTasksFromBmad } = require('./shared/bmad-artifacts');
+const { getTasksFromSkad } = require('./shared/skad-artifacts');
 const { toDashPath, customAgentDashName } = require('./shared/path-utils');
 const prompts = require('../../../lib/prompts');
 
@@ -66,10 +66,10 @@ class CodexSetup extends BaseIdeSetup {
   /**
    * Setup Codex configuration
    * @param {string} projectDir - Project directory
-   * @param {string} bmadDir - BMAD installation directory
+   * @param {string} skadDir - SKAD installation directory
    * @param {Object} options - Setup options
    */
-  async setup(projectDir, bmadDir, options = {}) {
+  async setup(projectDir, skadDir, options = {}) {
     if (!options.silent) await prompts.log.info(`Setting up ${this.name}...`);
 
     // Always use CLI mode
@@ -78,18 +78,18 @@ class CodexSetup extends BaseIdeSetup {
     // Get installation location from pre-collected config or default to global
     const installLocation = options.preCollectedConfig?.installLocation || 'global';
 
-    const { artifacts, counts } = await this.collectClaudeArtifacts(projectDir, bmadDir, options);
+    const { artifacts, counts } = await this.collectClaudeArtifacts(projectDir, skadDir, options);
 
     const destDir = this.getCodexPromptDir(projectDir, installLocation);
     await fs.ensureDir(destDir);
-    await this.clearOldBmadFiles(destDir, options);
+    await this.clearOldSkadFiles(destDir, options);
 
     // Collect artifacts and write using underscore format
-    const agentGen = new AgentCommandGenerator(this.bmadFolderName);
-    const { artifacts: agentArtifacts } = await agentGen.collectAgentArtifacts(bmadDir, options.selectedModules || []);
+    const agentGen = new AgentCommandGenerator(this.skadFolderName);
+    const { artifacts: agentArtifacts } = await agentGen.collectAgentArtifacts(skadDir, options.selectedModules || []);
     const agentCount = await agentGen.writeDashArtifacts(destDir, agentArtifacts);
 
-    const tasks = await getTasksFromBmad(bmadDir, options.selectedModules || []);
+    const tasks = await getTasksFromSkad(skadDir, options.selectedModules || []);
     const taskArtifacts = [];
     for (const task of tasks) {
       const content = await this.readAndProcessWithProject(
@@ -112,12 +112,12 @@ class CodexSetup extends BaseIdeSetup {
       });
     }
 
-    const workflowGenerator = new WorkflowCommandGenerator(this.bmadFolderName);
-    const { artifacts: workflowArtifacts } = await workflowGenerator.collectWorkflowArtifacts(bmadDir);
+    const workflowGenerator = new WorkflowCommandGenerator(this.skadFolderName);
+    const { artifacts: workflowArtifacts } = await workflowGenerator.collectWorkflowArtifacts(skadDir);
     const workflowCount = await workflowGenerator.writeDashArtifacts(destDir, workflowArtifacts);
 
     // Also write tasks using underscore format
-    const ttGen = new TaskToolCommandGenerator(this.bmadFolderName);
+    const ttGen = new TaskToolCommandGenerator(this.skadFolderName);
     const tasksWritten = await ttGen.writeDashArtifacts(destDir, taskArtifacts);
 
     const written = agentCount + workflowCount + tasksWritten;
@@ -140,7 +140,7 @@ class CodexSetup extends BaseIdeSetup {
   }
 
   /**
-   * Detect Codex installation by checking for BMAD prompt exports
+   * Detect Codex installation by checking for SKAD prompt exports
    */
   async detect(projectDir) {
     // Check both global and project-specific locations
@@ -152,7 +152,7 @@ class CodexSetup extends BaseIdeSetup {
     if (await fs.pathExists(globalDir)) {
       try {
         const entries = await fs.readdir(globalDir);
-        if (entries && entries.some((entry) => entry && typeof entry === 'string' && entry.startsWith('bmad'))) {
+        if (entries && entries.some((entry) => entry && typeof entry === 'string' && entry.startsWith('skad'))) {
           return true;
         }
       } catch {
@@ -164,7 +164,7 @@ class CodexSetup extends BaseIdeSetup {
     if (await fs.pathExists(projectSpecificDir)) {
       try {
         const entries = await fs.readdir(projectSpecificDir);
-        if (entries && entries.some((entry) => entry && typeof entry === 'string' && entry.startsWith('bmad'))) {
+        if (entries && entries.some((entry) => entry && typeof entry === 'string' && entry.startsWith('skad'))) {
           return true;
         }
       } catch {
@@ -179,13 +179,13 @@ class CodexSetup extends BaseIdeSetup {
    * Collect Claude-style artifacts for Codex export.
    * Returns the normalized artifact list for further processing.
    */
-  async collectClaudeArtifacts(projectDir, bmadDir, options = {}) {
+  async collectClaudeArtifacts(projectDir, skadDir, options = {}) {
     const selectedModules = options.selectedModules || [];
     const artifacts = [];
 
     // Generate agent launchers
-    const agentGen = new AgentCommandGenerator(this.bmadFolderName);
-    const { artifacts: agentArtifacts } = await agentGen.collectAgentArtifacts(bmadDir, selectedModules);
+    const agentGen = new AgentCommandGenerator(this.skadFolderName);
+    const { artifacts: agentArtifacts } = await agentGen.collectAgentArtifacts(skadDir, selectedModules);
 
     for (const artifact of agentArtifacts) {
       artifacts.push({
@@ -197,7 +197,7 @@ class CodexSetup extends BaseIdeSetup {
       });
     }
 
-    const tasks = await getTasksFromBmad(bmadDir, selectedModules);
+    const tasks = await getTasksFromSkad(skadDir, selectedModules);
     for (const task of tasks) {
       const content = await this.readAndProcessWithProject(
         task.path,
@@ -220,8 +220,8 @@ class CodexSetup extends BaseIdeSetup {
       });
     }
 
-    const workflowGenerator = new WorkflowCommandGenerator(this.bmadFolderName);
-    const { artifacts: workflowArtifacts, counts: workflowCounts } = await workflowGenerator.collectWorkflowArtifacts(bmadDir);
+    const workflowGenerator = new WorkflowCommandGenerator(this.skadFolderName);
+    const { artifacts: workflowArtifacts, counts: workflowCounts } = await workflowGenerator.collectWorkflowArtifacts(skadDir);
     artifacts.push(...workflowArtifacts);
 
     return {
@@ -255,7 +255,7 @@ class CodexSetup extends BaseIdeSetup {
     return written;
   }
 
-  async clearOldBmadFiles(destDir, options = {}) {
+  async clearOldSkadFiles(destDir, options = {}) {
     if (!(await fs.pathExists(destDir))) {
       return;
     }
@@ -278,7 +278,7 @@ class CodexSetup extends BaseIdeSetup {
       if (!entry || typeof entry !== 'string') {
         continue;
       }
-      if (!entry.startsWith('bmad')) {
+      if (!entry.startsWith('skad')) {
         continue;
       }
 
@@ -308,11 +308,11 @@ class CodexSetup extends BaseIdeSetup {
       '',
       '/prompts installed globally to your HOME DIRECTORY.',
       '',
-      'These prompts reference a specific _bmad path.',
-      "To use with other projects, you'd need to copy the _bmad dir.",
+      'These prompts reference a specific _skad path.',
+      "To use with other projects, you'd need to copy the _skad dir.",
       '',
       'You can now use /commands in Codex CLI',
-      '  Example: /bmad_bmm_pm',
+      '  Example: /skad_skm_pm',
       '  Type / to see all available commands',
     ];
     return lines.join('\n');
@@ -368,11 +368,11 @@ class CodexSetup extends BaseIdeSetup {
   async cleanup(projectDir = null) {
     // Clean both global and project-specific locations
     const globalDir = this.getCodexPromptDir(null, 'global');
-    await this.clearOldBmadFiles(globalDir);
+    await this.clearOldSkadFiles(globalDir);
 
     if (projectDir) {
       const projectSpecificDir = this.getCodexPromptDir(projectDir, 'project');
-      await this.clearOldBmadFiles(projectSpecificDir);
+      await this.clearOldSkadFiles(projectSpecificDir);
     }
   }
 
@@ -406,7 +406,7 @@ You must fully embody this agent's persona and follow all activation instruction
 </agent-activation>
 `;
 
-    // Use underscore format: bmad_custom_fred-commit-poet.md
+    // Use underscore format: skad_custom_fred-commit-poet.md
     const fileName = customAgentDashName(agentName);
     const launcherPath = path.join(destDir, fileName);
     await fs.writeFile(launcherPath, launcherContent, 'utf8');

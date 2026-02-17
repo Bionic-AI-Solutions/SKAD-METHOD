@@ -1,4 +1,4 @@
-// Extracts the next incomplete task from a BMAD story file's Ralph Tasks JSON.
+// Extracts the next incomplete task from a SKAD story file's Ralph Tasks JSON.
 // Usage: node scripts/ralph-extract-task.js <story_file_path>
 // Output: JSON with task details, or {"done": true} if all tasks pass.
 
