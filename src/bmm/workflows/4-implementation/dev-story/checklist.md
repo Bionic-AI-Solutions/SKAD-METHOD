@@ -41,6 +41,7 @@ validation-rules:
 
 - [ ] **Unit Tests:** Unit tests added/updated for ALL core functionality introduced/changed by this story
 - [ ] **Integration Tests:** Integration tests added/updated for component interactions when story requirements demand them
+- [ ] **Integration Test Integrity:** Integration tests use REAL infrastructure (MCP bridges, databases, APIs) — NO mocks, stubs, or fake servers. Use `skipIf` for unavailable services. Test graceful fallback for non-existent dependencies.
 - [ ] **End-to-End Tests:** End-to-end tests created for critical user flows when story requirements specify them
 - [ ] **Test Coverage:** Tests cover acceptance criteria and edge cases from story Dev Notes
 - [ ] **Regression Prevention:** ALL existing tests pass (no regressions introduced)

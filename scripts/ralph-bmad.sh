@@ -173,14 +173,14 @@ auto_verify_task() {
       const file = process.argv[1];
       const taskId = process.argv[2];
       let content = fs.readFileSync(file, 'utf-8');
-      const jsonMatch = content.match(/## Ralph Tasks JSON\s*\n\s*\\\`\\\`\\\`json\n([\s\S]*?)\n\\\`\\\`\\\`/);
+      const jsonMatch = content.match(/## Ralph Tasks JSON[\s\S]*?\\\`\\\`\\\`json\n([\s\S]*?)\n\\\`\\\`\\\`/);
       if (!jsonMatch) { process.exit(1); }
       const tasks = JSON.parse(jsonMatch[1]);
       const task = tasks.find(t => t.id === taskId);
       if (task) {
         task.passes = true;
         const newJson = JSON.stringify(tasks, null, 2);
-        content = content.replace(jsonMatch[1], newJson);
+        content = content.replace(jsonMatch[1], () => newJson);
         fs.writeFileSync(file, content);
         console.log('Updated ' + taskId + ' passes to true');
       }
@@ -481,7 +481,13 @@ run_task_loop() {
       cp PROMPT.md "$LOG_DIR/${TASK_ID}-attempt-${retry}-prompt.md" 2>/dev/null || true
 
       export RALPH_LOG_DIR="$LOG_DIR"
-      ./ralph.sh 1 || true
+      # Bump stall timeout for test tasks (agent needs longer read phase)
+      local lower_title=$(echo "$TASK_TITLE" | tr '[:upper:]' '[:lower:]')
+      if echo "$lower_title" | grep -qE 'test|integration|unit'; then
+        RALPH_STALL_TIMEOUT=300 ./ralph.sh 1 || true
+      else
+        ./ralph.sh 1 || true
+      fi
 
       # Step 1: Check if the task now passes
       UPDATED_JSON=$(node "$TASK_EXTRACTOR" "$STORY_FILE" 2>&1)
@@ -858,8 +864,8 @@ while true; do
   check_wall_clock
 
   # Phase 0: Discover
-  discover_next_story
-  DISCOVER_RESULT=$?
+  DISCOVER_RESULT=0
+  discover_next_story || DISCOVER_RESULT=$?
 
   if [ $DISCOVER_RESULT -eq 1 ]; then
     # All done
@@ -960,6 +966,9 @@ while true; do
   echo -e "${GREEN}   Story complete! Chaining to next...${NC}"
   echo -e "${GREEN}========================================${NC}"
   echo ""
+
+  # Reset wall-clock timer for next story so each story gets a full budget
+  RUN_START=$(date +%s)
 
   # Phase 5: Create next story if needed
   NEEDS_CS_KEY=""

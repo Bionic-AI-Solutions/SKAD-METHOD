@@ -1,5 +1,31 @@
 # Changelog
 
+## Ralph Autonomous Loop V2
+
+**Release: February 17, 2026**
+
+### Summary
+
+Production-hardened Ralph scripts based on learnings from the wa-agents project (10 epics, 30+ stories executed autonomously).
+
+### Fixes
+
+* **Robust JSON block regex** — Changed `\s*\n\s*` to `[\s\S]*?` in ralph-bmad.sh, ralph-extract-task.js, and ralph-sprint-status.js so the Ralph Tasks JSON block is found regardless of extra blank lines or whitespace between the heading and the fenced code block
+* **Safe string replacement** — Changed `content.replace(jsonMatch[1], newJson)` to `content.replace(jsonMatch[1], () => newJson)` in ralph-bmad.sh auto-verify to prevent `$` characters in JSON from being misinterpreted as replacement patterns
+* **Test task stall timeout** — Bumped `RALPH_STALL_TIMEOUT` to 300s for tasks with test/integration/unit in the title, giving the agent longer to read large test suites before the stall detector kills it
+* **Wall-clock timer reset per story** — In chain mode, `RUN_START` now resets after each story completes so every story gets a full wall-clock budget instead of sharing a single countdown
+* **Robust discover_next_story error handling** — Changed from `set -e` crash to `discover_next_story || DISCOVER_RESULT=$?` pattern so non-zero return codes (1 = all done, 2 = needs CS) are handled gracefully
+* **Integration Test Integrity checklist** — Added checklist item to dev-story/checklist.md ensuring integration tests use real endpoints with `skipIf` guards, not mocks
+
+### Files Changed
+
+* `scripts/ralph-bmad.sh` — regex, replacement safety, stall timeout, wall-clock reset, error handling
+* `scripts/ralph-extract-task.js` — regex robustness
+* `scripts/ralph-sprint-status.js` — regex robustness
+* `src/bmm/workflows/4-implementation/dev-story/checklist.md` — integration test integrity item
+
+---
+
 ## [6.0.0-Beta.7]
 
 **Release: February 4, 2026**

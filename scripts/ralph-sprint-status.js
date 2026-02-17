@@ -172,7 +172,7 @@ function updateStatus(key, newStatus, yamlPath) {
 // Parse Ralph Tasks JSON from a story file and return counts
 function taskSummary(storyFile) {
   const content = readFileSync(storyFile, 'utf-8');
-  const jsonMatch = content.match(/## Ralph Tasks JSON\s*\n\s*```json\n([\s\S]*?)\n```/);
+  const jsonMatch = content.match(/## Ralph Tasks JSON[\s\S]*?```json\n([\s\S]*?)\n```/);
 
   if (!jsonMatch) {
     return { totalTasks: 0, passed: 0, failed: 0, tasks: [] };

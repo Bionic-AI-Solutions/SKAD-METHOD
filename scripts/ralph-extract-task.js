@@ -13,7 +13,7 @@ if (!storyFile) {
 const content = readFileSync(storyFile, 'utf-8');
 
 // Extract Ralph Tasks JSON block
-const jsonMatch = content.match(/## Ralph Tasks JSON\s*\n\s*```json\n([\s\S]*?)\n```/);
+const jsonMatch = content.match(/## Ralph Tasks JSON[\s\S]*?```json\n([\s\S]*?)\n```/);
 if (!jsonMatch) {
   console.error('No Ralph Tasks JSON found in story file');
   process.exit(1);
