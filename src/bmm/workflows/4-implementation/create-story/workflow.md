@@ -386,4 +386,26 @@ Load config from `{project-root}/_skad/bmm/config.yaml` and resolve:
   </output>
 </step>
 
+<step n="7" goal="Optionally invoke create-tasks to atomize story into sub-agent task files">
+  <output>**Break story into atomic task files for sub-agent implementation?**
+
+    Task files embed full context per task (1-3 files each, architecture inlined, verification commands included).
+    Each task is independently completable by a sub-agent without loading any external documents.
+    Recommended for stories with 3+ tasks or complex architecture dependencies.
+
+    [CT] Create Tasks now
+    [S] Skip — dev-story will work from story Tasks/Subtasks directly
+  </output>
+  <ask>Choose [CT] or [S]:</ask>
+
+  <check if="user chooses CT">
+    <action>Set {{story_path}} = {{story_file}}</action>
+    <action>Load and follow: {project-root}/_skad/bmm/workflows/4-implementation/create-tasks/workflow.md</action>
+  </check>
+
+  <check if="user chooses S">
+    <output>Skipping task file generation. Run create-tasks later: "create tasks for {{story_key}}"</output>
+  </check>
+</step>
+
 </workflow>

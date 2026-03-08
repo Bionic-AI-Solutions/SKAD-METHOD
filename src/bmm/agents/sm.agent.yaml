@@ -27,6 +27,10 @@ agent:
       workflow: "{project-root}/_skad/bmm/workflows/4-implementation/create-story/workflow.md"
       description: "[CS] Context Story: Prepare a story with all required context for implementation for the developer agent"
 
+    - trigger: CT or fuzzy match on create-tasks
+      workflow: "{project-root}/_skad/bmm/workflows/4-implementation/create-tasks/workflow.md"
+      description: "[CT] Create Tasks: Break a ready-for-dev story into atomic, self-contained task files for sub-agent implementation"
+
     - trigger: ER or fuzzy match on epic-retrospective
       workflow: "{project-root}/_skad/bmm/workflows/4-implementation/retrospective/workflow.md"
       data: "{project-root}/_skad/_config/agent-manifest.csv"

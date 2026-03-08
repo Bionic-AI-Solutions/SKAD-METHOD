@@ -164,6 +164,23 @@ Load config from `{project-root}/_skad/bmm/config.yaml` and resolve:
 
     <anchor id="task_check" />
 
+    <!-- Task file detection — prefer atomic task files over inline story tasks when available -->
+    <check if="story Dev Notes contains a '### Task Files' subsection">
+      <action>Extract all task file paths from the markdown links in the Task Files subsection</action>
+      <action>Check which task files exist at {implementation_artifacts}/tasks/{{story_key}}/</action>
+      <action>For each existing task file: read the Completion Checklist section and check if all items are marked [x]</action>
+      <action>Find the FIRST task file where the Completion Checklist has at least one unchecked [ ] item</action>
+      <action>Set {{task_mode}} = "task-files"</action>
+      <action>Set {{current_task_file}} = path to first incomplete task file</action>
+      <output>Task files detected for this story. Implementing task-by-task using atomic task files.
+        First incomplete task: {{current_task_file}}
+      </output>
+    </check>
+
+    <check if="story Dev Notes does NOT contain a '### Task Files' subsection">
+      <action>Set {{task_mode}} = "story-tasks"</action>
+    </check>
+
     <action>Parse sections: Story, Acceptance Criteria, Tasks/Subtasks, Dev Notes, Dev Agent Record, File List, Change Log, Status</action>
 
     <action>Load comprehensive context from story file's Dev Notes section</action>
@@ -270,7 +287,28 @@ Load config from `{project-root}/_skad/bmm/config.yaml` and resolve:
   <step n="5" goal="Implement task following red-green-refactor cycle">
     <critical>FOLLOW THE STORY FILE TASKS/SUBTASKS SEQUENCE EXACTLY AS WRITTEN - NO DEVIATION</critical>
 
-    <action>Review the current task/subtask from the story file - this is your authoritative implementation guide</action>
+    <check if="{{task_mode}} == 'task-files'">
+      <action>Load COMPLETE task file: {{current_task_file}}</action>
+      <action>This task file is your authoritative implementation guide — it is fully self-contained; follow it exactly</action>
+      <action>Use the "Embedded Architecture Context" section from the task file — do NOT load external architecture documents</action>
+      <action>Use the "Embedded Code Patterns" and "Existing File State" sections — do NOT assume file contents</action>
+      <action>Enforce the "Exact Files to Touch" hard limit — do not modify any other files</action>
+      <action>Follow "DO NOT" section prohibitions without exception</action>
+      <action>When the task's Completion Checklist has all items checked AND verification commands pass:
+        - Update the task file's Task Agent Record → Completion Notes and Files Modified
+        - Mark the corresponding checkbox [x] in the story's Tasks/Subtasks section
+        - Advance {{current_task_file}} to the next incomplete task file from the Task Files list
+      </action>
+      <check if="task file is unreadable, missing, or malformed">
+        <output>Warning: Task file {{current_task_file}} could not be loaded. Falling back to story Tasks/Subtasks mode.</output>
+        <action>Set {{task_mode}} = "story-tasks"</action>
+      </check>
+    </check>
+
+    <check if="{{task_mode}} == 'story-tasks'">
+      <action>Review the current task/subtask from the story file - this is your authoritative implementation guide</action>
+    </check>
+
     <action>Plan implementation following red-green-refactor cycle</action>
 
     <!-- RED PHASE -->
