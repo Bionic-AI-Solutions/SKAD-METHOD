@@ -3,13 +3,13 @@ name: 'step-11-polish'
 description: 'Optimize and polish the complete PRD document for flow, coherence, and readability'
 
 # File References
-nextStepFile: '{project-root}/_bmad/bmm/workflows/2-plan-workflows/create-prd/steps-c/step-12-complete.md'
+nextStepFile: '{project-root}/_skad/bmm/workflows/2-plan-workflows/create-prd/steps-c/step-12-complete.md'
 outputFile: '{planning_artifacts}/prd.md'
-purposeFile: '{project-root}/_bmad/bmm/workflows/2-plan-workflows/create-prd/data/prd-purpose.md'
+purposeFile: '{project-root}/_skad/bmm/workflows/2-plan-workflows/create-prd/data/prd-purpose.md'
 
 # Task References
-advancedElicitationTask: '{project-root}/_bmad/core/workflows/advanced-elicitation/workflow.md'
-partyModeWorkflow: '{project-root}/_bmad/core/workflows/party-mode/workflow.md'
+advancedElicitationTask: '{project-root}/_skad/core/workflows/advanced-elicitation/workflow.md'
+partyModeWorkflow: '{project-root}/_skad/core/workflows/party-mode/workflow.md'
 ---
 
 # Step 11: Document Polish
@@ -55,7 +55,7 @@ Optimize the complete PRD document for flow, coherence, and professional present
 
 **CRITICAL:** Load the PRD purpose document first:
 
-- Read `{purposeFile}` to understand what makes a great BMAD PRD
+- Read `{purposeFile}` to understand what makes a great SKAD PRD
 - Internalize the philosophy: information density, traceability, measurable requirements
 - Keep the dual-audience nature (humans + LLMs) in mind
 
@@ -212,6 +212,6 @@ When user selects 'C', replace the entire document content with the polished ver
 
 ## NEXT STEP:
 
-After user selects 'C' and polished document is saved, load `{project-root}/_bmad/bmm/workflows/2-plan-workflows/create-prd/steps-c/step-12-complete.md` to complete the workflow.
+After user selects 'C' and polished document is saved, load `{project-root}/_skad/bmm/workflows/2-plan-workflows/create-prd/steps-c/step-12-complete.md` to complete the workflow.
 
 Remember: Do NOT proceed to step-12 until user explicitly selects 'C' from the A/P/C menu and polished document is saved!

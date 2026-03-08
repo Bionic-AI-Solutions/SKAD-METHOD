@@ -1,4 +1,4 @@
-# Technical Documentation Standards for BMAD
+# Technical Documentation Standards for SKAD
 
 CommonMark standards, technical writing best practices, and style guide compliance.
 
@@ -101,7 +101,7 @@ flowchart TD
 Apply in this hierarchy:
 
 1. **Project-specific guide** (if exists) - always ask first
-2. **BMAD conventions** (this document)
+2. **SKAD conventions** (this document)
 3. **Google Developer Docs style** (defaults below)
 4. **CommonMark spec** (when in doubt)
 

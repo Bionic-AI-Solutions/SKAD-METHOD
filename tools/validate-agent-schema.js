@@ -8,7 +8,7 @@
  * Exit codes: 0 = success, 1 = validation failures
  *
  * Optional argument:
- *   project_root - Directory to scan (defaults to BMAD repo root)
+ *   project_root - Directory to scan (defaults to SKAD repo root)
  */
 
 const { glob } = require('glob');

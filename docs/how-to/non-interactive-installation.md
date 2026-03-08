@@ -1,11 +1,11 @@
 ---
 title: Non-Interactive Installation
-description: Install BMad using command-line flags for CI/CD pipelines and automated deployments
+description: Install SKad using command-line flags for CI/CD pipelines and automated deployments
 sidebar:
   order: 2
 ---
 
-Use command-line flags to install BMad non-interactively. This is useful for:
+Use command-line flags to install SKad non-interactively. This is useful for:
 
 ## When to Use This
 
@@ -37,7 +37,7 @@ Requires [Node.js](https://nodejs.org) v20+ and `npx` (included with npm).
 | `--user-name <name>` | Name for agents to use | System username |
 | `--communication-language <lang>` | Agent communication language | English |
 | `--document-output-language <lang>` | Document output language | English |
-| `--output-folder <path>` | Output folder path | _bmad-output |
+| `--output-folder <path>` | Output folder path | _skad-output |
 
 ### Other Options
 
@@ -50,10 +50,10 @@ Requires [Node.js](https://nodejs.org) v20+ and `npx` (included with npm).
 
 Available module IDs for the `--modules` flag:
 
-- `bmm` — BMad Method Master
-- `bmb` — BMad Builder
+- `bmm` — SKad Method Master
+- `bmb` — SKad Builder
 
-Check the [BMad registry](https://github.com/bmad-code-org) for available external modules.
+Check the [SKad registry](https://github.com/skad-code-org) for available external modules.
 
 ## Tool/IDE IDs
 
@@ -61,16 +61,16 @@ Available tool IDs for the `--tools` flag:
 
 **Preferred:** `claude-code`, `cursor`
 
-Run `npx bmad-method install` interactively once to see the full current list of supported tools, or check the [platform codes configuration](https://github.com/bmad-code-org/BMAD-METHOD/blob/main/tools/cli/installers/lib/ide/platform-codes.yaml).
+Run `npx skad-method install` interactively once to see the full current list of supported tools, or check the [platform codes configuration](https://github.com/skad-code-org/SKAD-METHOD/blob/main/tools/cli/installers/lib/ide/platform-codes.yaml).
 
 ## Installation Modes
 
 | Mode | Description | Example |
 |------|-------------|---------|
-| Fully non-interactive | Provide all flags to skip all prompts | `npx bmad-method install --directory . --modules bmm --tools claude-code --yes` |
-| Semi-interactive | Provide some flags; BMad prompts for the rest | `npx bmad-method install --directory . --modules bmm` |
-| Defaults only | Accept all defaults with `-y` | `npx bmad-method install --yes` |
-| Without tools | Skip tool/IDE configuration | `npx bmad-method install --modules bmm --tools none` |
+| Fully non-interactive | Provide all flags to skip all prompts | `npx skad-method install --directory . --modules bmm --tools claude-code --yes` |
+| Semi-interactive | Provide some flags; SKad prompts for the rest | `npx skad-method install --directory . --modules bmm` |
+| Defaults only | Accept all defaults with `-y` | `npx skad-method install --yes` |
+| Without tools | Skip tool/IDE configuration | `npx skad-method install --modules bmm --tools none` |
 
 ## Examples
 
@@ -78,23 +78,23 @@ Run `npx bmad-method install` interactively once to see the full current list of
 
 ```bash
 #!/bin/bash
-# install-bmad.sh
+# install-skad.sh
 
-npx bmad-method install \
+npx skad-method install \
   --directory "${GITHUB_WORKSPACE}" \
   --modules bmm \
   --tools claude-code \
   --user-name "CI Bot" \
   --communication-language English \
   --document-output-language English \
-  --output-folder _bmad-output \
+  --output-folder _skad-output \
   --yes
 ```
 
 ### Update Existing Installation
 
 ```bash
-npx bmad-method install \
+npx skad-method install \
   --directory ~/projects/myapp \
   --action update \
   --modules bmm,bmb,custom-module
@@ -103,7 +103,7 @@ npx bmad-method install \
 ### Quick Update (Preserve Settings)
 
 ```bash
-npx bmad-method install \
+npx skad-method install \
   --directory ~/projects/myapp \
   --action quick-update
 ```
@@ -111,7 +111,7 @@ npx bmad-method install \
 ### Installation with Custom Content
 
 ```bash
-npx bmad-method install \
+npx skad-method install \
   --directory ~/projects/myapp \
   --modules bmm \
   --custom-content ~/my-custom-module,~/another-module \
@@ -120,13 +120,13 @@ npx bmad-method install \
 
 ## What You Get
 
-- A fully configured `_bmad/` directory in your project
+- A fully configured `_skad/` directory in your project
 - Compiled agents and workflows for your selected modules and tools
-- A `_bmad-output/` folder for generated artifacts
+- A `_skad-output/` folder for generated artifacts
 
 ## Validation and Error Handling
 
-BMad validates all provided flags:
+SKad validates all provided flags:
 
 - **Directory** — Must be a valid path with write permissions
 - **Modules** — Warns about invalid module IDs (but won't fail)
@@ -167,5 +167,5 @@ Ensure each custom content path:
 - Has a `code` field in the `module.yaml`
 
 :::note[Still stuck?]
-Run with `--debug` for detailed output, try interactive mode to isolate the issue, or report at <https://github.com/bmad-code-org/BMAD-METHOD/issues>.
+Run with `--debug` for detailed output, try interactive mode to isolate the issue, or report at <https://github.com/skad-code-org/SKAD-METHOD/issues>.
 :::

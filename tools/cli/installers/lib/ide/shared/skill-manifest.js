@@ -3,14 +3,14 @@ const fs = require('fs-extra');
 const yaml = require('yaml');
 
 /**
- * Load bmad-skill-manifest.yaml from a directory.
+ * Load skad-skill-manifest.yaml from a directory.
  * Single-entry manifests (canonicalId at top level) apply to all files in the directory.
  * Multi-entry manifests are keyed by source filename.
- * @param {string} dirPath - Directory to check for bmad-skill-manifest.yaml
+ * @param {string} dirPath - Directory to check for skad-skill-manifest.yaml
  * @returns {Object|null} Parsed manifest or null
  */
 async function loadSkillManifest(dirPath) {
-  const manifestPath = path.join(dirPath, 'bmad-skill-manifest.yaml');
+  const manifestPath = path.join(dirPath, 'skad-skill-manifest.yaml');
   try {
     if (!(await fs.pathExists(manifestPath))) return null;
     const content = await fs.readFile(manifestPath, 'utf8');
@@ -19,7 +19,7 @@ async function loadSkillManifest(dirPath) {
     if (parsed.canonicalId || parsed.type) return { __single: parsed };
     return parsed;
   } catch (error) {
-    console.warn(`Warning: Failed to parse bmad-skill-manifest.yaml in ${dirPath}: ${error.message}`);
+    console.warn(`Warning: Failed to parse skad-skill-manifest.yaml in ${dirPath}: ${error.message}`);
     return null;
   }
 }
@@ -67,24 +67,24 @@ function getArtifactType(manifest, filename) {
 }
 
 /**
- * Get the install_to_bmad flag for a specific file from a loaded skill manifest.
+ * Get the install_to_skad flag for a specific file from a loaded skill manifest.
  * @param {Object|null} manifest - Loaded manifest (from loadSkillManifest)
  * @param {string} filename - Source filename to look up
- * @returns {boolean} install_to_bmad value (defaults to true)
+ * @returns {boolean} install_to_skad value (defaults to true)
  */
-function getInstallToBmad(manifest, filename) {
+function getInstallToSkad(manifest, filename) {
   if (!manifest) return true;
   // Single-entry manifest applies to all files in the directory
-  if (manifest.__single) return manifest.__single.install_to_bmad !== false;
+  if (manifest.__single) return manifest.__single.install_to_skad !== false;
   // Multi-entry: look up by filename directly
-  if (manifest[filename]) return manifest[filename].install_to_bmad !== false;
+  if (manifest[filename]) return manifest[filename].install_to_skad !== false;
   // Fallback: try alternate extensions for compiled files
   const baseName = filename.replace(/\.(md|xml)$/i, '');
   const agentKey = `${baseName}.agent.yaml`;
-  if (manifest[agentKey]) return manifest[agentKey].install_to_bmad !== false;
+  if (manifest[agentKey]) return manifest[agentKey].install_to_skad !== false;
   const xmlKey = `${baseName}.xml`;
-  if (manifest[xmlKey]) return manifest[xmlKey].install_to_bmad !== false;
+  if (manifest[xmlKey]) return manifest[xmlKey].install_to_skad !== false;
   return true;
 }
 
-module.exports = { loadSkillManifest, getCanonicalId, getArtifactType, getInstallToBmad };
+module.exports = { loadSkillManifest, getCanonicalId, getArtifactType, getInstallToSkad };

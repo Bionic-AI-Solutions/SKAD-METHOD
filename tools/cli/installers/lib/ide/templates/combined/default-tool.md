@@ -5,6 +5,6 @@ description: '{{description}}'
 
 # {{name}}
 
-Read the entire tool file at: {project-root}/{{bmadFolderName}}/{{path}}
+Read the entire tool file at: {project-root}/{{skadFolderName}}/{{path}}
 
 Follow all instructions in the tool file exactly as written.

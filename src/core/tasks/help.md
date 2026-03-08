@@ -3,7 +3,7 @@ name: help
 description: 'Analyzes what is done and the users query and offers advice on what to do next. Use if user says what should I do next or what do I do now'
 ---
 
-# Task: BMAD Help
+# Task: SKAD Help
 
 ## ROUTING RULES
 
@@ -19,11 +19,11 @@ description: 'Analyzes what is done and the users query and offers advice on wha
 
 ### Command-Based Workflows
 When `command` field has a value:
-- Show the command prefixed with `/` (e.g., `/bmad-bmm-create-prd`)
+- Show the command prefixed with `/` (e.g., `/skad-bmm-create-prd`)
 
 ### Skill-Referenced Workflows
 When `workflow-file` starts with `skill:`:
-- The value is a skill reference (e.g., `skill:bmad-quick-dev-new-preview`), NOT a file path
+- The value is a skill reference (e.g., `skill:skad-quick-dev-new-preview`), NOT a file path
 - Do NOT attempt to resolve or load it as a file path
 - Display using the `command` column value prefixed with `/` (same as command-based workflows)
 
@@ -59,9 +59,9 @@ Determine what was just completed:
 
 ## EXECUTION
 
-1. **Load catalog** — Load `{project-root}/_bmad/_config/bmad-help.csv`
+1. **Load catalog** — Load `{project-root}/_skad/_config/skad-help.csv`
 
-2. **Resolve output locations and config** — Scan each folder under `{project-root}/_bmad/` (except `_config`) for `config.yaml`. For each workflow row, resolve its `output-location` variables against that module's config so artifact paths can be searched. Also extract `communication_language` and `project_knowledge` from each scanned module's config.
+2. **Resolve output locations and config** — Scan each folder under `{project-root}/_skad/` (except `_config`) for `config.yaml`. For each workflow row, resolve its `output-location` variables against that module's config so artifact paths can be searched. Also extract `communication_language` and `project_knowledge` from each scanned module's config.
 
 3. **Ground in project knowledge** — If `project_knowledge` resolves to an existing path, read available documentation files (architecture docs, project overview, tech stack references) for grounding context. Use discovered project facts when composing any project-specific output. Never fabricate project-specific details — if documentation is unavailable, state so.
 

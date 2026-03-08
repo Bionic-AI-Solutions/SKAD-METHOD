@@ -1,6 +1,6 @@
 # Adversarial Review Test Suite
 
-Tests for the `also_consider` optional input in the `bmad-review-adversarial-general` skill.
+Tests for the `also_consider` optional input in the `skad-review-adversarial-general` skill.
 
 ## Purpose
 

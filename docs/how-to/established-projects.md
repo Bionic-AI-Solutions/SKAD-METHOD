@@ -1,27 +1,27 @@
 ---
 title: "Established Projects"
-description: How to use BMad Method on existing codebases
+description: How to use SKad Method on existing codebases
 sidebar:
   order: 6
 ---
 
-Use BMad Method effectively when working on existing projects and legacy codebases.
+Use SKad Method effectively when working on existing projects and legacy codebases.
 
-This guide covers the essential workflow for onboarding to existing projects with BMad Method.
+This guide covers the essential workflow for onboarding to existing projects with SKad Method.
 
 :::note[Prerequisites]
-- BMad Method installed (`npx bmad-method install`)
+- SKad Method installed (`npx skad-method install`)
 - An existing codebase you want to work on
 - Access to an AI-powered IDE (Claude Code or Cursor)
 :::
 
 ## Step 1: Clean Up Completed Planning Artifacts
 
-If you have completed all PRD epics and stories through the BMad process, clean up those files. Archive them, delete them, or rely on version history if needed. Do not keep these files in:
+If you have completed all PRD epics and stories through the SKad process, clean up those files. Archive them, delete them, or rely on version history if needed. Do not keep these files in:
 
 - `docs/`
-- `_bmad-output/planning-artifacts/`
-- `_bmad-output/implementation-artifacts/`
+- `_skad-output/planning-artifacts/`
+- `_skad-output/implementation-artifacts/`
 
 ## Step 2: Create Project Context
 
@@ -32,7 +32,7 @@ Generate `project-context.md` to capture your existing codebase patterns and con
 Run the generate project context workflow:
 
 ```bash
-bmad-generate-project-context
+skad-generate-project-context
 ```
 
 This scans your codebase to identify:
@@ -42,7 +42,7 @@ This scans your codebase to identify:
 - Testing approaches
 - Framework-specific patterns
 
-You can review and refine the generated file, or create it manually at `_bmad-output/project-context.md` if you prefer.
+You can review and refine the generated file, or create it manually at `_skad-output/project-context.md` if you prefer.
 
 [Learn more about project context](../explanation/project-context.md)
 
@@ -55,25 +55,25 @@ Your `docs/` folder should contain succinct, well-organized documentation that a
 - Architecture
 - Any other relevant project information
 
-For complex projects, consider using the `bmad-document-project` workflow. It offers runtime variants that will scan your entire project and document its actual current state.
+For complex projects, consider using the `skad-document-project` workflow. It offers runtime variants that will scan your entire project and document its actual current state.
 
 ## Step 3: Get Help
 
-### BMad-Help: Your Starting Point
+### SKad-Help: Your Starting Point
 
-**Run `bmad-help` anytime you're unsure what to do next.** This intelligent guide:
+**Run `skad-help` anytime you're unsure what to do next.** This intelligent guide:
 
 - Inspects your project to see what's already been done
 - Shows options based on your installed modules
 - Understands natural language queries
 
 ```
-bmad-help I have an existing Rails app, where should I start?
-bmad-help What's the difference between quick-flow and full method?
-bmad-help Show me what workflows are available
+skad-help I have an existing Rails app, where should I start?
+skad-help What's the difference between quick-flow and full method?
+skad-help Show me what workflows are available
 ```
 
-BMad-Help also **automatically runs at the end of every workflow**, providing clear guidance on exactly what to do next.
+SKad-Help also **automatically runs at the end of every workflow**, providing clear guidance on exactly what to do next.
 
 ### Choosing Your Approach
 
@@ -81,8 +81,8 @@ You have two primary options depending on the scope of changes:
 
 | Scope                          | Recommended Approach                                                                                                          |
 | ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------- |
-| **Small updates or additions** | Use `bmad-quick-flow-solo-dev` to create a tech-spec and implement the change. The full four-phase BMad Method is likely overkill. |
-| **Major changes or additions** | Start with the BMad Method, applying as much or as little rigor as needed.                                                    |
+| **Small updates or additions** | Use `skad-quick-flow-solo-dev` to create a tech-spec and implement the change. The full four-phase SKad Method is likely overkill. |
+| **Major changes or additions** | Start with the SKad Method, applying as much or as little rigor as needed.                                                    |
 
 ### During PRD Creation
 

@@ -1,6 +1,6 @@
 {
   "$schema": "https://json.schemastore.org/package.json",
-  "name": "bmad-method",
+  "name": "skad-method",
   "version": "6.0.4",
   "description": "Breakthrough Method of Agile AI-driven Development",
   "keywords": [
@@ -10,22 +10,22 @@
     "development",
     "methodology",
     "agents",
-    "bmad"
+    "skad"
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/bmad-code-org/BMAD-METHOD.git"
+    "url": "git+https://github.com/skad-code-org/SKAD-METHOD.git"
   },
   "license": "MIT",
-  "author": "Brian (BMad) Madison",
-  "main": "tools/cli/bmad-cli.js",
+  "author": "Brian (SKad) Madison",
+  "main": "tools/cli/skad-cli.js",
   "bin": {
-    "bmad": "tools/bmad-npx-wrapper.js",
-    "bmad-method": "tools/bmad-npx-wrapper.js"
+    "skad": "tools/skad-npx-wrapper.js",
+    "skad-method": "tools/skad-npx-wrapper.js"
   },
   "scripts": {
-    "bmad:install": "node tools/cli/bmad-cli.js install",
-    "bmad:uninstall": "node tools/cli/bmad-cli.js uninstall",
+    "skad:install": "node tools/cli/skad-cli.js install",
+    "skad:uninstall": "node tools/cli/skad-cli.js uninstall",
     "docs:build": "node tools/build-docs.mjs",
     "docs:dev": "astro dev --root website",
     "docs:fix-links": "node tools/fix-doc-links.js",
@@ -34,7 +34,7 @@
     "format:check": "prettier --check \"**/*.{js,cjs,mjs,json,yaml}\"",
     "format:fix": "prettier --write \"**/*.{js,cjs,mjs,json,yaml}\"",
     "format:fix:staged": "prettier --write",
-    "install:bmad": "node tools/cli/bmad-cli.js install",
+    "install:skad": "node tools/cli/skad-cli.js install",
     "lint": "eslint . --ext .js,.cjs,.mjs,.yaml --max-warnings=0",
     "lint:fix": "eslint . --ext .js,.cjs,.mjs,.yaml --fix",
     "lint:md": "markdownlint-cli2 \"**/*.md\"",

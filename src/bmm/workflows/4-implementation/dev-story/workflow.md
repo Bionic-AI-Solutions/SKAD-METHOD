@@ -22,7 +22,7 @@ description: 'Execute story implementation following a context filled story spec
 
 ### Configuration Loading
 
-Load config from `{project-root}/_bmad/bmm/config.yaml` and resolve:
+Load config from `{project-root}/_skad/bmm/config.yaml` and resolve:
 
 - `project_name`, `user_name`
 - `communication_language`, `document_output_language`
@@ -32,7 +32,7 @@ Load config from `{project-root}/_bmad/bmm/config.yaml` and resolve:
 
 ### Paths
 
-- `installed_path` = `{project-root}/_bmad/bmm/workflows/4-implementation/dev-story`
+- `installed_path` = `{project-root}/_skad/bmm/workflows/4-implementation/dev-story`
 - `validation` = `{installed_path}/checklist.md`
 - `story_file` = `` (explicit story path; auto-discovered if empty)
 - `sprint_status` = `{implementation_artifacts}/sprint-status.yaml`
@@ -444,7 +444,7 @@ Load config from `{project-root}/_bmad/bmm/config.yaml` and resolve:
       - Verify all acceptance criteria are met
       - Ensure deployment readiness if applicable
       - Run `code-review` workflow for peer review
-      - Optional: If Test Architect module installed, run `/bmad:tea:automate` to expand guardrail tests
+      - Optional: If Test Architect module installed, run `/skad:tea:automate` to expand guardrail tests
     </action>
 
     <output>💡 **Tip:** For best results, run `code-review` using a **different** LLM than the one that implemented this story.</output>

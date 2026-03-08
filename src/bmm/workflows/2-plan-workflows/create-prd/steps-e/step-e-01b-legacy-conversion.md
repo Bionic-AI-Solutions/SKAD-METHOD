@@ -5,14 +5,14 @@ description: 'Legacy PRD Conversion Assessment - Analyze legacy PRD and propose 
 # File references (ONLY variables used in this step)
 nextStepFile: './step-e-02-review.md'
 prdFile: '{prd_file_path}'
-prdPurpose: '{project-root}/_bmad/bmm/workflows/2-plan-workflows/create-prd/data/prd-purpose.md'
+prdPurpose: '{project-root}/_skad/bmm/workflows/2-plan-workflows/create-prd/data/prd-purpose.md'
 ---
 
 # Step E-1B: Legacy PRD Conversion Assessment
 
 ## STEP GOAL:
 
-Analyze legacy PRD against BMAD standards, identify gaps, propose conversion strategy, and let user choose how to proceed.
+Analyze legacy PRD against SKAD standards, identify gaps, propose conversion strategy, and let user choose how to proceed.
 
 ## MANDATORY EXECUTION RULES (READ FIRST):
 
@@ -29,7 +29,7 @@ Analyze legacy PRD against BMAD standards, identify gaps, propose conversion str
 - ✅ You are a Validation Architect and PRD Improvement Specialist
 - ✅ If you already have been given communication or persona patterns, continue to use those while playing this new role
 - ✅ We engage in collaborative dialogue, not command-response
-- ✅ You bring BMAD standards expertise and conversion guidance
+- ✅ You bring SKAD standards expertise and conversion guidance
 - ✅ User brings domain knowledge and edit requirements
 
 ### Step-Specific Rules:
@@ -41,7 +41,7 @@ Analyze legacy PRD against BMAD standards, identify gaps, propose conversion str
 
 ## EXECUTION PROTOCOLS:
 
-- 🎯 Analyze legacy PRD against BMAD standard
+- 🎯 Analyze legacy PRD against SKAD standard
 - 💾 Identify gaps and estimate conversion effort
 - 📖 Present conversion options with effort estimates
 - 🚫 FORBIDDEN to proceed without user selection
@@ -65,7 +65,7 @@ Analyze legacy PRD against BMAD standards, identify gaps, propose conversion str
 
 **Load the PRD and prd-purpose.md**
 
-**For each BMAD PRD section, analyze:**
+**For each SKAD PRD section, analyze:**
 1. Does PRD have this section? (Executive Summary, Success Criteria, Product Scope, User Journeys, Functional Requirements, Non-Functional Requirements)
 2. If present: Is it complete and well-structured?
 3. If missing: What content exists that could migrate to this section?
@@ -80,14 +80,14 @@ Analyze legacy PRD against BMAD standards, identify gaps, propose conversion str
 Return conversion assessment with gap analysis and effort estimate."
 
 **Graceful degradation (if no Task tool):**
-- Manually check PRD for each BMAD section
+- Manually check PRD for each SKAD section
 - Note what's present and what's missing
 - Estimate conversion effort
 - Identify best conversion approach
 
 ### 2. Build Gap Analysis
 
-**For each BMAD core section:**
+**For each SKAD core section:**
 
 **Executive Summary:**
 - Present: [Yes/No/Partial]
@@ -150,7 +150,7 @@ Display:
 
 ### 4. Present MENU OPTIONS
 
-**[R] Restructure to BMAD** - Full conversion to BMAD format, then apply your edits
+**[R] Restructure to SKAD** - Full conversion to SKAD format, then apply your edits
 **[I] Targeted Improvements** - Apply your edits to existing structure without restructuring
 **[E] Edit & Restructure** - Do both: convert format AND apply your edits
 **[X] Exit** - Review assessment and decide
@@ -190,7 +190,7 @@ Read fully and follow: {nextStepFile} (step-e-02-review.md)
 
 ### ✅ SUCCESS:
 
-- All 6 BMAD core sections analyzed for gaps
+- All 6 SKAD core sections analyzed for gaps
 - Effort estimates provided for each section
 - Overall conversion effort assessed correctly
 - Clear recommendation provided based on effort and user goals

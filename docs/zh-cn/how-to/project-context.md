@@ -8,7 +8,7 @@ sidebar:
 使用 `project-context.md` 文件确保 AI 智能体在所有工作流程中遵循项目的技术偏好和实现规则。
 
 :::note[前置条件]
-- 已安装 BMad Method
+- 已安装 SKad Method
 - 了解项目的技术栈和约定
 :::
 
@@ -31,11 +31,11 @@ sidebar:
 
 ### 选项 A：手动创建
 
-在 `_bmad-output/project-context.md` 创建文件：
+在 `_skad-output/project-context.md` 创建文件：
 
 ```bash
-mkdir -p _bmad-output
-touch _bmad-output/project-context.md
+mkdir -p _skad-output
+touch _skad-output/project-context.md
 ```
 
 添加技术栈和实现规则：
@@ -77,7 +77,7 @@ sections_completed: ['technology_stack', 'critical_rules']
 在新的聊天中运行工作流程：
 
 ```bash
-/bmad-bmm-generate-project-context
+/skad-bmm-generate-project-context
 ```
 
 工作流程扫描架构文档和项目文件，生成捕获所做决策的上下文文件。
@@ -87,7 +87,7 @@ sections_completed: ['technology_stack', 'critical_rules']
 对于现有项目，运行：
 
 ```bash
-/bmad-bmm-generate-project-context
+/skad-bmm-generate-project-context
 ```
 
 工作流程分析代码库以识别约定，然后生成上下文文件供您审查和完善。
@@ -127,7 +127,7 @@ sections_completed: ['technology_stack', 'critical_rules']
 :::
 
 :::tip[适用于所有项目类型]
-对于快速流程和完整的 BMad Method 项目同样有用。
+对于快速流程和完整的 SKad Method 项目同样有用。
 :::
 
 ## 后续步骤

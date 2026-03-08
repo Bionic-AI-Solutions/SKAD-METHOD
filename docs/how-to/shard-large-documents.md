@@ -5,7 +5,7 @@ sidebar:
   order: 8
 ---
 
-Use the `bmad-shard-doc` tool if you need to split large markdown files into smaller, organized files for better context management.
+Use the `skad-shard-doc` tool if you need to split large markdown files into smaller, organized files for better context management.
 
 :::caution[Deprecated]
 This is no longer recommended, and soon with updated workflows and most major LLMs and tools supporting subprocesses this will be unnecessary.
@@ -23,11 +23,11 @@ Document sharding splits large markdown files into smaller, organized files base
 
 ```text
 Before Sharding:
-_bmad-output/planning-artifacts/
+_skad-output/planning-artifacts/
 └── PRD.md (large 50k token file)
 
 After Sharding:
-_bmad-output/planning-artifacts/
+_skad-output/planning-artifacts/
 └── prd/
     ├── index.md                    # Table of contents with descriptions
     ├── overview.md                 # Section 1
@@ -41,7 +41,7 @@ _bmad-output/planning-artifacts/
 ### 1. Run the Shard-Doc Tool
 
 ```bash
-/bmad-shard-doc
+/skad-shard-doc
 ```
 
 ### 2. Follow the Interactive Process
@@ -62,7 +62,7 @@ Agent: Sharding PRD.md...
 
 ## How Workflow Discovery Works
 
-BMad workflows use a **dual discovery system**:
+SKad workflows use a **dual discovery system**:
 
 1. **Try whole document first** - Look for `document-name.md`
 2. **Check for sharded version** - Look for `document-name/index.md`

@@ -1,7 +1,7 @@
 /**
- * BMAD Agent Compiler
+ * SKAD Agent Compiler
  * Transforms agent YAML to compiled XML (.md) format
- * Uses the existing BMAD builder infrastructure for proper formatting
+ * Uses the existing SKAD builder infrastructure for proper formatting
  */
 
 const yaml = require('yaml');
@@ -20,7 +20,7 @@ const { AgentAnalyzer } = require('../agent-analyzer');
  */
 function buildFrontmatter(metadata, agentName) {
   const nameFromFile = agentName.replaceAll('-', ' ');
-  const description = metadata.title || 'BMAD Agent';
+  const description = metadata.title || 'SKAD Agent';
 
   return `---
 name: "${nameFromFile}"
@@ -158,7 +158,7 @@ function buildMenuXml(menuItems) {
     }
   }
 
-  xml += `    <item cmd="PM or fuzzy match on party-mode" exec="{project-root}/_bmad/core/workflows/party-mode/workflow.md">[PM] Start Party Mode</item>\n`;
+  xml += `    <item cmd="PM or fuzzy match on party-mode" exec="{project-root}/_skad/core/workflows/party-mode/workflow.md">[PM] Start Party Mode</item>\n`;
   xml += `    <item cmd="DA or fuzzy match on exit, leave, goodbye or dismiss agent">[DA] Dismiss Agent</item>\n`;
 
   xml += '  </menu>\n';

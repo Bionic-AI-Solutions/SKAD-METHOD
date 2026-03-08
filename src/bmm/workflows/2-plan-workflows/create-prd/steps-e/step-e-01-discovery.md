@@ -4,9 +4,9 @@ description: 'Discovery & Understanding - Understand what user wants to edit and
 
 # File references (ONLY variables used in this step)
 altStepFile: './step-e-01b-legacy-conversion.md'
-prdPurpose: '{project-root}/_bmad/bmm/workflows/2-plan-workflows/create-prd/data/prd-purpose.md'
-advancedElicitationTask: '{project-root}/_bmad/core/workflows/advanced-elicitation/workflow.md'
-partyModeWorkflow: '{project-root}/_bmad/core/workflows/party-mode/workflow.md'
+prdPurpose: '{project-root}/_skad/bmm/workflows/2-plan-workflows/create-prd/data/prd-purpose.md'
+advancedElicitationTask: '{project-root}/_skad/core/workflows/advanced-elicitation/workflow.md'
+partyModeWorkflow: '{project-root}/_skad/core/workflows/party-mode/workflow.md'
 ---
 
 # Step E-1: Discovery & Understanding
@@ -45,7 +45,7 @@ Understand what the user wants to edit in the PRD, detect PRD format/type, check
 - 🎯 Discover user's edit requirements
 - 🎯 Auto-detect validation reports in PRD folder (use as guide)
 - 🎯 Load validation report if provided (use as guide)
-- 🎯 Detect PRD format (BMAD/legacy)
+- 🎯 Detect PRD format (SKAD/legacy)
 - 🎯 Route appropriately based on format
 - 💾 Document discoveries for next step
 - 🚫 FORBIDDEN to proceed without understanding requirements
@@ -66,7 +66,7 @@ Understand what the user wants to edit in the PRD, detect PRD format/type, check
 Load and read the complete file at:
 `{prdPurpose}` (data/prd-purpose.md)
 
-This file defines what makes a great BMAD PRD. Internalize this understanding - it will guide improvement recommendations.
+This file defines what makes a great SKAD PRD. Internalize this understanding - it will guide improvement recommendations.
 
 ### 2. Discover PRD to Edit
 
@@ -150,7 +150,7 @@ Please describe the changes you want to make. For example:
 - Fix specific issues (information density, implementation leakage, etc.)
 - Add missing sections or content
 - Improve structure and flow
-- Convert to BMAD format (if legacy PRD)
+- Convert to SKAD format (if legacy PRD)
 - General improvements
 - Other changes
 
@@ -164,7 +164,7 @@ Analyze the loaded PRD:
 
 **Extract all ## Level 2 headers** from PRD
 
-**Check for BMAD PRD core sections:**
+**Check for SKAD PRD core sections:**
 1. Executive Summary
 2. Success Criteria
 3. Product Scope
@@ -173,13 +173,13 @@ Analyze the loaded PRD:
 6. Non-Functional Requirements
 
 **Classify format:**
-- **BMAD Standard:** 5-6 core sections present
-- **BMAD Variant:** 3-4 core sections present, generally follows BMAD patterns
-- **Legacy (Non-Standard):** Fewer than 3 core sections, does not follow BMAD structure
+- **SKAD Standard:** 5-6 core sections present
+- **SKAD Variant:** 3-4 core sections present, generally follows SKAD patterns
+- **Legacy (Non-Standard):** Fewer than 3 core sections, does not follow SKAD structure
 
 ### 8. Route Based on Format and Context
 
-**IF validation report provided OR PRD is BMAD Standard/Variant:**
+**IF validation report provided OR PRD is SKAD Standard/Variant:**
 
 Display: "**Edit Requirements Understood**
 
@@ -195,7 +195,7 @@ Read fully and follow: next step (step-e-02-review.md)
 
 Display: "**Format Detected:** Legacy PRD
 
-This PRD does not follow BMAD standard structure (only {count}/6 core sections present).
+This PRD does not follow SKAD standard structure (only {count}/6 core sections present).
 
 **Your edit goals:** {user's requirements}
 
@@ -205,7 +205,7 @@ Present MENU OPTIONS below for user selection
 
 ### 9. Present MENU OPTIONS (Legacy PRDs Only)
 
-**[C] Convert to BMAD Format** - Convert PRD to BMAD standard structure, then apply your edits
+**[C] Convert to SKAD Format** - Convert PRD to SKAD standard structure, then apply your edits
 **[E] Edit As-Is** - Apply your edits without converting the format
 **[X] Exit** - Exit and review conversion options
 
@@ -231,7 +231,7 @@ Present MENU OPTIONS below for user selection
 - Auto-detected validation reports loaded and analyzed (when found)
 - Manual validation report loaded and analyzed (if provided)
 - PRD format detected correctly
-- BMAD PRDs proceed directly to review step
+- SKAD PRDs proceed directly to review step
 - Legacy PRDs pause and present conversion options
 - User can choose conversion path or edit as-is
 

@@ -16,7 +16,7 @@ const CLIUtils = {
   },
 
   /**
-   * Display BMAD logo using @clack intro + box
+   * Display SKAD logo using @clack intro + box
    * @param {boolean} _clearScreen - Deprecated, ignored (no longer clears screen)
    */
   async displayLogo(_clearScreen = true) {

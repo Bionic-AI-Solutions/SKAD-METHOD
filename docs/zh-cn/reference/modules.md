@@ -5,19 +5,19 @@ sidebar:
   order: 4
 ---
 
-BMad 通过您在安装期间选择的官方模块进行扩展。这些附加模块为内置核心和 BMM（敏捷套件）之外的特定领域提供专门的智能体、工作流和任务。
+SKad 通过您在安装期间选择的官方模块进行扩展。这些附加模块为内置核心和 BMM（敏捷套件）之外的特定领域提供专门的智能体、工作流和任务。
 
 :::tip[安装模块]
-运行 `npx bmad-method install` 并选择您需要的模块。安装程序会自动处理下载、配置和 IDE 集成。
+运行 `npx skad-method install` 并选择您需要的模块。安装程序会自动处理下载、配置和 IDE 集成。
 :::
 
-## BMad Builder
+## SKad Builder
 
-在引导式协助下创建自定义智能体、工作流和特定领域的模块。BMad Builder 是用于扩展框架本身的元模块。
+在引导式协助下创建自定义智能体、工作流和特定领域的模块。SKad Builder 是用于扩展框架本身的元模块。
 
 - **代码：** `bmb`
-- **npm：** [`bmad-builder`](https://www.npmjs.com/package/bmad-builder)
-- **GitHub：** [bmad-code-org/bmad-builder](https://github.com/bmad-code-org/bmad-builder)
+- **npm：** [`skad-builder`](https://www.npmjs.com/package/skad-builder)
+- **GitHub：** [skad-code-org/skad-builder](https://github.com/skad-code-org/skad-builder)
 
 **提供：**
 
@@ -31,8 +31,8 @@ BMad 通过您在安装期间选择的官方模块进行扩展。这些附加模
 用于早期开发阶段的结构化创意、构思和创新的 AI 驱动工具。该套件提供多个智能体，利用经过验证的框架促进头脑风暴、设计思维和问题解决。
 
 - **代码：** `cis`
-- **npm：** [`bmad-creative-intelligence-suite`](https://www.npmjs.com/package/bmad-creative-intelligence-suite)
-- **GitHub：** [bmad-code-org/bmad-module-creative-intelligence-suite](https://github.com/bmad-code-org/bmad-module-creative-intelligence-suite)
+- **npm：** [`skad-creative-intelligence-suite`](https://www.npmjs.com/package/skad-creative-intelligence-suite)
+- **GitHub：** [skad-code-org/skad-module-creative-intelligence-suite](https://github.com/skad-code-org/skad-module-creative-intelligence-suite)
 
 **提供：**
 
@@ -46,8 +46,8 @@ BMad 通过您在安装期间选择的官方模块进行扩展。这些附加模
 适用于 Unity、Unreal、Godot 和自定义引擎的结构化游戏开发工作流。通过 Quick Flow 支持快速原型制作，并通过史诗驱动的冲刺支持全面规模的生产。
 
 - **代码：** `gds`
-- **npm：** [`bmad-game-dev-studio`](https://www.npmjs.com/package/bmad-game-dev-studio)
-- **GitHub：** [bmad-code-org/bmad-module-game-dev-studio](https://github.com/bmad-code-org/bmad-module-game-dev-studio)
+- **npm：** [`skad-game-dev-studio`](https://www.npmjs.com/package/skad-game-dev-studio)
+- **GitHub：** [skad-code-org/skad-module-game-dev-studio](https://github.com/skad-code-org/skad-module-game-dev-studio)
 
 **提供：**
 
@@ -61,8 +61,8 @@ BMad 通过您在安装期间选择的官方模块进行扩展。这些附加模
 通过专家智能体和九个结构化工作流提供企业级测试策略、自动化指导和发布门控决策。TEA 远超内置 QA 智能体，提供基于风险的优先级排序和需求可追溯性。
 
 - **代码：** `tea`
-- **npm：** [`bmad-method-test-architecture-enterprise`](https://www.npmjs.com/package/bmad-method-test-architecture-enterprise)
-- **GitHub：** [bmad-code-org/bmad-method-test-architecture-enterprise](https://github.com/bmad-code-org/bmad-method-test-architecture-enterprise)
+- **npm：** [`skad-method-test-architecture-enterprise`](https://www.npmjs.com/package/skad-method-test-architecture-enterprise)
+- **GitHub：** [skad-code-org/skad-method-test-architecture-enterprise](https://github.com/skad-code-org/skad-method-test-architecture-enterprise)
 
 **提供：**
 
@@ -73,7 +73,7 @@ BMad 通过您在安装期间选择的官方模块进行扩展。这些附加模
 
 ## 社区模块
 
-社区模块和模块市场即将推出。请查看 [BMad GitHub 组织](https://github.com/bmad-code-org) 获取最新更新。
+社区模块和模块市场即将推出。请查看 [SKad GitHub 组织](https://github.com/skad-code-org) 获取最新更新。
 
 ---
 ## 术语说明

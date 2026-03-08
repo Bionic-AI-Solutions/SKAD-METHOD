@@ -1,5 +1,5 @@
-# BMAD Platform Codes Configuration
-# Central configuration for all platform/IDE codes used in the BMAD system
+# SKAD Platform Codes Configuration
+# Central configuration for all platform/IDE codes used in the SKAD system
 #
 # This file defines:
 # 1. Platform metadata (name, preferred status, category, description)
@@ -281,7 +281,7 @@ platforms:
 #   skip_existing: boolean (optional)     # Skip files that already exist (default: false)
 #   skill_format: boolean (optional)   # Use directory-per-skill output: <name>/SKILL.md
 #                                     # with clean frontmatter (name + description, unquoted)
-#   ancestor_conflict_check: boolean (optional) # Refuse install when ancestor dir has BMAD files
+#   ancestor_conflict_check: boolean (optional) # Refuse install when ancestor dir has SKAD files
 #                                                # in the same target_dir (for IDEs that inherit
 #                                                # skills from parent directories)
 

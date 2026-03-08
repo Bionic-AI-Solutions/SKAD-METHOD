@@ -31,7 +31,7 @@ description: 'Post-epic review to extract lessons and assess success. Use when t
 
 ### Configuration Loading
 
-Load config from `{project-root}/_bmad/bmm/config.yaml` and resolve:
+Load config from `{project-root}/_skad/bmm/config.yaml` and resolve:
 
 - `project_name`, `user_name`
 - `communication_language`, `document_output_language`
@@ -42,7 +42,7 @@ Load config from `{project-root}/_bmad/bmm/config.yaml` and resolve:
 
 ### Paths
 
-- `installed_path` = `{project-root}/_bmad/bmm/workflows/4-implementation/retrospective`
+- `installed_path` = `{project-root}/_skad/bmm/workflows/4-implementation/retrospective`
 - `sprint_status_file` = `{implementation_artifacts}/sprint-status.yaml`
 
 ### Input Files
@@ -57,7 +57,7 @@ Load config from `{project-root}/_bmad/bmm/config.yaml` and resolve:
 
 ### Required Inputs
 
-- `agent_manifest` = `{project-root}/_bmad/_config/agent-manifest.csv`
+- `agent_manifest` = `{project-root}/_skad/_config/agent-manifest.csv`
 
 ### Context
 

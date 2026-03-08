@@ -1,5 +1,5 @@
 <workflow>
-  <critical>The workflow execution engine is governed by: {project-root}/_bmad/core/tasks/workflow.xml</critical>
+  <critical>The workflow execution engine is governed by: {project-root}/_skad/core/tasks/workflow.xml</critical>
   <critical>You MUST have already loaded and processed: {installed_path}/workflow.yaml</critical>
   <critical>Communicate all responses in {communication_language} and language MUST be tailored to {user_skill_level}</critical>
   <critical>Generate all documents in {document_output_language}</critical>
@@ -399,7 +399,7 @@
       - Verify all acceptance criteria are met
       - Ensure deployment readiness if applicable
       - Run `code-review` workflow for peer review
-      - Optional: If Test Architect module installed, run `/bmad:tea:automate` to expand guardrail tests
+      - Optional: If Test Architect module installed, run `/skad:tea:automate` to expand guardrail tests
     </action>
 
     <output>💡 **Tip:** For best results, run `code-review` using a **different** LLM than the one that implemented this story.</output>

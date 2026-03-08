@@ -15,7 +15,7 @@ description: 'Generate end to end automated tests for existing features. Use whe
 
 ### Configuration Loading
 
-Load config from `{project-root}/_bmad/bmm/config.yaml` and resolve:
+Load config from `{project-root}/_skad/bmm/config.yaml` and resolve:
 
 - `project_name`, `user_name`
 - `communication_language`, `document_output_language`
@@ -25,7 +25,7 @@ Load config from `{project-root}/_bmad/bmm/config.yaml` and resolve:
 
 ### Paths
 
-- `installed_path` = `{project-root}/_bmad/bmm/workflows/qa-generate-e2e-tests`
+- `installed_path` = `{project-root}/_skad/bmm/workflows/qa-generate-e2e-tests`
 - `checklist` = `{installed_path}/checklist.md`
 - `test_dir` = `{project-root}/tests`
 - `source_dir` = `{project-root}`
@@ -134,7 +134,7 @@ If the project needs:
 - Comprehensive coverage analysis
 - Advanced testing patterns and utilities
 
-> **Install Test Architect (TEA) module**: <https://bmad-code-org.github.io/bmad-method-test-architecture-enterprise/>
+> **Install Test Architect (TEA) module**: <https://skad-code-org.github.io/skad-method-test-architecture-enterprise/>
 
 ## Output
 

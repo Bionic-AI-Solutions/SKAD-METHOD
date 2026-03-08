@@ -1,10 +1,10 @@
 ---
 title: "既有项目常见问题"
-description: 关于在既有项目上使用 BMad 方法的常见问题
+description: 关于在既有项目上使用 SKad 方法的常见问题
 sidebar:
   order: 8
 ---
-关于使用 BMad 方法（BMM）在既有项目上工作的常见问题的快速解答。
+关于使用 SKad 方法（BMM）在既有项目上工作的常见问题的快速解答。
 
 ## 问题
 
@@ -47,13 +47,13 @@ sidebar:
 
 BMM 尊重你的选择——它不会强制现代化，但会提供现代化选项。
 
-**有未在此处回答的问题吗？** 请[提出问题](https://github.com/bmad-code-org/BMAD-METHOD/issues)或在 [Discord](https://discord.gg/gk8jAdXWmj) 中提问，以便我们添加它！
+**有未在此处回答的问题吗？** 请[提出问题](https://github.com/skad-code-org/SKAD-METHOD/issues)或在 [Discord](https://discord.gg/gk8jAdXWmj) 中提问，以便我们添加它！
 
 ---
 ## 术语说明
 
 - **agent**：智能体。在人工智能与编程文档中，指具备自主决策或执行能力的单元。
-- **Quick Flow**：快速流程。BMad 方法中的一种工作流程，用于快速处理既有项目。
+- **Quick Flow**：快速流程。SKad 方法中的一种工作流程，用于快速处理既有项目。
 - **tech-spec**：技术规范。描述技术实现细节和标准的文档。
 - **stack**：技术栈。项目所使用的技术组合，包括框架、库、工具等。
 - **conventions**：约定。代码库中遵循的编码风格、命名规则等规范。

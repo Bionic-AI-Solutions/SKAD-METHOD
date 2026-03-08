@@ -1,6 +1,6 @@
 agent:
   metadata:
-    id: "_bmad/bmm/agents/qa"
+    id: "_skad/bmm/agents/qa"
     name: Quinn
     title: QA Engineer
     icon: 🧪
@@ -29,7 +29,7 @@ agent:
 
   menu:
     - trigger: QA or fuzzy match on qa-automate
-      workflow: "{project-root}/_bmad/bmm/workflows/qa-generate-e2e-tests/workflow.md"
+      workflow: "{project-root}/_skad/bmm/workflows/qa-generate-e2e-tests/workflow.md"
       description: "[QA] Automate - Generate tests for existing features (simplified)"
 
   prompts:
@@ -53,6 +53,6 @@ agent:
 
         **Need more advanced testing?**
         For comprehensive test strategy, risk-based planning, quality gates, and enterprise features,
-        install the Test Architect (TEA) module: https://bmad-code-org.github.io/bmad-method-test-architecture-enterprise/
+        install the Test Architect (TEA) module: https://skad-code-org.github.io/skad-method-test-architecture-enterprise/
 
-        Ready to generate some tests? Just say `QA` or `bmad-bmm-qa-automate`!
+        Ready to generate some tests? Just say `QA` or `skad-bmm-qa-automate`!

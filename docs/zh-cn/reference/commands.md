@@ -1,26 +1,26 @@
 ---
 title: "命令"
-description: BMad 斜杠命令参考——它们是什么、如何工作以及在哪里找到它们。
+description: SKad 斜杠命令参考——它们是什么、如何工作以及在哪里找到它们。
 sidebar:
   order: 3
 ---
 
-斜杠命令是预构建的提示词，用于在 IDE 中加载智能体、运行工作流或执行任务。BMad 安装程序在安装时根据已安装的模块生成这些命令。如果您后续添加、删除或更改模块，请重新运行安装程序以保持命令同步（参见[故障排除](#troubleshooting)）。
+斜杠命令是预构建的提示词，用于在 IDE 中加载智能体、运行工作流或执行任务。SKad 安装程序在安装时根据已安装的模块生成这些命令。如果您后续添加、删除或更改模块，请重新运行安装程序以保持命令同步（参见[故障排除](#troubleshooting)）。
 
 ## 命令与智能体菜单触发器
 
-BMad 提供两种开始工作的方式，它们服务于不同的目的。
+SKad 提供两种开始工作的方式，它们服务于不同的目的。
 
 | 机制 | 调用方式 | 发生什么 |
 | --- | --- | --- |
-| **斜杠命令** | 在 IDE 中输入 `/bmad-...` | 直接加载智能体、运行工作流或执行任务 |
+| **斜杠命令** | 在 IDE 中输入 `/skad-...` | 直接加载智能体、运行工作流或执行任务 |
 | **智能体菜单触发器** | 先加载智能体，然后输入简短代码（例如 `DS`） | 智能体解释代码并启动匹配的工作流，同时保持角色设定 |
 
 智能体菜单触发器需要活动的智能体会话。当您知道要使用哪个工作流时，使用斜杠命令。当您已经与智能体一起工作并希望在不离开对话的情况下切换任务时，使用触发器。
 
 ## 命令如何生成
 
-当您运行 `npx bmad-method install` 时，安装程序会读取每个选定模块的清单，并为每个智能体、工作流、任务和工具编写一个命令文件。每个文件都是一个简短的 Markdown 提示词，指示 AI 加载相应的源文件并遵循其指令。
+当您运行 `npx skad-method install` 时，安装程序会读取每个选定模块的清单，并为每个智能体、工作流、任务和工具编写一个命令文件。每个文件都是一个简短的 Markdown 提示词，指示 AI 加载相应的源文件并遵循其指令。
 
 安装程序为每种命令类型使用模板：
 
@@ -50,21 +50,21 @@ BMad 提供两种开始工作的方式，它们服务于不同的目的。
 
 ```text
 .claude/commands/
-├── bmad-agent-bmm-dev.md
-├── bmad-agent-bmm-pm.md
-├── bmad-bmm-create-prd.md
-├── bmad-editorial-review-prose.md
-├── bmad-help.md
+├── skad-agent-bmm-dev.md
+├── skad-agent-bmm-pm.md
+├── skad-bmm-create-prd.md
+├── skad-editorial-review-prose.md
+├── skad-help.md
 └── ...
 ```
 
-文件名决定了 IDE 中的斜杠命令名称。例如，文件 `bmad-agent-bmm-dev.md` 注册命令 `/bmad-agent-bmm-dev`。
+文件名决定了 IDE 中的斜杠命令名称。例如，文件 `skad-agent-bmm-dev.md` 注册命令 `/skad-agent-bmm-dev`。
 
 ## 如何发现您的命令
 
-在 IDE 中输入 `/bmad` 并使用自动完成功能浏览可用命令。
+在 IDE 中输入 `/skad` 并使用自动完成功能浏览可用命令。
 
-运行 `/bmad-help` 获取关于下一步的上下文感知指导。
+运行 `/skad-help` 获取关于下一步的上下文感知指导。
 
 :::tip[快速发现]
 项目中生成的命令文件夹是权威列表。在文件资源管理器中打开它们以查看每个命令及其描述。
@@ -78,10 +78,10 @@ BMad 提供两种开始工作的方式，它们服务于不同的目的。
 
 | 示例命令 | 智能体 | 角色 |
 | --- | --- | --- |
-| `/bmad-agent-bmm-dev` | Amelia（开发者） | 严格按照规范实现故事 |
-| `/bmad-agent-bmm-pm` | John（产品经理） | 创建和验证 PRD |
-| `/bmad-agent-bmm-architect` | Winston（架构师） | 设计系统架构 |
-| `/bmad-agent-bmm-sm` | Bob（Scrum Master） | 管理冲刺和故事 |
+| `/skad-agent-bmm-dev` | Amelia（开发者） | 严格按照规范实现故事 |
+| `/skad-agent-bmm-pm` | John（产品经理） | 创建和验证 PRD |
+| `/skad-agent-bmm-architect` | Winston（架构师） | 设计系统架构 |
+| `/skad-agent-bmm-sm` | Bob（Scrum Master） | 管理冲刺和故事 |
 
 参见[智能体](./agents.md)获取默认智能体及其触发器的完整列表。
 
@@ -91,11 +91,11 @@ BMad 提供两种开始工作的方式，它们服务于不同的目的。
 
 | 示例命令 | 目的 |
 | --- | --- |
-| `/bmad-bmm-create-prd` | 创建产品需求文档 |
-| `/bmad-bmm-create-architecture` | 设计系统架构 |
-| `/bmad-bmm-dev-story` | 实现故事 |
-| `/bmad-bmm-code-review` | 运行代码审查 |
-| `/bmad-bmm-quick-spec` | 定义临时更改（快速流程） |
+| `/skad-bmm-create-prd` | 创建产品需求文档 |
+| `/skad-bmm-create-architecture` | 设计系统架构 |
+| `/skad-bmm-dev-story` | 实现故事 |
+| `/skad-bmm-code-review` | 运行代码审查 |
+| `/skad-bmm-quick-spec` | 定义临时更改（快速流程） |
 
 参见[工作流地图](./workflow-map.md)获取按阶段组织的完整工作流参考。
 
@@ -103,9 +103,9 @@ BMad 提供两种开始工作的方式，它们服务于不同的目的。
 
 任务和工具是独立的操作，不需要智能体或工作流上下文。
 
-#### BMad-Help：您的智能向导
+#### SKad-Help：您的智能向导
 
-**`/bmad-help`** 是您发现下一步操作的主要界面。它不仅仅是一个查找工具——它是一个智能助手，可以：
+**`/skad-help`** 是您发现下一步操作的主要界面。它不仅仅是一个查找工具——它是一个智能助手，可以：
 
 - **检查您的项目**以查看已经完成的工作
 - **理解自然语言查询**——用简单的英语提问
@@ -116,19 +116,19 @@ BMad 提供两种开始工作的方式，它们服务于不同的目的。
 **示例：**
 
 ```
-/bmad-help
-/bmad-help 我有一个 SaaS 想法并且知道所有功能。我应该从哪里开始？
-/bmad-help 我在 UX 设计方面有哪些选择？
-/bmad-help 我在 PRD 工作流上卡住了
+/skad-help
+/skad-help 我有一个 SaaS 想法并且知道所有功能。我应该从哪里开始？
+/skad-help 我在 UX 设计方面有哪些选择？
+/skad-help 我在 PRD 工作流上卡住了
 ```
 
 #### 其他任务和工具
 
 | 示例命令 | 目的 |
 | --- | --- |
-| `/bmad-shard-doc` | 将大型 Markdown 文件拆分为较小的部分 |
-| `/bmad-index-docs` | 索引项目文档 |
-| `/bmad-editorial-review-prose` | 审查文档散文质量 |
+| `/skad-shard-doc` | 将大型 Markdown 文件拆分为较小的部分 |
+| `/skad-index-docs` | 索引项目文档 |
+| `/skad-editorial-review-prose` | 审查文档散文质量 |
 
 ## 命名约定
 
@@ -136,9 +136,9 @@ BMad 提供两种开始工作的方式，它们服务于不同的目的。
 
 | 模式 | 含义 | 示例 |
 | --- | --- | --- |
-| `bmad-agent-<module>-<name>` | 智能体启动器 | `bmad-agent-bmm-dev` |
-| `bmad-<module>-<workflow>` | 工作流命令 | `bmad-bmm-create-prd` |
-| `bmad-<name>` | 核心任务或工具 | `bmad-help` |
+| `skad-agent-<module>-<name>` | 智能体启动器 | `skad-agent-bmm-dev` |
+| `skad-<module>-<workflow>` | 工作流命令 | `skad-bmm-create-prd` |
+| `skad-<name>` | 核心任务或工具 | `skad-help` |
 
 模块代码：`bmm`（敏捷套件）、`bmb`（构建器）、`tea`（测试架构师）、`cis`（创意智能）、`gds`（游戏开发工作室）。参见[模块](./modules.md)获取描述。
 
@@ -146,7 +146,7 @@ BMad 提供两种开始工作的方式，它们服务于不同的目的。
 
 **安装后命令未出现。** 重启您的 IDE 或重新加载窗口。某些 IDE 会缓存命令列表，需要刷新才能获取新文件。
 
-**预期的命令缺失。** 安装程序仅为您选择的模块生成命令。再次运行 `npx bmad-method install` 并验证您的模块选择。检查命令文件是否存在于预期目录中。
+**预期的命令缺失。** 安装程序仅为您选择的模块生成命令。再次运行 `npx skad-method install` 并验证您的模块选择。检查命令文件是否存在于预期目录中。
 
 **已删除模块的命令仍然出现。** 安装程序不会自动删除旧的命令文件。从 IDE 的命令目录中删除过时的文件，或删除整个命令目录并重新运行安装程序以获取一组干净的命令。
 

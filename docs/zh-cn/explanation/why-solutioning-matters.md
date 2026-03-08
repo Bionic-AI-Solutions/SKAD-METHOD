@@ -55,8 +55,8 @@ sidebar:
 | 流程 | 需要解决方案阶段？ |
 |-------|----------------------|
 | Quick Flow | 否 - 完全跳过 |
-| BMad Method Simple | 可选 |
-| BMad Method Complex | 是 |
+| SKad Method Simple | 可选 |
+| SKad Method Complex | 是 |
 | Enterprise | 是 |
 
 :::tip[经验法则]

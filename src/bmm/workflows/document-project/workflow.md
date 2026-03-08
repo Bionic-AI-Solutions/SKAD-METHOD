@@ -16,7 +16,7 @@ description: 'Document brownfield projects for AI context. Use when the user say
 
 ### Configuration Loading
 
-Load config from `{project-root}/_bmad/bmm/config.yaml` and resolve:
+Load config from `{project-root}/_skad/bmm/config.yaml` and resolve:
 
 - `project_knowledge`
 - `user_name`
@@ -27,7 +27,7 @@ Load config from `{project-root}/_bmad/bmm/config.yaml` and resolve:
 
 ### Paths
 
-- `installed_path` = `{project-root}/_bmad/bmm/workflows/document-project`
+- `installed_path` = `{project-root}/_skad/bmm/workflows/document-project`
 - `instructions` = `{installed_path}/instructions.md`
 - `validation` = `{installed_path}/checklist.md`
 - `documentation_requirements_csv` = `{installed_path}/documentation-requirements.csv`

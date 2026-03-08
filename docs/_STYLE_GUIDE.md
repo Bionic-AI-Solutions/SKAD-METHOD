@@ -64,8 +64,8 @@ Critical warnings only — data loss, security issues
 ```md
 | Skill        | Agent   | Purpose                              |
 | ------------ | ------- | ------------------------------------ |
-| `bmad-brainstorming` | Analyst | Brainstorm a new project             |
-| `bmad-create-prd`        | PM      | Create Product Requirements Document |
+| `skad-brainstorming` | Analyst | Brainstorm a new project             |
+| `skad-create-prd`        | PM      | Create Product Requirements Document |
 ```
 
 ## Folder Structure Blocks
@@ -75,8 +75,8 @@ Show in "What You've Accomplished" sections:
 ````md
 ```
 your-project/
-├── _bmad/                                   # BMad configuration
-├── _bmad-output/
+├── _skad/                                   # SKad configuration
+├── _skad-output/
 │   ├── planning-artifacts/
 │   │   └── PRD.md                           # Your requirements document
 │   ├── implementation-artifacts/
@@ -325,7 +325,7 @@ Starlight generates right-side "On this page" navigation from headers:
 Add italic context at definition start for limited-scope terms:
 
 - `*Quick Flow only.*`
-- `*BMad Method/Enterprise.*`
+- `*SKad Method/Enterprise.*`
 - `*Phase N.*`
 - `*BMGD.*`
 - `*Established projects.*`
@@ -349,11 +349,11 @@ Add italic context at definition start for limited-scope terms:
 
 ### Do I always need architecture?
 
-Only for BMad Method and Enterprise tracks. Quick Flow skips to implementation.
+Only for SKad Method and Enterprise tracks. Quick Flow skips to implementation.
 
 ### Can I change my plan later?
 
-Yes. The SM agent has a `bmad-correct-course` workflow for handling scope changes.
+Yes. The SM agent has a `skad-correct-course` workflow for handling scope changes.
 
 **Have a question not answered here?** [Open an issue](...) or ask in [Discord](...).
 ```

@@ -15,7 +15,7 @@ description: 'Manage significant changes during sprint execution. Use when the u
 
 ### Configuration Loading
 
-Load config from `{project-root}/_bmad/bmm/config.yaml` and resolve:
+Load config from `{project-root}/_skad/bmm/config.yaml` and resolve:
 
 - `project_name`, `user_name`
 - `communication_language`, `document_output_language`
@@ -31,7 +31,7 @@ Load config from `{project-root}/_bmad/bmm/config.yaml` and resolve:
 
 ### Paths
 
-- `installed_path` = `{project-root}/_bmad/bmm/workflows/4-implementation/correct-course`
+- `installed_path` = `{project-root}/_skad/bmm/workflows/4-implementation/correct-course`
 - `checklist` = `{installed_path}/checklist.md`
 - `default_output_file` = `{planning_artifacts}/sprint-change-proposal-{date}.md`
 

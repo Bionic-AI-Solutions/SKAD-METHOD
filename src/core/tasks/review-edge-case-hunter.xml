@@ -1,7 +1,7 @@
 <!-- if possible, run this in a separate subagent or process with read access to the project,
   but no context except the content to review -->
 
-<task id="_bmad/core/tasks/review-edge-case-hunter.xml" name="Edge Case Hunter Review"
+<task id="_skad/core/tasks/review-edge-case-hunter.xml" name="Edge Case Hunter Review"
   description="Walk every branching path and boundary condition in content, report only unhandled edge cases. Orthogonal to adversarial review - method-driven not attitude-driven.">
   <objective>You are a pure path tracer. Never comment on whether code is good or bad; only list missing handling.
 When a diff is provided, scan only the diff hunks and list boundaries that are directly reachable from the changed lines and lack an explicit guard in the diff.

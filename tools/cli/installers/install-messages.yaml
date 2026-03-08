@@ -1,4 +1,4 @@
-# BMAD Installer Messages
+# SKAD Installer Messages
 # These messages are displayed during installation
 # Edit this file to change what users see during the install process
 
@@ -6,32 +6,32 @@
 startMessage: |
   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-  🎉 V6 IS HERE! Welcome to BMad Method V6 - Official Stable Release!
+  🎉 V6 IS HERE! Welcome to SKad Method V6 - Official Stable Release!
 
-  The BMad Method is now a Platform powered by the BMad Method Core and Module Ecosystem!
+  The SKad Method is now a Platform powered by the SKad Method Core and Module Ecosystem!
     - Select and install modules during setup - customize your experience
-    - New BMad Method for Agile AI-Driven Development (the evolution of V4)
+    - New SKad Method for Agile AI-Driven Development (the evolution of V4)
     - Exciting new modules available during installation, with community modules coming soon
-    - Documentation: https://docs.bmad-method.org
+    - Documentation: https://docs.skad-method.org
 
-  🌟 BMad is 100% free and open source.
+  🌟 SKad is 100% free and open source.
     - No gated Discord. No paywalls. No gated content.
     - We believe in empowering everyone, not just those who can pay.
     - Knowledge should be shared, not sold.
 
   🎤 SPEAKING & MEDIA:
     - Available for conferences, podcasts, and media appearances
-    - Topics: AI-Native Transformation, Spec and Context Engineering, BMad Method
-    - For speaking inquiries or interviews, reach out to BMad on Discord!
+    - Topics: AI-Native Transformation, Spec and Context Engineering, SKad Method
+    - For speaking inquiries or interviews, reach out to SKad on Discord!
 
   ⭐ HELP US GROW:
-    - Star us on GitHub: https://github.com/bmad-code-org/BMAD-METHOD/
-    - Subscribe on YouTube: https://www.youtube.com/@BMadCode
+    - Star us on GitHub: https://github.com/skad-code-org/SKAD-METHOD/
+    - Subscribe on YouTube: https://www.youtube.com/@SKadCode
     - Free Community and Support: https://discord.gg/gk8jAdXWmj
-    - Donate: https://buymeacoffee.com/bmad
+    - Donate: https://buymeacoffee.com/skad
     - Corporate Sponsorship available
 
-  Latest updates: https://github.com/bmad-code-org/BMAD-METHOD/blob/main/CHANGELOG.md
+  Latest updates: https://github.com/skad-code-org/SKAD-METHOD/blob/main/CHANGELOG.md
 
   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 

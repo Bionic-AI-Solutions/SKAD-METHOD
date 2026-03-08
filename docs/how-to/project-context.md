@@ -8,7 +8,7 @@ sidebar:
 Use the `project-context.md` file to ensure AI agents follow your project's technical preferences and implementation rules throughout all workflows.
 
 :::note[Prerequisites]
-- BMad Method installed
+- SKad Method installed
 - Understanding of your project's technology stack and conventions
 :::
 
@@ -31,11 +31,11 @@ Use the `project-context.md` file to ensure AI agents follow your project's tech
 
 ### Option A: Manual Creation
 
-Create the file at `_bmad-output/project-context.md`:
+Create the file at `_skad-output/project-context.md`:
 
 ```bash
-mkdir -p _bmad-output
-touch _bmad-output/project-context.md
+mkdir -p _skad-output
+touch _skad-output/project-context.md
 ```
 
 Add your technology stack and implementation rules:
@@ -77,7 +77,7 @@ sections_completed: ['technology_stack', 'critical_rules']
 Run the workflow in a fresh chat:
 
 ```bash
-bmad-generate-project-context
+skad-generate-project-context
 ```
 
 The workflow scans your architecture document and project files to generate a context file capturing the decisions made.
@@ -87,7 +87,7 @@ The workflow scans your architecture document and project files to generate a co
 For existing projects, run:
 
 ```bash
-bmad-generate-project-context
+skad-generate-project-context
 ```
 
 The workflow analyzes your codebase to identify conventions, then generates a context file you can review and refine.
@@ -127,7 +127,7 @@ Edit manually when patterns change, or re-generate after significant architectur
 :::
 
 :::tip[Works for All Project Types]
-Just as useful for Quick Flow as for full BMad Method projects.
+Just as useful for Quick Flow as for full SKad Method projects.
 :::
 
 ## Next Steps

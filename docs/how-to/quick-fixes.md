@@ -5,7 +5,7 @@ sidebar:
   order: 5
 ---
 
-Use the **DEV agent** directly for bug fixes, refactorings, or small targeted changes that don't require the full BMad Method or Quick Flow.
+Use the **DEV agent** directly for bug fixes, refactorings, or small targeted changes that don't require the full SKad Method or Quick Flow.
 
 ## When to Use This
 
@@ -15,7 +15,7 @@ Use the **DEV agent** directly for bug fixes, refactorings, or small targeted ch
 - Exploratory work to understand an unfamiliar codebase
 
 :::note[Prerequisites]
-- BMad Method installed (`npx bmad-method install`)
+- SKad Method installed (`npx skad-method install`)
 - An AI-powered IDE (Claude Code, Cursor, or similar)
 :::
 
@@ -35,13 +35,13 @@ If you are unsure, start with the DEV agent. You can always escalate to Quick Fl
 Start a **fresh chat** in your AI IDE and invoke the DEV agent skill:
 
 ```text
-bmad-dev
+skad-dev
 ```
 
 This loads the agent's persona and capabilities into the session. If you decide you need Quick Flow instead, invoke the **Quick Flow Solo Dev** agent skill in a fresh chat:
 
 ```text
-bmad-quick-flow-solo-dev
+skad-quick-flow-solo-dev
 ```
 
 Once the Solo Dev agent is loaded, describe your change and ask it to create a **quick-spec**. The agent drafts a lightweight spec capturing what you want to change and how. After you approve the quick-spec, tell the agent to start the **Quick Flow dev cycle** -- it will implement the change, run tests, and perform a self-review, all guided by the spec you just approved.
@@ -115,7 +115,7 @@ No planning artifacts are produced -- that's the point of this approach.
 
 ## When to Upgrade to Formal Planning
 
-Consider using [Quick Flow](../explanation/quick-flow.md) or the full BMad Method when:
+Consider using [Quick Flow](../explanation/quick-flow.md) or the full SKad Method when:
 
 - The change affects multiple systems or requires coordinated updates across many files
 - You are unsure about the scope and need a spec to think it through

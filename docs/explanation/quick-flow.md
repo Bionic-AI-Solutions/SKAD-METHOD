@@ -23,7 +23,7 @@ Skip the ceremony. Quick Flow takes you from idea to working code in two skills 
 - Anything where requirements are unclear or contested
 
 :::caution[Scope Creep]
-If you start a Quick Flow and realize the scope is bigger than expected, `bmad-quick-dev` will detect this and offer to escalate. You can switch to a full PRD workflow at any point without losing your work.
+If you start a Quick Flow and realize the scope is bigger than expected, `skad-quick-dev` will detect this and offer to escalate. You can switch to a full PRD workflow at any point without losing your work.
 :::
 
 ## How It Works
@@ -32,7 +32,7 @@ Quick Flow has two skills, each backed by a structured workflow. You can run the
 
 ### quick-spec: Plan
 
-Run `bmad-quick-spec` and Barry (the Quick Flow agent) walks you through a conversational discovery process:
+Run `skad-quick-spec` and Barry (the Quick Flow agent) walks you through a conversational discovery process:
 
 1. **Understand** - You describe what you want to build. Barry scans the codebase to ask informed questions, then captures a problem statement, solution approach, and scope boundaries.
 2. **Investigate** - Barry reads relevant files, maps code patterns, identifies files to modify, and documents the technical context.
@@ -43,31 +43,31 @@ The output is a `tech-spec-{slug}.md` file saved to your project's implementatio
 
 ### quick-dev: Build
 
-Run `bmad-quick-dev` and Barry implements the work. It operates in two modes:
+Run `skad-quick-dev` and Barry implements the work. It operates in two modes:
 
 - **Tech-spec mode** - Point it at a spec file (`quick-dev tech-spec-auth.md`) and it executes every task in order, writes tests, and verifies acceptance criteria.
 - **Direct mode** - Give it instructions directly (`quick-dev "refactor the auth middleware"`) and it gathers context, builds a mental plan, and executes.
 
-After implementation, `bmad-quick-dev` runs a self-check audit against all tasks and acceptance criteria, then triggers an adversarial code review of the diff. Findings are presented for you to resolve before wrapping up.
+After implementation, `skad-quick-dev` runs a self-check audit against all tasks and acceptance criteria, then triggers an adversarial code review of the diff. Findings are presented for you to resolve before wrapping up.
 
 :::tip[Fresh Context]
-For best results, run `bmad-quick-dev` in a new conversation after finishing `bmad-quick-spec`. This gives the implementation agent clean context focused solely on building.
+For best results, run `skad-quick-dev` in a new conversation after finishing `skad-quick-spec`. This gives the implementation agent clean context focused solely on building.
 :::
 
 ## What Quick Flow Skips
 
-The full BMad Method produces a Product Brief, PRD, Architecture doc, and Epic/Story breakdown before any code is written. Quick Flow replaces all of that with a single tech-spec. This works because Quick Flow targets changes where:
+The full SKad Method produces a Product Brief, PRD, Architecture doc, and Epic/Story breakdown before any code is written. Quick Flow replaces all of that with a single tech-spec. This works because Quick Flow targets changes where:
 
 - The product direction is already established
 - Architecture decisions are already made
 - A single developer can reason about the full scope
 - Requirements fit in one conversation
 
-## Escalating to Full BMad Method
+## Escalating to Full SKad Method
 
-Quick Flow includes built-in guardrails for scope detection. When you run `bmad-quick-dev` with a direct request, it evaluates signals like multi-component mentions, system-level language, and uncertainty about approach. If it detects the work is bigger than a quick flow:
+Quick Flow includes built-in guardrails for scope detection. When you run `skad-quick-dev` with a direct request, it evaluates signals like multi-component mentions, system-level language, and uncertainty about approach. If it detects the work is bigger than a quick flow:
 
-- **Light escalation** - Recommends running `bmad-quick-spec` first to create a plan
-- **Heavy escalation** - Recommends switching to the full BMad Method PRD process
+- **Light escalation** - Recommends running `skad-quick-spec` first to create a plan
+- **Heavy escalation** - Recommends switching to the full SKad Method PRD process
 
 You can also escalate manually at any time. Your tech-spec work carries forward - it becomes input for the broader planning process rather than being discarded.

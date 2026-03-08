@@ -1,5 +1,5 @@
 /**
- * Template Engine for BMAD Agent Install Configuration
+ * Template Engine for SKAD Agent Install Configuration
  * Processes {{variable}}, {{#if}}, {{#unless}}, and {{/if}} blocks
  */
 

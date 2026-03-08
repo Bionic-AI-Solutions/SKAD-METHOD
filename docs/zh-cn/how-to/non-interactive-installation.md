@@ -1,11 +1,11 @@
 ---
 title: "非交互式安装"
-description: 使用命令行标志安装 BMad，适用于 CI/CD 流水线和自动化部署
+description: 使用命令行标志安装 SKad，适用于 CI/CD 流水线和自动化部署
 sidebar:
   order: 2
 ---
 
-使用命令行标志以非交互方式安装 BMad。这适用于：
+使用命令行标志以非交互方式安装 SKad。这适用于：
 
 ## 使用场景
 
@@ -37,7 +37,7 @@ sidebar:
 | `--user-name <name>` | 智能体使用的名称 | 系统用户名 |
 | `--communication-language <lang>` | 智能体通信语言 | 英语 |
 | `--document-output-language <lang>` | 文档输出语言 | 英语 |
-| `--output-folder <path>` | 输出文件夹路径 | _bmad-output |
+| `--output-folder <path>` | 输出文件夹路径 | _skad-output |
 
 ### 其他选项
 
@@ -50,10 +50,10 @@ sidebar:
 
 `--modules` 标志可用的模块 ID：
 
-- `bmm` — BMad Method Master
-- `bmb` — BMad Builder
+- `bmm` — SKad Method Master
+- `bmb` — SKad Builder
 
-查看 [BMad 注册表](https://github.com/bmad-code-org) 获取可用的外部模块。
+查看 [SKad 注册表](https://github.com/skad-code-org) 获取可用的外部模块。
 
 ## 工具/IDE ID
 
@@ -61,16 +61,16 @@ sidebar:
 
 **推荐：** `claude-code`、`cursor`
 
-运行一次 `npx bmad-method install` 交互式安装以查看完整的当前支持工具列表，或查看 [平台代码配置](https://github.com/bmad-code-org/BMAD-METHOD/blob/main/tools/cli/installers/lib/ide/platform-codes.yaml)。
+运行一次 `npx skad-method install` 交互式安装以查看完整的当前支持工具列表，或查看 [平台代码配置](https://github.com/skad-code-org/SKAD-METHOD/blob/main/tools/cli/installers/lib/ide/platform-codes.yaml)。
 
 ## 安装模式
 
 | 模式 | 描述 | 示例 |
 |------|-------------|---------|
-| 完全非交互式 | 提供所有标志以跳过所有提示 | `npx bmad-method install --directory . --modules bmm --tools claude-code --yes` |
-| 半交互式 | 提供部分标志；BMad 提示其余部分 | `npx bmad-method install --directory . --modules bmm` |
-| 仅使用默认值 | 使用 `-y` 接受所有默认值 | `npx bmad-method install --yes` |
-| 不包含工具 | 跳过工具/IDE 配置 | `npx bmad-method install --modules bmm --tools none` |
+| 完全非交互式 | 提供所有标志以跳过所有提示 | `npx skad-method install --directory . --modules bmm --tools claude-code --yes` |
+| 半交互式 | 提供部分标志；SKad 提示其余部分 | `npx skad-method install --directory . --modules bmm` |
+| 仅使用默认值 | 使用 `-y` 接受所有默认值 | `npx skad-method install --yes` |
+| 不包含工具 | 跳过工具/IDE 配置 | `npx skad-method install --modules bmm --tools none` |
 
 ## 示例
 
@@ -78,23 +78,23 @@ sidebar:
 
 ```bash
 #!/bin/bash
-# install-bmad.sh
+# install-skad.sh
 
-npx bmad-method install \
+npx skad-method install \
   --directory "${GITHUB_WORKSPACE}" \
   --modules bmm \
   --tools claude-code \
   --user-name "CI Bot" \
   --communication-language English \
   --document-output-language English \
-  --output-folder _bmad-output \
+  --output-folder _skad-output \
   --yes
 ```
 
 ### 更新现有安装
 
 ```bash
-npx bmad-method install \
+npx skad-method install \
   --directory ~/projects/myapp \
   --action update \
   --modules bmm,bmb,custom-module
@@ -103,7 +103,7 @@ npx bmad-method install \
 ### 快速更新（保留设置）
 
 ```bash
-npx bmad-method install \
+npx skad-method install \
   --directory ~/projects/myapp \
   --action quick-update
 ```
@@ -111,7 +111,7 @@ npx bmad-method install \
 ### 使用自定义内容安装
 
 ```bash
-npx bmad-method install \
+npx skad-method install \
   --directory ~/projects/myapp \
   --modules bmm \
   --custom-content ~/my-custom-module,~/another-module \
@@ -120,13 +120,13 @@ npx bmad-method install \
 
 ## 安装结果
 
-- 项目中完全配置的 `_bmad/` 目录
+- 项目中完全配置的 `_skad/` 目录
 - 为所选模块和工具编译的智能体和工作流
-- 用于生成产物的 `_bmad-output/` 文件夹
+- 用于生成产物的 `_skad-output/` 文件夹
 
 ## 验证和错误处理
 
-BMad 会验证所有提供的标志：
+SKad 会验证所有提供的标志：
 
 - **目录** — 必须是具有写入权限的有效路径
 - **模块** — 对无效的模块 ID 发出警告（但不会失败）
@@ -167,7 +167,7 @@ BMad 会验证所有提供的标志：
 - 在 `module.yaml` 中有 `code` 字段
 
 :::note[仍然卡住了？]
-使用 `--debug` 运行以获取详细输出，尝试交互模式以隔离问题，或在 <https://github.com/bmad-code-org/BMAD-METHOD/issues> 报告。
+使用 `--debug` 运行以获取详细输出，尝试交互模式以隔离问题，或在 <https://github.com/skad-code-org/SKAD-METHOD/issues> 报告。
 :::
 
 ---

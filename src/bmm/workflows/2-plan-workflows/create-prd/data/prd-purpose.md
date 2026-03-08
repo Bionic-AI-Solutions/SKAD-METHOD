@@ -1,10 +1,10 @@
-# BMAD PRD Purpose
+# SKAD PRD Purpose
 
-**The PRD is the top of the required funnel that feeds all subsequent product development work in rhw BMad Method.**
+**The PRD is the top of the required funnel that feeds all subsequent product development work in rhw SKad Method.**
 
 ---
 
-## What is a BMAD PRD?
+## What is a SKAD PRD?
 
 A dual-audience document serving:
 1. **Human Product Managers and builders** - Vision, strategy, stakeholder communication
@@ -182,7 +182,7 @@ Certain industries have mandatory requirements that must be present:
 
 ---
 
-## Summary: What Makes a Great BMAD PRD?
+## Summary: What Makes a Great SKAD PRD?
 
 ✅ **High Information Density** - Every sentence carries weight, zero fluff
 ✅ **Measurable Requirements** - All FRs and NFRs are testable with specific criteria

@@ -48,8 +48,8 @@ function assert(condition, testName, errorMessage = '') {
   }
 }
 
-async function createTestBmadFixture() {
-  const fixtureDir = await fs.mkdtemp(path.join(os.tmpdir(), 'bmad-fixture-'));
+async function createTestSkadFixture() {
+  const fixtureDir = await fs.mkdtemp(path.join(os.tmpdir(), 'skad-fixture-'));
 
   // Minimal workflow manifest (generators check for this)
   await fs.ensureDir(path.join(fixtureDir, '_config'));
@@ -70,9 +70,9 @@ async function createTestBmadFixture() {
   ].join('\n');
 
   await fs.ensureDir(path.join(fixtureDir, 'core', 'agents'));
-  await fs.writeFile(path.join(fixtureDir, 'core', 'agents', 'bmad-master.md'), minimalAgent);
-  // Skill manifest so the installer uses 'bmad-master' as the canonical skill name
-  await fs.writeFile(path.join(fixtureDir, 'core', 'agents', 'bmad-skill-manifest.yaml'), 'bmad-master.md:\n  canonicalId: bmad-master\n');
+  await fs.writeFile(path.join(fixtureDir, 'core', 'agents', 'skad-master.md'), minimalAgent);
+  // Skill manifest so the installer uses 'skad-master' as the canonical skill name
+  await fs.writeFile(path.join(fixtureDir, 'core', 'agents', 'skad-skill-manifest.yaml'), 'skad-master.md:\n  canonicalId: skad-master\n');
 
   // Minimal compiled agent for bmm module (tests use selectedModules: ['bmm'])
   await fs.ensureDir(path.join(fixtureDir, 'bmm', 'agents'));
@@ -179,8 +179,8 @@ async function runTests() {
     // Test path resolution logic (if exposed)
     // This would test {project-root}, {installed_path}, {config_source} resolution
 
-    const testPath = '{project-root}/bmad/bmm/config.yaml';
-    const expectedPattern = /\/bmad\/bmm\/config\.yaml$/;
+    const testPath = '{project-root}/skad/bmm/config.yaml';
+    const expectedPattern = /\/skad\/bmm\/config\.yaml$/;
 
     assert(
       true, // Placeholder - would test actual resolution
@@ -212,29 +212,29 @@ async function runTests() {
       'Windsurf installer cleans legacy workflow output',
     );
 
-    const tempProjectDir = await fs.mkdtemp(path.join(os.tmpdir(), 'bmad-windsurf-test-'));
-    const installedBmadDir = await createTestBmadFixture();
-    const legacyDir = path.join(tempProjectDir, '.windsurf', 'workflows', 'bmad-legacy-dir');
+    const tempProjectDir = await fs.mkdtemp(path.join(os.tmpdir(), 'skad-windsurf-test-'));
+    const installedSkadDir = await createTestSkadFixture();
+    const legacyDir = path.join(tempProjectDir, '.windsurf', 'workflows', 'skad-legacy-dir');
     await fs.ensureDir(legacyDir);
-    await fs.writeFile(path.join(tempProjectDir, '.windsurf', 'workflows', 'bmad-legacy.md'), 'legacy\n');
+    await fs.writeFile(path.join(tempProjectDir, '.windsurf', 'workflows', 'skad-legacy.md'), 'legacy\n');
     await fs.writeFile(path.join(legacyDir, 'SKILL.md'), 'legacy\n');
 
     const ideManager = new IdeManager();
     await ideManager.ensureInitialized();
-    const result = await ideManager.setup('windsurf', tempProjectDir, installedBmadDir, {
+    const result = await ideManager.setup('windsurf', tempProjectDir, installedSkadDir, {
       silent: true,
       selectedModules: ['bmm'],
     });
 
     assert(result.success === true, 'Windsurf setup succeeds against temp project');
 
-    const skillFile = path.join(tempProjectDir, '.windsurf', 'skills', 'bmad-master', 'SKILL.md');
+    const skillFile = path.join(tempProjectDir, '.windsurf', 'skills', 'skad-master', 'SKILL.md');
     assert(await fs.pathExists(skillFile), 'Windsurf install writes SKILL.md directory output');
 
     assert(!(await fs.pathExists(path.join(tempProjectDir, '.windsurf', 'workflows'))), 'Windsurf setup removes legacy workflows dir');
 
     await fs.remove(tempProjectDir);
-    await fs.remove(installedBmadDir);
+    await fs.remove(installedSkadDir);
   } catch (error) {
     assert(false, 'Windsurf native skills migration test succeeds', error.message);
   }
@@ -260,29 +260,29 @@ async function runTests() {
       'Kiro installer cleans legacy steering output',
     );
 
-    const tempProjectDir = await fs.mkdtemp(path.join(os.tmpdir(), 'bmad-kiro-test-'));
-    const installedBmadDir = await createTestBmadFixture();
-    const legacyDir = path.join(tempProjectDir, '.kiro', 'steering', 'bmad-legacy-dir');
+    const tempProjectDir = await fs.mkdtemp(path.join(os.tmpdir(), 'skad-kiro-test-'));
+    const installedSkadDir = await createTestSkadFixture();
+    const legacyDir = path.join(tempProjectDir, '.kiro', 'steering', 'skad-legacy-dir');
     await fs.ensureDir(legacyDir);
-    await fs.writeFile(path.join(tempProjectDir, '.kiro', 'steering', 'bmad-legacy.md'), 'legacy\n');
+    await fs.writeFile(path.join(tempProjectDir, '.kiro', 'steering', 'skad-legacy.md'), 'legacy\n');
     await fs.writeFile(path.join(legacyDir, 'SKILL.md'), 'legacy\n');
 
     const ideManager = new IdeManager();
     await ideManager.ensureInitialized();
-    const result = await ideManager.setup('kiro', tempProjectDir, installedBmadDir, {
+    const result = await ideManager.setup('kiro', tempProjectDir, installedSkadDir, {
       silent: true,
       selectedModules: ['bmm'],
     });
 
     assert(result.success === true, 'Kiro setup succeeds against temp project');
 
-    const skillFile = path.join(tempProjectDir, '.kiro', 'skills', 'bmad-master', 'SKILL.md');
+    const skillFile = path.join(tempProjectDir, '.kiro', 'skills', 'skad-master', 'SKILL.md');
     assert(await fs.pathExists(skillFile), 'Kiro install writes SKILL.md directory output');
 
     assert(!(await fs.pathExists(path.join(tempProjectDir, '.kiro', 'steering'))), 'Kiro setup removes legacy steering dir');
 
     await fs.remove(tempProjectDir);
-    await fs.remove(installedBmadDir);
+    await fs.remove(installedSkadDir);
   } catch (error) {
     assert(false, 'Kiro native skills migration test succeeds', error.message);
   }
@@ -308,29 +308,29 @@ async function runTests() {
       'Antigravity installer cleans legacy workflow output',
     );
 
-    const tempProjectDir = await fs.mkdtemp(path.join(os.tmpdir(), 'bmad-antigravity-test-'));
-    const installedBmadDir = await createTestBmadFixture();
-    const legacyDir = path.join(tempProjectDir, '.agent', 'workflows', 'bmad-legacy-dir');
+    const tempProjectDir = await fs.mkdtemp(path.join(os.tmpdir(), 'skad-antigravity-test-'));
+    const installedSkadDir = await createTestSkadFixture();
+    const legacyDir = path.join(tempProjectDir, '.agent', 'workflows', 'skad-legacy-dir');
     await fs.ensureDir(legacyDir);
-    await fs.writeFile(path.join(tempProjectDir, '.agent', 'workflows', 'bmad-legacy.md'), 'legacy\n');
+    await fs.writeFile(path.join(tempProjectDir, '.agent', 'workflows', 'skad-legacy.md'), 'legacy\n');
     await fs.writeFile(path.join(legacyDir, 'SKILL.md'), 'legacy\n');
 
     const ideManager = new IdeManager();
     await ideManager.ensureInitialized();
-    const result = await ideManager.setup('antigravity', tempProjectDir, installedBmadDir, {
+    const result = await ideManager.setup('antigravity', tempProjectDir, installedSkadDir, {
       silent: true,
       selectedModules: ['bmm'],
     });
 
     assert(result.success === true, 'Antigravity setup succeeds against temp project');
 
-    const skillFile = path.join(tempProjectDir, '.agent', 'skills', 'bmad-master', 'SKILL.md');
+    const skillFile = path.join(tempProjectDir, '.agent', 'skills', 'skad-master', 'SKILL.md');
     assert(await fs.pathExists(skillFile), 'Antigravity install writes SKILL.md directory output');
 
     assert(!(await fs.pathExists(path.join(tempProjectDir, '.agent', 'workflows'))), 'Antigravity setup removes legacy workflows dir');
 
     await fs.remove(tempProjectDir);
-    await fs.remove(installedBmadDir);
+    await fs.remove(installedSkadDir);
   } catch (error) {
     assert(false, 'Antigravity native skills migration test succeeds', error.message);
   }
@@ -361,29 +361,29 @@ async function runTests() {
       'Auggie installer does not enable ancestor conflict checks without verified inheritance',
     );
 
-    const tempProjectDir = await fs.mkdtemp(path.join(os.tmpdir(), 'bmad-auggie-test-'));
-    const installedBmadDir = await createTestBmadFixture();
-    const legacyDir = path.join(tempProjectDir, '.augment', 'commands', 'bmad-legacy-dir');
+    const tempProjectDir = await fs.mkdtemp(path.join(os.tmpdir(), 'skad-auggie-test-'));
+    const installedSkadDir = await createTestSkadFixture();
+    const legacyDir = path.join(tempProjectDir, '.augment', 'commands', 'skad-legacy-dir');
     await fs.ensureDir(legacyDir);
-    await fs.writeFile(path.join(tempProjectDir, '.augment', 'commands', 'bmad-legacy.md'), 'legacy\n');
+    await fs.writeFile(path.join(tempProjectDir, '.augment', 'commands', 'skad-legacy.md'), 'legacy\n');
     await fs.writeFile(path.join(legacyDir, 'SKILL.md'), 'legacy\n');
 
     const ideManager = new IdeManager();
     await ideManager.ensureInitialized();
-    const result = await ideManager.setup('auggie', tempProjectDir, installedBmadDir, {
+    const result = await ideManager.setup('auggie', tempProjectDir, installedSkadDir, {
       silent: true,
       selectedModules: ['bmm'],
     });
 
     assert(result.success === true, 'Auggie setup succeeds against temp project');
 
-    const skillFile = path.join(tempProjectDir, '.augment', 'skills', 'bmad-master', 'SKILL.md');
+    const skillFile = path.join(tempProjectDir, '.augment', 'skills', 'skad-master', 'SKILL.md');
     assert(await fs.pathExists(skillFile), 'Auggie install writes SKILL.md directory output');
 
     assert(!(await fs.pathExists(path.join(tempProjectDir, '.augment', 'commands'))), 'Auggie setup removes legacy commands dir');
 
     await fs.remove(tempProjectDir);
-    await fs.remove(installedBmadDir);
+    await fs.remove(installedSkadDir);
   } catch (error) {
     assert(false, 'Auggie native skills migration test succeeds', error.message);
   }
@@ -414,13 +414,13 @@ async function runTests() {
       'OpenCode installer cleans split legacy agent and command output',
     );
 
-    const tempProjectDir = await fs.mkdtemp(path.join(os.tmpdir(), 'bmad-opencode-test-'));
-    const installedBmadDir = await createTestBmadFixture();
+    const tempProjectDir = await fs.mkdtemp(path.join(os.tmpdir(), 'skad-opencode-test-'));
+    const installedSkadDir = await createTestSkadFixture();
     const legacyDirs = [
-      path.join(tempProjectDir, '.opencode', 'agents', 'bmad-legacy-agent'),
-      path.join(tempProjectDir, '.opencode', 'commands', 'bmad-legacy-command'),
-      path.join(tempProjectDir, '.opencode', 'agent', 'bmad-legacy-agent-singular'),
-      path.join(tempProjectDir, '.opencode', 'command', 'bmad-legacy-command-singular'),
+      path.join(tempProjectDir, '.opencode', 'agents', 'skad-legacy-agent'),
+      path.join(tempProjectDir, '.opencode', 'commands', 'skad-legacy-command'),
+      path.join(tempProjectDir, '.opencode', 'agent', 'skad-legacy-agent-singular'),
+      path.join(tempProjectDir, '.opencode', 'command', 'skad-legacy-command-singular'),
     ];
 
     for (const legacyDir of legacyDirs) {
@@ -431,14 +431,14 @@ async function runTests() {
 
     const ideManager = new IdeManager();
     await ideManager.ensureInitialized();
-    const result = await ideManager.setup('opencode', tempProjectDir, installedBmadDir, {
+    const result = await ideManager.setup('opencode', tempProjectDir, installedSkadDir, {
       silent: true,
       selectedModules: ['bmm'],
     });
 
     assert(result.success === true, 'OpenCode setup succeeds against temp project');
 
-    const skillFile = path.join(tempProjectDir, '.opencode', 'skills', 'bmad-master', 'SKILL.md');
+    const skillFile = path.join(tempProjectDir, '.opencode', 'skills', 'skad-master', 'SKILL.md');
     assert(await fs.pathExists(skillFile), 'OpenCode install writes SKILL.md directory output');
 
     for (const legacyDir of ['agents', 'commands', 'agent', 'command']) {
@@ -449,7 +449,7 @@ async function runTests() {
     }
 
     await fs.remove(tempProjectDir);
-    await fs.remove(installedBmadDir);
+    await fs.remove(installedSkadDir);
   } catch (error) {
     assert(false, 'OpenCode native skills migration test succeeds', error.message);
   }
@@ -477,33 +477,33 @@ async function runTests() {
       'Claude Code installer cleans legacy command output',
     );
 
-    const tempProjectDir9 = await fs.mkdtemp(path.join(os.tmpdir(), 'bmad-claude-code-test-'));
-    const installedBmadDir9 = await createTestBmadFixture();
+    const tempProjectDir9 = await fs.mkdtemp(path.join(os.tmpdir(), 'skad-claude-code-test-'));
+    const installedSkadDir9 = await createTestSkadFixture();
     const legacyDir9 = path.join(tempProjectDir9, '.claude', 'commands');
     await fs.ensureDir(legacyDir9);
-    await fs.writeFile(path.join(legacyDir9, 'bmad-legacy.md'), 'legacy\n');
+    await fs.writeFile(path.join(legacyDir9, 'skad-legacy.md'), 'legacy\n');
 
     const ideManager9 = new IdeManager();
     await ideManager9.ensureInitialized();
-    const result9 = await ideManager9.setup('claude-code', tempProjectDir9, installedBmadDir9, {
+    const result9 = await ideManager9.setup('claude-code', tempProjectDir9, installedSkadDir9, {
       silent: true,
       selectedModules: ['bmm'],
     });
 
     assert(result9.success === true, 'Claude Code setup succeeds against temp project');
 
-    const skillFile9 = path.join(tempProjectDir9, '.claude', 'skills', 'bmad-master', 'SKILL.md');
+    const skillFile9 = path.join(tempProjectDir9, '.claude', 'skills', 'skad-master', 'SKILL.md');
     assert(await fs.pathExists(skillFile9), 'Claude Code install writes SKILL.md directory output');
 
     // Verify name frontmatter matches directory name
     const skillContent9 = await fs.readFile(skillFile9, 'utf8');
     const nameMatch9 = skillContent9.match(/^name:\s*(.+)$/m);
-    assert(nameMatch9 && nameMatch9[1].trim() === 'bmad-master', 'Claude Code skill name frontmatter matches directory name exactly');
+    assert(nameMatch9 && nameMatch9[1].trim() === 'skad-master', 'Claude Code skill name frontmatter matches directory name exactly');
 
     assert(!(await fs.pathExists(legacyDir9)), 'Claude Code setup removes legacy commands dir');
 
     await fs.remove(tempProjectDir9);
-    await fs.remove(installedBmadDir9);
+    await fs.remove(installedSkadDir9);
   } catch (error) {
     assert(false, 'Claude Code native skills migration test succeeds', error.message);
   }
@@ -516,19 +516,19 @@ async function runTests() {
   console.log(`${colors.yellow}Test Suite 10: Claude Code Ancestor Conflict${colors.reset}\n`);
 
   try {
-    const tempRoot10 = await fs.mkdtemp(path.join(os.tmpdir(), 'bmad-claude-code-ancestor-test-'));
+    const tempRoot10 = await fs.mkdtemp(path.join(os.tmpdir(), 'skad-claude-code-ancestor-test-'));
     const parentProjectDir10 = path.join(tempRoot10, 'parent');
     const childProjectDir10 = path.join(parentProjectDir10, 'child');
-    const installedBmadDir10 = await createTestBmadFixture();
+    const installedSkadDir10 = await createTestSkadFixture();
 
     await fs.ensureDir(path.join(parentProjectDir10, '.git'));
-    await fs.ensureDir(path.join(parentProjectDir10, '.claude', 'skills', 'bmad-existing'));
+    await fs.ensureDir(path.join(parentProjectDir10, '.claude', 'skills', 'skad-existing'));
     await fs.ensureDir(childProjectDir10);
-    await fs.writeFile(path.join(parentProjectDir10, '.claude', 'skills', 'bmad-existing', 'SKILL.md'), 'legacy\n');
+    await fs.writeFile(path.join(parentProjectDir10, '.claude', 'skills', 'skad-existing', 'SKILL.md'), 'legacy\n');
 
     const ideManager10 = new IdeManager();
     await ideManager10.ensureInitialized();
-    const result10 = await ideManager10.setup('claude-code', childProjectDir10, installedBmadDir10, {
+    const result10 = await ideManager10.setup('claude-code', childProjectDir10, installedSkadDir10, {
       silent: true,
       selectedModules: ['bmm'],
     });
@@ -542,7 +542,7 @@ async function runTests() {
     );
 
     await fs.remove(tempRoot10);
-    await fs.remove(installedBmadDir10);
+    await fs.remove(installedSkadDir10);
   } catch (error) {
     assert(false, 'Claude Code ancestor conflict protection test succeeds', error.message);
   }
@@ -570,33 +570,33 @@ async function runTests() {
       'Codex installer cleans legacy prompt output',
     );
 
-    const tempProjectDir11 = await fs.mkdtemp(path.join(os.tmpdir(), 'bmad-codex-test-'));
-    const installedBmadDir11 = await createTestBmadFixture();
+    const tempProjectDir11 = await fs.mkdtemp(path.join(os.tmpdir(), 'skad-codex-test-'));
+    const installedSkadDir11 = await createTestSkadFixture();
     const legacyDir11 = path.join(tempProjectDir11, '.codex', 'prompts');
     await fs.ensureDir(legacyDir11);
-    await fs.writeFile(path.join(legacyDir11, 'bmad-legacy.md'), 'legacy\n');
+    await fs.writeFile(path.join(legacyDir11, 'skad-legacy.md'), 'legacy\n');
 
     const ideManager11 = new IdeManager();
     await ideManager11.ensureInitialized();
-    const result11 = await ideManager11.setup('codex', tempProjectDir11, installedBmadDir11, {
+    const result11 = await ideManager11.setup('codex', tempProjectDir11, installedSkadDir11, {
       silent: true,
       selectedModules: ['bmm'],
     });
 
     assert(result11.success === true, 'Codex setup succeeds against temp project');
 
-    const skillFile11 = path.join(tempProjectDir11, '.agents', 'skills', 'bmad-master', 'SKILL.md');
+    const skillFile11 = path.join(tempProjectDir11, '.agents', 'skills', 'skad-master', 'SKILL.md');
     assert(await fs.pathExists(skillFile11), 'Codex install writes SKILL.md directory output');
 
     // Verify name frontmatter matches directory name
     const skillContent11 = await fs.readFile(skillFile11, 'utf8');
     const nameMatch11 = skillContent11.match(/^name:\s*(.+)$/m);
-    assert(nameMatch11 && nameMatch11[1].trim() === 'bmad-master', 'Codex skill name frontmatter matches directory name exactly');
+    assert(nameMatch11 && nameMatch11[1].trim() === 'skad-master', 'Codex skill name frontmatter matches directory name exactly');
 
     assert(!(await fs.pathExists(legacyDir11)), 'Codex setup removes legacy prompts dir');
 
     await fs.remove(tempProjectDir11);
-    await fs.remove(installedBmadDir11);
+    await fs.remove(installedSkadDir11);
   } catch (error) {
     assert(false, 'Codex native skills migration test succeeds', error.message);
   }
@@ -609,19 +609,19 @@ async function runTests() {
   console.log(`${colors.yellow}Test Suite 12: Codex Ancestor Conflict${colors.reset}\n`);
 
   try {
-    const tempRoot12 = await fs.mkdtemp(path.join(os.tmpdir(), 'bmad-codex-ancestor-test-'));
+    const tempRoot12 = await fs.mkdtemp(path.join(os.tmpdir(), 'skad-codex-ancestor-test-'));
     const parentProjectDir12 = path.join(tempRoot12, 'parent');
     const childProjectDir12 = path.join(parentProjectDir12, 'child');
-    const installedBmadDir12 = await createTestBmadFixture();
+    const installedSkadDir12 = await createTestSkadFixture();
 
     await fs.ensureDir(path.join(parentProjectDir12, '.git'));
-    await fs.ensureDir(path.join(parentProjectDir12, '.agents', 'skills', 'bmad-existing'));
+    await fs.ensureDir(path.join(parentProjectDir12, '.agents', 'skills', 'skad-existing'));
     await fs.ensureDir(childProjectDir12);
-    await fs.writeFile(path.join(parentProjectDir12, '.agents', 'skills', 'bmad-existing', 'SKILL.md'), 'legacy\n');
+    await fs.writeFile(path.join(parentProjectDir12, '.agents', 'skills', 'skad-existing', 'SKILL.md'), 'legacy\n');
 
     const ideManager12 = new IdeManager();
     await ideManager12.ensureInitialized();
-    const result12 = await ideManager12.setup('codex', childProjectDir12, installedBmadDir12, {
+    const result12 = await ideManager12.setup('codex', childProjectDir12, installedSkadDir12, {
       silent: true,
       selectedModules: ['bmm'],
     });
@@ -632,7 +632,7 @@ async function runTests() {
     assert(result12.handlerResult?.conflictDir === expectedConflictDir12, 'Codex ancestor rejection points at ancestor .agents/skills dir');
 
     await fs.remove(tempRoot12);
-    await fs.remove(installedBmadDir12);
+    await fs.remove(installedSkadDir12);
   } catch (error) {
     assert(false, 'Codex ancestor conflict protection test succeeds', error.message);
   }
@@ -660,33 +660,33 @@ async function runTests() {
 
     assert(!cursorInstaller?.ancestor_conflict_check, 'Cursor installer does not enable ancestor conflict checks');
 
-    const tempProjectDir13c = await fs.mkdtemp(path.join(os.tmpdir(), 'bmad-cursor-test-'));
-    const installedBmadDir13c = await createTestBmadFixture();
+    const tempProjectDir13c = await fs.mkdtemp(path.join(os.tmpdir(), 'skad-cursor-test-'));
+    const installedSkadDir13c = await createTestSkadFixture();
     const legacyDir13c = path.join(tempProjectDir13c, '.cursor', 'commands');
     await fs.ensureDir(legacyDir13c);
-    await fs.writeFile(path.join(legacyDir13c, 'bmad-legacy.md'), 'legacy\n');
+    await fs.writeFile(path.join(legacyDir13c, 'skad-legacy.md'), 'legacy\n');
 
     const ideManager13c = new IdeManager();
     await ideManager13c.ensureInitialized();
-    const result13c = await ideManager13c.setup('cursor', tempProjectDir13c, installedBmadDir13c, {
+    const result13c = await ideManager13c.setup('cursor', tempProjectDir13c, installedSkadDir13c, {
       silent: true,
       selectedModules: ['bmm'],
     });
 
     assert(result13c.success === true, 'Cursor setup succeeds against temp project');
 
-    const skillFile13c = path.join(tempProjectDir13c, '.cursor', 'skills', 'bmad-master', 'SKILL.md');
+    const skillFile13c = path.join(tempProjectDir13c, '.cursor', 'skills', 'skad-master', 'SKILL.md');
     assert(await fs.pathExists(skillFile13c), 'Cursor install writes SKILL.md directory output');
 
     // Verify name frontmatter matches directory name
     const skillContent13c = await fs.readFile(skillFile13c, 'utf8');
     const nameMatch13c = skillContent13c.match(/^name:\s*(.+)$/m);
-    assert(nameMatch13c && nameMatch13c[1].trim() === 'bmad-master', 'Cursor skill name frontmatter matches directory name exactly');
+    assert(nameMatch13c && nameMatch13c[1].trim() === 'skad-master', 'Cursor skill name frontmatter matches directory name exactly');
 
     assert(!(await fs.pathExists(legacyDir13c)), 'Cursor setup removes legacy commands dir');
 
     await fs.remove(tempProjectDir13c);
-    await fs.remove(installedBmadDir13c);
+    await fs.remove(installedSkadDir13c);
   } catch (error) {
     assert(false, 'Cursor native skills migration test succeeds', error.message);
   }
@@ -712,37 +712,37 @@ async function runTests() {
       'Roo installer cleans legacy command output',
     );
 
-    const tempProjectDir13 = await fs.mkdtemp(path.join(os.tmpdir(), 'bmad-roo-test-'));
-    const installedBmadDir13 = await createTestBmadFixture();
-    const legacyDir13 = path.join(tempProjectDir13, '.roo', 'commands', 'bmad-legacy-dir');
+    const tempProjectDir13 = await fs.mkdtemp(path.join(os.tmpdir(), 'skad-roo-test-'));
+    const installedSkadDir13 = await createTestSkadFixture();
+    const legacyDir13 = path.join(tempProjectDir13, '.roo', 'commands', 'skad-legacy-dir');
     await fs.ensureDir(legacyDir13);
-    await fs.writeFile(path.join(tempProjectDir13, '.roo', 'commands', 'bmad-legacy.md'), 'legacy\n');
+    await fs.writeFile(path.join(tempProjectDir13, '.roo', 'commands', 'skad-legacy.md'), 'legacy\n');
     await fs.writeFile(path.join(legacyDir13, 'SKILL.md'), 'legacy\n');
 
     const ideManager13 = new IdeManager();
     await ideManager13.ensureInitialized();
-    const result13 = await ideManager13.setup('roo', tempProjectDir13, installedBmadDir13, {
+    const result13 = await ideManager13.setup('roo', tempProjectDir13, installedSkadDir13, {
       silent: true,
       selectedModules: ['bmm'],
     });
 
     assert(result13.success === true, 'Roo setup succeeds against temp project');
 
-    const skillFile13 = path.join(tempProjectDir13, '.roo', 'skills', 'bmad-master', 'SKILL.md');
+    const skillFile13 = path.join(tempProjectDir13, '.roo', 'skills', 'skad-master', 'SKILL.md');
     assert(await fs.pathExists(skillFile13), 'Roo install writes SKILL.md directory output');
 
     // Verify name frontmatter matches directory name (Roo constraint: lowercase alphanumeric + hyphens)
     const skillContent13 = await fs.readFile(skillFile13, 'utf8');
     const nameMatch13 = skillContent13.match(/^name:\s*(.+)$/m);
     assert(
-      nameMatch13 && nameMatch13[1].trim() === 'bmad-master',
+      nameMatch13 && nameMatch13[1].trim() === 'skad-master',
       'Roo skill name frontmatter matches directory name exactly (lowercase alphanumeric + hyphens)',
     );
 
     assert(!(await fs.pathExists(path.join(tempProjectDir13, '.roo', 'commands'))), 'Roo setup removes legacy commands dir');
 
     // Reinstall/upgrade: run setup again over existing skills output
-    const result13b = await ideManager13.setup('roo', tempProjectDir13, installedBmadDir13, {
+    const result13b = await ideManager13.setup('roo', tempProjectDir13, installedSkadDir13, {
       silent: true,
       selectedModules: ['bmm'],
     });
@@ -751,7 +751,7 @@ async function runTests() {
     assert(await fs.pathExists(skillFile13), 'Roo reinstall preserves SKILL.md output');
 
     await fs.remove(tempProjectDir13);
-    await fs.remove(installedBmadDir13);
+    await fs.remove(installedSkadDir13);
   } catch (error) {
     assert(false, 'Roo native skills migration test succeeds', error.message);
   }
@@ -764,19 +764,19 @@ async function runTests() {
   console.log(`${colors.yellow}Test Suite 15: OpenCode Ancestor Conflict${colors.reset}\n`);
 
   try {
-    const tempRoot = await fs.mkdtemp(path.join(os.tmpdir(), 'bmad-opencode-ancestor-test-'));
+    const tempRoot = await fs.mkdtemp(path.join(os.tmpdir(), 'skad-opencode-ancestor-test-'));
     const parentProjectDir = path.join(tempRoot, 'parent');
     const childProjectDir = path.join(parentProjectDir, 'child');
-    const installedBmadDir = await createTestBmadFixture();
+    const installedSkadDir = await createTestSkadFixture();
 
     await fs.ensureDir(path.join(parentProjectDir, '.git'));
-    await fs.ensureDir(path.join(parentProjectDir, '.opencode', 'skills', 'bmad-existing'));
+    await fs.ensureDir(path.join(parentProjectDir, '.opencode', 'skills', 'skad-existing'));
     await fs.ensureDir(childProjectDir);
-    await fs.writeFile(path.join(parentProjectDir, '.opencode', 'skills', 'bmad-existing', 'SKILL.md'), 'legacy\n');
+    await fs.writeFile(path.join(parentProjectDir, '.opencode', 'skills', 'skad-existing', 'SKILL.md'), 'legacy\n');
 
     const ideManager = new IdeManager();
     await ideManager.ensureInitialized();
-    const result = await ideManager.setup('opencode', childProjectDir, installedBmadDir, {
+    const result = await ideManager.setup('opencode', childProjectDir, installedSkadDir, {
       silent: true,
       selectedModules: ['bmm'],
     });
@@ -790,7 +790,7 @@ async function runTests() {
     );
 
     await fs.remove(tempRoot);
-    await fs.remove(installedBmadDir);
+    await fs.remove(installedSkadDir);
   } catch (error) {
     assert(false, 'OpenCode ancestor conflict protection test succeeds', error.message);
   }
@@ -850,50 +850,50 @@ async function runTests() {
       'GitHub Copilot installer cleans legacy prompts output',
     );
 
-    const tempProjectDir17 = await fs.mkdtemp(path.join(os.tmpdir(), 'bmad-copilot-test-'));
-    const installedBmadDir17 = await createTestBmadFixture();
+    const tempProjectDir17 = await fs.mkdtemp(path.join(os.tmpdir(), 'skad-copilot-test-'));
+    const installedSkadDir17 = await createTestSkadFixture();
 
     // Create legacy .github/agents/ and .github/prompts/ files
     const legacyAgentsDir17 = path.join(tempProjectDir17, '.github', 'agents');
     const legacyPromptsDir17 = path.join(tempProjectDir17, '.github', 'prompts');
     await fs.ensureDir(legacyAgentsDir17);
     await fs.ensureDir(legacyPromptsDir17);
-    await fs.writeFile(path.join(legacyAgentsDir17, 'bmad-legacy.agent.md'), 'legacy agent\n');
-    await fs.writeFile(path.join(legacyPromptsDir17, 'bmad-legacy.prompt.md'), 'legacy prompt\n');
+    await fs.writeFile(path.join(legacyAgentsDir17, 'skad-legacy.agent.md'), 'legacy agent\n');
+    await fs.writeFile(path.join(legacyPromptsDir17, 'skad-legacy.prompt.md'), 'legacy prompt\n');
 
-    // Create legacy copilot-instructions.md with BMAD markers
+    // Create legacy copilot-instructions.md with SKAD markers
     const copilotInstructionsPath17 = path.join(tempProjectDir17, '.github', 'copilot-instructions.md');
     await fs.writeFile(
       copilotInstructionsPath17,
-      'User content before\n<!-- BMAD:START -->\nBMAD generated content\n<!-- BMAD:END -->\nUser content after\n',
+      'User content before\n<!-- SKAD:START -->\nSKAD generated content\n<!-- SKAD:END -->\nUser content after\n',
     );
 
     const ideManager17 = new IdeManager();
     await ideManager17.ensureInitialized();
-    const result17 = await ideManager17.setup('github-copilot', tempProjectDir17, installedBmadDir17, {
+    const result17 = await ideManager17.setup('github-copilot', tempProjectDir17, installedSkadDir17, {
       silent: true,
       selectedModules: ['bmm'],
     });
 
     assert(result17.success === true, 'GitHub Copilot setup succeeds against temp project');
 
-    const skillFile17 = path.join(tempProjectDir17, '.github', 'skills', 'bmad-master', 'SKILL.md');
+    const skillFile17 = path.join(tempProjectDir17, '.github', 'skills', 'skad-master', 'SKILL.md');
     assert(await fs.pathExists(skillFile17), 'GitHub Copilot install writes SKILL.md directory output');
 
     // Verify name frontmatter matches directory name
     const skillContent17 = await fs.readFile(skillFile17, 'utf8');
     const nameMatch17 = skillContent17.match(/^name:\s*(.+)$/m);
-    assert(nameMatch17 && nameMatch17[1].trim() === 'bmad-master', 'GitHub Copilot skill name frontmatter matches directory name exactly');
+    assert(nameMatch17 && nameMatch17[1].trim() === 'skad-master', 'GitHub Copilot skill name frontmatter matches directory name exactly');
 
     assert(!(await fs.pathExists(legacyAgentsDir17)), 'GitHub Copilot setup removes legacy agents dir');
 
     assert(!(await fs.pathExists(legacyPromptsDir17)), 'GitHub Copilot setup removes legacy prompts dir');
 
-    // Verify copilot-instructions.md BMAD markers were stripped but user content preserved
+    // Verify copilot-instructions.md SKAD markers were stripped but user content preserved
     const cleanedInstructions17 = await fs.readFile(copilotInstructionsPath17, 'utf8');
     assert(
-      !cleanedInstructions17.includes('BMAD:START') && !cleanedInstructions17.includes('BMAD generated content'),
-      'GitHub Copilot setup strips BMAD markers from copilot-instructions.md',
+      !cleanedInstructions17.includes('SKAD:START') && !cleanedInstructions17.includes('SKAD generated content'),
+      'GitHub Copilot setup strips SKAD markers from copilot-instructions.md',
     );
     assert(
       cleanedInstructions17.includes('User content before') && cleanedInstructions17.includes('User content after'),
@@ -901,7 +901,7 @@ async function runTests() {
     );
 
     await fs.remove(tempProjectDir17);
-    await fs.remove(installedBmadDir17);
+    await fs.remove(installedSkadDir17);
   } catch (error) {
     assert(false, 'GitHub Copilot native skills migration test succeeds', error.message);
   }
@@ -927,34 +927,34 @@ async function runTests() {
       'Cline installer cleans legacy workflow output',
     );
 
-    const tempProjectDir18 = await fs.mkdtemp(path.join(os.tmpdir(), 'bmad-cline-test-'));
-    const installedBmadDir18 = await createTestBmadFixture();
-    const legacyDir18 = path.join(tempProjectDir18, '.clinerules', 'workflows', 'bmad-legacy-dir');
+    const tempProjectDir18 = await fs.mkdtemp(path.join(os.tmpdir(), 'skad-cline-test-'));
+    const installedSkadDir18 = await createTestSkadFixture();
+    const legacyDir18 = path.join(tempProjectDir18, '.clinerules', 'workflows', 'skad-legacy-dir');
     await fs.ensureDir(legacyDir18);
-    await fs.writeFile(path.join(tempProjectDir18, '.clinerules', 'workflows', 'bmad-legacy.md'), 'legacy\n');
+    await fs.writeFile(path.join(tempProjectDir18, '.clinerules', 'workflows', 'skad-legacy.md'), 'legacy\n');
     await fs.writeFile(path.join(legacyDir18, 'SKILL.md'), 'legacy\n');
 
     const ideManager18 = new IdeManager();
     await ideManager18.ensureInitialized();
-    const result18 = await ideManager18.setup('cline', tempProjectDir18, installedBmadDir18, {
+    const result18 = await ideManager18.setup('cline', tempProjectDir18, installedSkadDir18, {
       silent: true,
       selectedModules: ['bmm'],
     });
 
     assert(result18.success === true, 'Cline setup succeeds against temp project');
 
-    const skillFile18 = path.join(tempProjectDir18, '.cline', 'skills', 'bmad-master', 'SKILL.md');
+    const skillFile18 = path.join(tempProjectDir18, '.cline', 'skills', 'skad-master', 'SKILL.md');
     assert(await fs.pathExists(skillFile18), 'Cline install writes SKILL.md directory output');
 
     // Verify name frontmatter matches directory name
     const skillContent18 = await fs.readFile(skillFile18, 'utf8');
     const nameMatch18 = skillContent18.match(/^name:\s*(.+)$/m);
-    assert(nameMatch18 && nameMatch18[1].trim() === 'bmad-master', 'Cline skill name frontmatter matches directory name exactly');
+    assert(nameMatch18 && nameMatch18[1].trim() === 'skad-master', 'Cline skill name frontmatter matches directory name exactly');
 
     assert(!(await fs.pathExists(path.join(tempProjectDir18, '.clinerules', 'workflows'))), 'Cline setup removes legacy workflows dir');
 
     // Reinstall/upgrade: run setup again over existing skills output
-    const result18b = await ideManager18.setup('cline', tempProjectDir18, installedBmadDir18, {
+    const result18b = await ideManager18.setup('cline', tempProjectDir18, installedSkadDir18, {
       silent: true,
       selectedModules: ['bmm'],
     });
@@ -963,7 +963,7 @@ async function runTests() {
     assert(await fs.pathExists(skillFile18), 'Cline reinstall preserves SKILL.md output');
 
     await fs.remove(tempProjectDir18);
-    await fs.remove(installedBmadDir18);
+    await fs.remove(installedSkadDir18);
   } catch (error) {
     assert(false, 'Cline native skills migration test succeeds', error.message);
   }
@@ -989,32 +989,32 @@ async function runTests() {
       'CodeBuddy installer cleans legacy command output',
     );
 
-    const tempProjectDir19 = await fs.mkdtemp(path.join(os.tmpdir(), 'bmad-codebuddy-test-'));
-    const installedBmadDir19 = await createTestBmadFixture();
-    const legacyDir19 = path.join(tempProjectDir19, '.codebuddy', 'commands', 'bmad-legacy-dir');
+    const tempProjectDir19 = await fs.mkdtemp(path.join(os.tmpdir(), 'skad-codebuddy-test-'));
+    const installedSkadDir19 = await createTestSkadFixture();
+    const legacyDir19 = path.join(tempProjectDir19, '.codebuddy', 'commands', 'skad-legacy-dir');
     await fs.ensureDir(legacyDir19);
-    await fs.writeFile(path.join(tempProjectDir19, '.codebuddy', 'commands', 'bmad-legacy.md'), 'legacy\n');
+    await fs.writeFile(path.join(tempProjectDir19, '.codebuddy', 'commands', 'skad-legacy.md'), 'legacy\n');
     await fs.writeFile(path.join(legacyDir19, 'SKILL.md'), 'legacy\n');
 
     const ideManager19 = new IdeManager();
     await ideManager19.ensureInitialized();
-    const result19 = await ideManager19.setup('codebuddy', tempProjectDir19, installedBmadDir19, {
+    const result19 = await ideManager19.setup('codebuddy', tempProjectDir19, installedSkadDir19, {
       silent: true,
       selectedModules: ['bmm'],
     });
 
     assert(result19.success === true, 'CodeBuddy setup succeeds against temp project');
 
-    const skillFile19 = path.join(tempProjectDir19, '.codebuddy', 'skills', 'bmad-master', 'SKILL.md');
+    const skillFile19 = path.join(tempProjectDir19, '.codebuddy', 'skills', 'skad-master', 'SKILL.md');
     assert(await fs.pathExists(skillFile19), 'CodeBuddy install writes SKILL.md directory output');
 
     const skillContent19 = await fs.readFile(skillFile19, 'utf8');
     const nameMatch19 = skillContent19.match(/^name:\s*(.+)$/m);
-    assert(nameMatch19 && nameMatch19[1].trim() === 'bmad-master', 'CodeBuddy skill name frontmatter matches directory name exactly');
+    assert(nameMatch19 && nameMatch19[1].trim() === 'skad-master', 'CodeBuddy skill name frontmatter matches directory name exactly');
 
     assert(!(await fs.pathExists(path.join(tempProjectDir19, '.codebuddy', 'commands'))), 'CodeBuddy setup removes legacy commands dir');
 
-    const result19b = await ideManager19.setup('codebuddy', tempProjectDir19, installedBmadDir19, {
+    const result19b = await ideManager19.setup('codebuddy', tempProjectDir19, installedSkadDir19, {
       silent: true,
       selectedModules: ['bmm'],
     });
@@ -1023,7 +1023,7 @@ async function runTests() {
     assert(await fs.pathExists(skillFile19), 'CodeBuddy reinstall preserves SKILL.md output');
 
     await fs.remove(tempProjectDir19);
-    await fs.remove(installedBmadDir19);
+    await fs.remove(installedSkadDir19);
   } catch (error) {
     assert(false, 'CodeBuddy native skills migration test succeeds', error.message);
   }
@@ -1049,32 +1049,32 @@ async function runTests() {
       'Crush installer cleans legacy command output',
     );
 
-    const tempProjectDir20 = await fs.mkdtemp(path.join(os.tmpdir(), 'bmad-crush-test-'));
-    const installedBmadDir20 = await createTestBmadFixture();
-    const legacyDir20 = path.join(tempProjectDir20, '.crush', 'commands', 'bmad-legacy-dir');
+    const tempProjectDir20 = await fs.mkdtemp(path.join(os.tmpdir(), 'skad-crush-test-'));
+    const installedSkadDir20 = await createTestSkadFixture();
+    const legacyDir20 = path.join(tempProjectDir20, '.crush', 'commands', 'skad-legacy-dir');
     await fs.ensureDir(legacyDir20);
-    await fs.writeFile(path.join(tempProjectDir20, '.crush', 'commands', 'bmad-legacy.md'), 'legacy\n');
+    await fs.writeFile(path.join(tempProjectDir20, '.crush', 'commands', 'skad-legacy.md'), 'legacy\n');
     await fs.writeFile(path.join(legacyDir20, 'SKILL.md'), 'legacy\n');
 
     const ideManager20 = new IdeManager();
     await ideManager20.ensureInitialized();
-    const result20 = await ideManager20.setup('crush', tempProjectDir20, installedBmadDir20, {
+    const result20 = await ideManager20.setup('crush', tempProjectDir20, installedSkadDir20, {
       silent: true,
       selectedModules: ['bmm'],
     });
 
     assert(result20.success === true, 'Crush setup succeeds against temp project');
 
-    const skillFile20 = path.join(tempProjectDir20, '.crush', 'skills', 'bmad-master', 'SKILL.md');
+    const skillFile20 = path.join(tempProjectDir20, '.crush', 'skills', 'skad-master', 'SKILL.md');
     assert(await fs.pathExists(skillFile20), 'Crush install writes SKILL.md directory output');
 
     const skillContent20 = await fs.readFile(skillFile20, 'utf8');
     const nameMatch20 = skillContent20.match(/^name:\s*(.+)$/m);
-    assert(nameMatch20 && nameMatch20[1].trim() === 'bmad-master', 'Crush skill name frontmatter matches directory name exactly');
+    assert(nameMatch20 && nameMatch20[1].trim() === 'skad-master', 'Crush skill name frontmatter matches directory name exactly');
 
     assert(!(await fs.pathExists(path.join(tempProjectDir20, '.crush', 'commands'))), 'Crush setup removes legacy commands dir');
 
-    const result20b = await ideManager20.setup('crush', tempProjectDir20, installedBmadDir20, {
+    const result20b = await ideManager20.setup('crush', tempProjectDir20, installedSkadDir20, {
       silent: true,
       selectedModules: ['bmm'],
     });
@@ -1083,7 +1083,7 @@ async function runTests() {
     assert(await fs.pathExists(skillFile20), 'Crush reinstall preserves SKILL.md output');
 
     await fs.remove(tempProjectDir20);
-    await fs.remove(installedBmadDir20);
+    await fs.remove(installedSkadDir20);
   } catch (error) {
     assert(false, 'Crush native skills migration test succeeds', error.message);
   }
@@ -1109,31 +1109,31 @@ async function runTests() {
       'Trae installer cleans legacy rules output',
     );
 
-    const tempProjectDir21 = await fs.mkdtemp(path.join(os.tmpdir(), 'bmad-trae-test-'));
-    const installedBmadDir21 = await createTestBmadFixture();
+    const tempProjectDir21 = await fs.mkdtemp(path.join(os.tmpdir(), 'skad-trae-test-'));
+    const installedSkadDir21 = await createTestSkadFixture();
     const legacyDir21 = path.join(tempProjectDir21, '.trae', 'rules');
     await fs.ensureDir(legacyDir21);
-    await fs.writeFile(path.join(legacyDir21, 'bmad-legacy.md'), 'legacy\n');
+    await fs.writeFile(path.join(legacyDir21, 'skad-legacy.md'), 'legacy\n');
 
     const ideManager21 = new IdeManager();
     await ideManager21.ensureInitialized();
-    const result21 = await ideManager21.setup('trae', tempProjectDir21, installedBmadDir21, {
+    const result21 = await ideManager21.setup('trae', tempProjectDir21, installedSkadDir21, {
       silent: true,
       selectedModules: ['bmm'],
     });
 
     assert(result21.success === true, 'Trae setup succeeds against temp project');
 
-    const skillFile21 = path.join(tempProjectDir21, '.trae', 'skills', 'bmad-master', 'SKILL.md');
+    const skillFile21 = path.join(tempProjectDir21, '.trae', 'skills', 'skad-master', 'SKILL.md');
     assert(await fs.pathExists(skillFile21), 'Trae install writes SKILL.md directory output');
 
     const skillContent21 = await fs.readFile(skillFile21, 'utf8');
     const nameMatch21 = skillContent21.match(/^name:\s*(.+)$/m);
-    assert(nameMatch21 && nameMatch21[1].trim() === 'bmad-master', 'Trae skill name frontmatter matches directory name exactly');
+    assert(nameMatch21 && nameMatch21[1].trim() === 'skad-master', 'Trae skill name frontmatter matches directory name exactly');
 
     assert(!(await fs.pathExists(path.join(tempProjectDir21, '.trae', 'rules'))), 'Trae setup removes legacy rules dir');
 
-    const result21b = await ideManager21.setup('trae', tempProjectDir21, installedBmadDir21, {
+    const result21b = await ideManager21.setup('trae', tempProjectDir21, installedSkadDir21, {
       silent: true,
       selectedModules: ['bmm'],
     });
@@ -1142,7 +1142,7 @@ async function runTests() {
     assert(await fs.pathExists(skillFile21), 'Trae reinstall preserves SKILL.md output');
 
     await fs.remove(tempProjectDir21);
-    await fs.remove(installedBmadDir21);
+    await fs.remove(installedSkadDir21);
   } catch (error) {
     assert(false, 'Trae native skills migration test succeeds', error.message);
   }
@@ -1171,15 +1171,15 @@ async function runTests() {
     assert(!availableIdes22.some((ide) => ide.value === 'kilo'), 'KiloCoder is hidden from IDE selection');
 
     // Setup should be blocked but legacy files should be cleaned up
-    const tempProjectDir22 = await fs.mkdtemp(path.join(os.tmpdir(), 'bmad-kilo-test-'));
-    const installedBmadDir22 = await createTestBmadFixture();
+    const tempProjectDir22 = await fs.mkdtemp(path.join(os.tmpdir(), 'skad-kilo-test-'));
+    const installedSkadDir22 = await createTestSkadFixture();
 
     // Pre-populate legacy Kilo artifacts that should be cleaned up
     const legacyDir22 = path.join(tempProjectDir22, '.kilocode', 'workflows');
     await fs.ensureDir(legacyDir22);
-    await fs.writeFile(path.join(legacyDir22, 'bmad-legacy.md'), 'legacy\n');
+    await fs.writeFile(path.join(legacyDir22, 'skad-legacy.md'), 'legacy\n');
 
-    const result22 = await ideManager22.setup('kilo', tempProjectDir22, installedBmadDir22, {
+    const result22 = await ideManager22.setup('kilo', tempProjectDir22, installedSkadDir22, {
       silent: true,
       selectedModules: ['bmm'],
     });
@@ -1200,7 +1200,7 @@ async function runTests() {
     );
 
     await fs.remove(tempProjectDir22);
-    await fs.remove(installedBmadDir22);
+    await fs.remove(installedSkadDir22);
   } catch (error) {
     assert(false, 'KiloCoder suspended test succeeds', error.message);
   }
@@ -1226,31 +1226,31 @@ async function runTests() {
       'Gemini installer cleans legacy commands output',
     );
 
-    const tempProjectDir23 = await fs.mkdtemp(path.join(os.tmpdir(), 'bmad-gemini-test-'));
-    const installedBmadDir23 = await createTestBmadFixture();
+    const tempProjectDir23 = await fs.mkdtemp(path.join(os.tmpdir(), 'skad-gemini-test-'));
+    const installedSkadDir23 = await createTestSkadFixture();
     const legacyDir23 = path.join(tempProjectDir23, '.gemini', 'commands');
     await fs.ensureDir(legacyDir23);
-    await fs.writeFile(path.join(legacyDir23, 'bmad-legacy.toml'), 'legacy\n');
+    await fs.writeFile(path.join(legacyDir23, 'skad-legacy.toml'), 'legacy\n');
 
     const ideManager23 = new IdeManager();
     await ideManager23.ensureInitialized();
-    const result23 = await ideManager23.setup('gemini', tempProjectDir23, installedBmadDir23, {
+    const result23 = await ideManager23.setup('gemini', tempProjectDir23, installedSkadDir23, {
       silent: true,
       selectedModules: ['bmm'],
     });
 
     assert(result23.success === true, 'Gemini setup succeeds against temp project');
 
-    const skillFile23 = path.join(tempProjectDir23, '.gemini', 'skills', 'bmad-master', 'SKILL.md');
+    const skillFile23 = path.join(tempProjectDir23, '.gemini', 'skills', 'skad-master', 'SKILL.md');
     assert(await fs.pathExists(skillFile23), 'Gemini install writes SKILL.md directory output');
 
     const skillContent23 = await fs.readFile(skillFile23, 'utf8');
     const nameMatch23 = skillContent23.match(/^name:\s*(.+)$/m);
-    assert(nameMatch23 && nameMatch23[1].trim() === 'bmad-master', 'Gemini skill name frontmatter matches directory name exactly');
+    assert(nameMatch23 && nameMatch23[1].trim() === 'skad-master', 'Gemini skill name frontmatter matches directory name exactly');
 
     assert(!(await fs.pathExists(path.join(tempProjectDir23, '.gemini', 'commands'))), 'Gemini setup removes legacy commands dir');
 
-    const result23b = await ideManager23.setup('gemini', tempProjectDir23, installedBmadDir23, {
+    const result23b = await ideManager23.setup('gemini', tempProjectDir23, installedSkadDir23, {
       silent: true,
       selectedModules: ['bmm'],
     });
@@ -1259,7 +1259,7 @@ async function runTests() {
     assert(await fs.pathExists(skillFile23), 'Gemini reinstall preserves SKILL.md output');
 
     await fs.remove(tempProjectDir23);
-    await fs.remove(installedBmadDir23);
+    await fs.remove(installedSkadDir23);
   } catch (error) {
     assert(false, 'Gemini native skills migration test succeeds', error.message);
   }
@@ -1283,33 +1283,33 @@ async function runTests() {
       'iFlow installer cleans legacy commands output',
     );
 
-    const tempProjectDir24 = await fs.mkdtemp(path.join(os.tmpdir(), 'bmad-iflow-test-'));
-    const installedBmadDir24 = await createTestBmadFixture();
+    const tempProjectDir24 = await fs.mkdtemp(path.join(os.tmpdir(), 'skad-iflow-test-'));
+    const installedSkadDir24 = await createTestSkadFixture();
     const legacyDir24 = path.join(tempProjectDir24, '.iflow', 'commands');
     await fs.ensureDir(legacyDir24);
-    await fs.writeFile(path.join(legacyDir24, 'bmad-legacy.md'), 'legacy\n');
+    await fs.writeFile(path.join(legacyDir24, 'skad-legacy.md'), 'legacy\n');
 
     const ideManager24 = new IdeManager();
     await ideManager24.ensureInitialized();
-    const result24 = await ideManager24.setup('iflow', tempProjectDir24, installedBmadDir24, {
+    const result24 = await ideManager24.setup('iflow', tempProjectDir24, installedSkadDir24, {
       silent: true,
       selectedModules: ['bmm'],
     });
 
     assert(result24.success === true, 'iFlow setup succeeds against temp project');
 
-    const skillFile24 = path.join(tempProjectDir24, '.iflow', 'skills', 'bmad-master', 'SKILL.md');
+    const skillFile24 = path.join(tempProjectDir24, '.iflow', 'skills', 'skad-master', 'SKILL.md');
     assert(await fs.pathExists(skillFile24), 'iFlow install writes SKILL.md directory output');
 
     // Verify name frontmatter matches directory name
     const skillContent24 = await fs.readFile(skillFile24, 'utf8');
     const nameMatch24 = skillContent24.match(/^name:\s*(.+)$/m);
-    assert(nameMatch24 && nameMatch24[1].trim() === 'bmad-master', 'iFlow skill name frontmatter matches directory name exactly');
+    assert(nameMatch24 && nameMatch24[1].trim() === 'skad-master', 'iFlow skill name frontmatter matches directory name exactly');
 
     assert(!(await fs.pathExists(path.join(tempProjectDir24, '.iflow', 'commands'))), 'iFlow setup removes legacy commands dir');
 
     await fs.remove(tempProjectDir24);
-    await fs.remove(installedBmadDir24);
+    await fs.remove(installedSkadDir24);
   } catch (error) {
     assert(false, 'iFlow native skills migration test succeeds', error.message);
   }
@@ -1333,33 +1333,33 @@ async function runTests() {
       'QwenCoder installer cleans legacy commands output',
     );
 
-    const tempProjectDir25 = await fs.mkdtemp(path.join(os.tmpdir(), 'bmad-qwen-test-'));
-    const installedBmadDir25 = await createTestBmadFixture();
+    const tempProjectDir25 = await fs.mkdtemp(path.join(os.tmpdir(), 'skad-qwen-test-'));
+    const installedSkadDir25 = await createTestSkadFixture();
     const legacyDir25 = path.join(tempProjectDir25, '.qwen', 'commands');
     await fs.ensureDir(legacyDir25);
-    await fs.writeFile(path.join(legacyDir25, 'bmad-legacy.md'), 'legacy\n');
+    await fs.writeFile(path.join(legacyDir25, 'skad-legacy.md'), 'legacy\n');
 
     const ideManager25 = new IdeManager();
     await ideManager25.ensureInitialized();
-    const result25 = await ideManager25.setup('qwen', tempProjectDir25, installedBmadDir25, {
+    const result25 = await ideManager25.setup('qwen', tempProjectDir25, installedSkadDir25, {
       silent: true,
       selectedModules: ['bmm'],
     });
 
     assert(result25.success === true, 'QwenCoder setup succeeds against temp project');
 
-    const skillFile25 = path.join(tempProjectDir25, '.qwen', 'skills', 'bmad-master', 'SKILL.md');
+    const skillFile25 = path.join(tempProjectDir25, '.qwen', 'skills', 'skad-master', 'SKILL.md');
     assert(await fs.pathExists(skillFile25), 'QwenCoder install writes SKILL.md directory output');
 
     // Verify name frontmatter matches directory name
     const skillContent25 = await fs.readFile(skillFile25, 'utf8');
     const nameMatch25 = skillContent25.match(/^name:\s*(.+)$/m);
-    assert(nameMatch25 && nameMatch25[1].trim() === 'bmad-master', 'QwenCoder skill name frontmatter matches directory name exactly');
+    assert(nameMatch25 && nameMatch25[1].trim() === 'skad-master', 'QwenCoder skill name frontmatter matches directory name exactly');
 
     assert(!(await fs.pathExists(path.join(tempProjectDir25, '.qwen', 'commands'))), 'QwenCoder setup removes legacy commands dir');
 
     await fs.remove(tempProjectDir25);
-    await fs.remove(installedBmadDir25);
+    await fs.remove(installedSkadDir25);
   } catch (error) {
     assert(false, 'QwenCoder native skills migration test succeeds', error.message);
   }
@@ -1383,18 +1383,18 @@ async function runTests() {
       'Rovo Dev installer cleans legacy workflows output',
     );
 
-    const tempProjectDir26 = await fs.mkdtemp(path.join(os.tmpdir(), 'bmad-rovodev-test-'));
-    const installedBmadDir26 = await createTestBmadFixture();
+    const tempProjectDir26 = await fs.mkdtemp(path.join(os.tmpdir(), 'skad-rovodev-test-'));
+    const installedSkadDir26 = await createTestSkadFixture();
     const legacyDir26 = path.join(tempProjectDir26, '.rovodev', 'workflows');
     await fs.ensureDir(legacyDir26);
-    await fs.writeFile(path.join(legacyDir26, 'bmad-legacy.md'), 'legacy\n');
+    await fs.writeFile(path.join(legacyDir26, 'skad-legacy.md'), 'legacy\n');
 
-    // Create a prompts.yml with BMAD entries and a user entry
+    // Create a prompts.yml with SKAD entries and a user entry
     const yaml26 = require('yaml');
     const promptsPath26 = path.join(tempProjectDir26, '.rovodev', 'prompts.yml');
     const promptsContent26 = yaml26.stringify({
       prompts: [
-        { name: 'bmad-bmm-create-prd', description: 'BMAD workflow', content_file: 'workflows/bmad-bmm-create-prd.md' },
+        { name: 'skad-bmm-create-prd', description: 'SKAD workflow', content_file: 'workflows/skad-bmm-create-prd.md' },
         { name: 'my-custom-prompt', description: 'User prompt', content_file: 'custom.md' },
       ],
     });
@@ -1402,33 +1402,33 @@ async function runTests() {
 
     const ideManager26 = new IdeManager();
     await ideManager26.ensureInitialized();
-    const result26 = await ideManager26.setup('rovo-dev', tempProjectDir26, installedBmadDir26, {
+    const result26 = await ideManager26.setup('rovo-dev', tempProjectDir26, installedSkadDir26, {
       silent: true,
       selectedModules: ['bmm'],
     });
 
     assert(result26.success === true, 'Rovo Dev setup succeeds against temp project');
 
-    const skillFile26 = path.join(tempProjectDir26, '.rovodev', 'skills', 'bmad-master', 'SKILL.md');
+    const skillFile26 = path.join(tempProjectDir26, '.rovodev', 'skills', 'skad-master', 'SKILL.md');
     assert(await fs.pathExists(skillFile26), 'Rovo Dev install writes SKILL.md directory output');
 
     // Verify name frontmatter matches directory name
     const skillContent26 = await fs.readFile(skillFile26, 'utf8');
     const nameMatch26 = skillContent26.match(/^name:\s*(.+)$/m);
-    assert(nameMatch26 && nameMatch26[1].trim() === 'bmad-master', 'Rovo Dev skill name frontmatter matches directory name exactly');
+    assert(nameMatch26 && nameMatch26[1].trim() === 'skad-master', 'Rovo Dev skill name frontmatter matches directory name exactly');
 
     assert(!(await fs.pathExists(path.join(tempProjectDir26, '.rovodev', 'workflows'))), 'Rovo Dev setup removes legacy workflows dir');
 
-    // Verify prompts.yml cleanup: BMAD entries removed, user entry preserved
+    // Verify prompts.yml cleanup: SKAD entries removed, user entry preserved
     const cleanedPrompts26 = yaml26.parse(await fs.readFile(promptsPath26, 'utf8'));
     assert(
       Array.isArray(cleanedPrompts26.prompts) && cleanedPrompts26.prompts.length === 1,
-      'Rovo Dev cleanup removes BMAD entries from prompts.yml',
+      'Rovo Dev cleanup removes SKAD entries from prompts.yml',
     );
-    assert(cleanedPrompts26.prompts[0].name === 'my-custom-prompt', 'Rovo Dev cleanup preserves non-BMAD entries in prompts.yml');
+    assert(cleanedPrompts26.prompts[0].name === 'my-custom-prompt', 'Rovo Dev cleanup preserves non-SKAD entries in prompts.yml');
 
     await fs.remove(tempProjectDir26);
-    await fs.remove(installedBmadDir26);
+    await fs.remove(installedSkadDir26);
   } catch (error) {
     assert(false, 'Rovo Dev native skills migration test succeeds', error.message);
   }
@@ -1436,66 +1436,66 @@ async function runTests() {
   console.log('');
 
   // ============================================================
-  // Suite 27: Cleanup preserves bmad-os-* skills
+  // Suite 27: Cleanup preserves skad-os-* skills
   // ============================================================
-  console.log(`${colors.yellow}Test Suite 27: Cleanup preserves bmad-os-* skills${colors.reset}\n`);
+  console.log(`${colors.yellow}Test Suite 27: Cleanup preserves skad-os-* skills${colors.reset}\n`);
 
   try {
-    const tempProjectDir27 = await fs.mkdtemp(path.join(os.tmpdir(), 'bmad-os-preserve-test-'));
-    const installedBmadDir27 = await createTestBmadFixture();
+    const tempProjectDir27 = await fs.mkdtemp(path.join(os.tmpdir(), 'skad-os-preserve-test-'));
+    const installedSkadDir27 = await createTestSkadFixture();
 
-    // Pre-populate .claude/skills with bmad-os-* skills (version-controlled repo skills)
-    const osSkillDir27 = path.join(tempProjectDir27, '.claude', 'skills', 'bmad-os-review-pr');
+    // Pre-populate .claude/skills with skad-os-* skills (version-controlled repo skills)
+    const osSkillDir27 = path.join(tempProjectDir27, '.claude', 'skills', 'skad-os-review-pr');
     await fs.ensureDir(osSkillDir27);
     await fs.writeFile(
       path.join(osSkillDir27, 'SKILL.md'),
-      '---\nname: bmad-os-review-pr\ndescription: Review PRs\n---\nOS skill content\n',
+      '---\nname: skad-os-review-pr\ndescription: Review PRs\n---\nOS skill content\n',
     );
 
-    const osSkillDir27b = path.join(tempProjectDir27, '.claude', 'skills', 'bmad-os-release-module');
+    const osSkillDir27b = path.join(tempProjectDir27, '.claude', 'skills', 'skad-os-release-module');
     await fs.ensureDir(osSkillDir27b);
     await fs.writeFile(
       path.join(osSkillDir27b, 'SKILL.md'),
-      '---\nname: bmad-os-release-module\ndescription: Release module\n---\nOS skill content\n',
+      '---\nname: skad-os-release-module\ndescription: Release module\n---\nOS skill content\n',
     );
 
-    // Also add a regular bmad skill that SHOULD be cleaned up
-    const regularSkillDir27 = path.join(tempProjectDir27, '.claude', 'skills', 'bmad-architect');
+    // Also add a regular skad skill that SHOULD be cleaned up
+    const regularSkillDir27 = path.join(tempProjectDir27, '.claude', 'skills', 'skad-architect');
     await fs.ensureDir(regularSkillDir27);
     await fs.writeFile(
       path.join(regularSkillDir27, 'SKILL.md'),
-      '---\nname: bmad-architect\ndescription: Architect\n---\nOld skill content\n',
+      '---\nname: skad-architect\ndescription: Architect\n---\nOld skill content\n',
     );
 
     // Run Claude Code setup (which triggers cleanup then install)
     const ideManager27 = new IdeManager();
     await ideManager27.ensureInitialized();
-    const result27 = await ideManager27.setup('claude-code', tempProjectDir27, installedBmadDir27, {
+    const result27 = await ideManager27.setup('claude-code', tempProjectDir27, installedSkadDir27, {
       silent: true,
       selectedModules: ['bmm'],
     });
 
-    assert(result27.success === true, 'Claude Code setup succeeds with bmad-os-* skills present');
+    assert(result27.success === true, 'Claude Code setup succeeds with skad-os-* skills present');
 
-    // bmad-os-* skills must survive
-    assert(await fs.pathExists(osSkillDir27), 'Cleanup preserves bmad-os-review-pr skill');
-    assert(await fs.pathExists(osSkillDir27b), 'Cleanup preserves bmad-os-release-module skill');
+    // skad-os-* skills must survive
+    assert(await fs.pathExists(osSkillDir27), 'Cleanup preserves skad-os-review-pr skill');
+    assert(await fs.pathExists(osSkillDir27b), 'Cleanup preserves skad-os-release-module skill');
 
-    // bmad-os skill content must be untouched
+    // skad-os skill content must be untouched
     const osContent27 = await fs.readFile(path.join(osSkillDir27, 'SKILL.md'), 'utf8');
-    assert(osContent27.includes('OS skill content'), 'bmad-os-review-pr skill content is unchanged');
+    assert(osContent27.includes('OS skill content'), 'skad-os-review-pr skill content is unchanged');
 
-    // Regular bmad skill should have been replaced by fresh install
-    const newSkillFile27 = path.join(tempProjectDir27, '.claude', 'skills', 'bmad-master', 'SKILL.md');
-    assert(await fs.pathExists(newSkillFile27), 'Fresh bmad skills are installed alongside preserved bmad-os-* skills');
+    // Regular skad skill should have been replaced by fresh install
+    const newSkillFile27 = path.join(tempProjectDir27, '.claude', 'skills', 'skad-master', 'SKILL.md');
+    assert(await fs.pathExists(newSkillFile27), 'Fresh skad skills are installed alongside preserved skad-os-* skills');
 
-    // Stale non-bmad-os skill must have been removed by cleanup
-    assert(!(await fs.pathExists(regularSkillDir27)), 'Cleanup removes stale non-bmad-os skills');
+    // Stale non-skad-os skill must have been removed by cleanup
+    assert(!(await fs.pathExists(regularSkillDir27)), 'Cleanup removes stale non-skad-os skills');
 
     await fs.remove(tempProjectDir27);
-    await fs.remove(installedBmadDir27);
+    await fs.remove(installedSkadDir27);
   } catch (error) {
-    assert(false, 'bmad-os-* skill preservation test succeeds', error.message);
+    assert(false, 'skad-os-* skill preservation test succeeds', error.message);
   }
 
   console.log('');
@@ -1506,7 +1506,7 @@ async function runTests() {
   console.log(`${colors.yellow}Test Suite 28: Pi Native Skills${colors.reset}\n`);
 
   let tempProjectDir28;
-  let installedBmadDir28;
+  let installedSkadDir28;
   try {
     clearCache();
     const platformCodes28 = await loadPlatformCodes();
@@ -1516,8 +1516,8 @@ async function runTests() {
     assert(piInstaller?.skill_format === true, 'Pi installer enables native skill output');
     assert(piInstaller?.template_type === 'default', 'Pi installer uses default skill template');
 
-    tempProjectDir28 = await fs.mkdtemp(path.join(os.tmpdir(), 'bmad-pi-test-'));
-    installedBmadDir28 = await createTestBmadFixture();
+    tempProjectDir28 = await fs.mkdtemp(path.join(os.tmpdir(), 'skad-pi-test-'));
+    installedSkadDir28 = await createTestSkadFixture();
 
     const ideManager28 = new IdeManager();
     await ideManager28.ensureInitialized();
@@ -1533,7 +1533,7 @@ async function runTests() {
     const detectedBefore28 = await ideManager28.detectInstalledIdes(tempProjectDir28);
     assert(!detectedBefore28.includes('pi'), 'Pi is not detected before install');
 
-    const result28 = await ideManager28.setup('pi', tempProjectDir28, installedBmadDir28, {
+    const result28 = await ideManager28.setup('pi', tempProjectDir28, installedSkadDir28, {
       silent: true,
       selectedModules: ['bmm'],
     });
@@ -1544,7 +1544,7 @@ async function runTests() {
     const detectedAfter28 = await ideManager28.detectInstalledIdes(tempProjectDir28);
     assert(detectedAfter28.includes('pi'), 'Pi is detected after install');
 
-    const skillFile28 = path.join(tempProjectDir28, '.pi', 'skills', 'bmad-master', 'SKILL.md');
+    const skillFile28 = path.join(tempProjectDir28, '.pi', 'skills', 'skad-master', 'SKILL.md');
     assert(await fs.pathExists(skillFile28), 'Pi install writes SKILL.md directory output');
 
     // Parse YAML frontmatter between --- markers
@@ -1557,7 +1557,7 @@ async function runTests() {
 
     // Verify name in frontmatter matches directory name
     const fmName28 = frontmatter28.match(/^name:\s*(.+)$/m);
-    assert(fmName28 && fmName28[1].trim() === 'bmad-master', 'Pi skill name frontmatter matches directory name exactly');
+    assert(fmName28 && fmName28[1].trim() === 'skad-master', 'Pi skill name frontmatter matches directory name exactly');
 
     // Verify description exists and is non-empty
     const fmDesc28 = frontmatter28.match(/^description:\s*(.+)$/m);
@@ -1575,7 +1575,7 @@ async function runTests() {
     assert(body28.includes('agent-activation'), 'Pi skill body contains expected agent activation instructions');
 
     // Reinstall/upgrade: run setup again over existing output
-    const result28b = await ideManager28.setup('pi', tempProjectDir28, installedBmadDir28, {
+    const result28b = await ideManager28.setup('pi', tempProjectDir28, installedSkadDir28, {
       silent: true,
       selectedModules: ['bmm'],
     });
@@ -1585,7 +1585,7 @@ async function runTests() {
     assert(false, 'Pi native skills test succeeds', error.message);
   } finally {
     if (tempProjectDir28) await fs.remove(tempProjectDir28).catch(() => {});
-    if (installedBmadDir28) await fs.remove(installedBmadDir28).catch(() => {});
+    if (installedSkadDir28) await fs.remove(installedSkadDir28).catch(() => {});
   }
 
   console.log('');
@@ -1597,7 +1597,7 @@ async function runTests() {
 
   let tempFixture29;
   try {
-    tempFixture29 = await fs.mkdtemp(path.join(os.tmpdir(), 'bmad-skill-scanner-'));
+    tempFixture29 = await fs.mkdtemp(path.join(os.tmpdir(), 'skad-skill-scanner-'));
 
     // Create _config dir (required by manifest generator)
     await fs.ensureDir(path.join(tempFixture29, '_config'));
@@ -1605,7 +1605,7 @@ async function runTests() {
     // --- Skill at unusual path: core/custom-area/my-skill/ ---
     const skillDir29 = path.join(tempFixture29, 'core', 'custom-area', 'my-skill');
     await fs.ensureDir(skillDir29);
-    await fs.writeFile(path.join(skillDir29, 'bmad-skill-manifest.yaml'), 'type: skill\n');
+    await fs.writeFile(path.join(skillDir29, 'skad-skill-manifest.yaml'), 'type: skill\n');
     await fs.writeFile(
       path.join(skillDir29, 'workflow.md'),
       '---\nname: My Custom Skill\ndescription: A skill at an unusual path\n---\n\nSkill body content\n',
@@ -1614,7 +1614,7 @@ async function runTests() {
     // --- Regular workflow dir: core/workflows/regular-wf/ (type: workflow) ---
     const wfDir29 = path.join(tempFixture29, 'core', 'workflows', 'regular-wf');
     await fs.ensureDir(wfDir29);
-    await fs.writeFile(path.join(wfDir29, 'bmad-skill-manifest.yaml'), 'type: workflow\ncanonicalId: regular-wf\n');
+    await fs.writeFile(path.join(wfDir29, 'skad-skill-manifest.yaml'), 'type: workflow\ncanonicalId: regular-wf\n');
     await fs.writeFile(
       path.join(wfDir29, 'workflow.md'),
       '---\nname: Regular Workflow\ndescription: A regular workflow not a skill\n---\n\nWorkflow body\n',
@@ -1623,7 +1623,7 @@ async function runTests() {
     // --- Skill inside workflows/ dir: core/workflows/wf-skill/ (exercises findWorkflows skip logic) ---
     const wfSkillDir29 = path.join(tempFixture29, 'core', 'workflows', 'wf-skill');
     await fs.ensureDir(wfSkillDir29);
-    await fs.writeFile(path.join(wfSkillDir29, 'bmad-skill-manifest.yaml'), 'type: skill\n');
+    await fs.writeFile(path.join(wfSkillDir29, 'skad-skill-manifest.yaml'), 'type: skill\n');
     await fs.writeFile(
       path.join(wfSkillDir29, 'workflow.md'),
       '---\nname: Workflow Skill\ndescription: A skill inside workflows dir\n---\n\nSkill in workflows\n',
@@ -1632,7 +1632,7 @@ async function runTests() {
     // --- Skill inside tasks/ dir: core/tasks/task-skill/ ---
     const taskSkillDir29 = path.join(tempFixture29, 'core', 'tasks', 'task-skill');
     await fs.ensureDir(taskSkillDir29);
-    await fs.writeFile(path.join(taskSkillDir29, 'bmad-skill-manifest.yaml'), 'type: skill\n');
+    await fs.writeFile(path.join(taskSkillDir29, 'skad-skill-manifest.yaml'), 'type: skill\n');
     await fs.writeFile(
       path.join(taskSkillDir29, 'workflow.md'),
       '---\nname: Task Skill\ndescription: A skill inside tasks dir\n---\n\nSkill in tasks\n',
@@ -1683,7 +1683,7 @@ async function runTests() {
     // Test scanInstalledModules recognizes skill-only modules
     const skillOnlyModDir29 = path.join(tempFixture29, 'skill-only-mod');
     await fs.ensureDir(path.join(skillOnlyModDir29, 'deep', 'nested', 'my-skill'));
-    await fs.writeFile(path.join(skillOnlyModDir29, 'deep', 'nested', 'my-skill', 'bmad-skill-manifest.yaml'), 'type: skill\n');
+    await fs.writeFile(path.join(skillOnlyModDir29, 'deep', 'nested', 'my-skill', 'skad-skill-manifest.yaml'), 'type: skill\n');
     await fs.writeFile(
       path.join(skillOnlyModDir29, 'deep', 'nested', 'my-skill', 'workflow.md'),
       '---\nname: Nested Skill\ndescription: desc\n---\nbody\n',

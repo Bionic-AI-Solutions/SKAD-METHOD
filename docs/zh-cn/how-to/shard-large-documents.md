@@ -23,11 +23,11 @@ sidebar:
 
 ```text
 分片前：
-_bmad-output/planning-artifacts/
+_skad-output/planning-artifacts/
 └── PRD.md（大型 50k token 文件）
 
 分片后：
-_bmad-output/planning-artifacts/
+_skad-output/planning-artifacts/
 └── prd/
     ├── index.md                    # 带有描述的目录
     ├── overview.md                 # 第 1 节
@@ -41,7 +41,7 @@ _bmad-output/planning-artifacts/
 ### 1. 运行 Shard-Doc 工具
 
 ```bash
-/bmad-shard-doc
+/skad-shard-doc
 ```
 
 ### 2. 遵循交互式流程
@@ -62,7 +62,7 @@ _bmad-output/planning-artifacts/
 
 ## 工作流程发现机制
 
-BMad 工作流程使用**双重发现系统**：
+SKad 工作流程使用**双重发现系统**：
 
 1. **首先尝试完整文档** - 查找 `document-name.md`
 2. **检查分片版本** - 查找 `document-name/index.md`

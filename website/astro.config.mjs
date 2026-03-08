@@ -42,7 +42,7 @@ export default defineConfig({
       filter: (page) => !/\/404(\/|$)/.test(new URL(page).pathname),
     }),
     starlight({
-      title: 'BMAD Method',
+      title: 'SKAD Method',
       tagline: 'AI-driven agile development with specialized agents and workflows that scale from bug fixes to enterprise platforms.',
 
       // i18n: English as root (no URL prefix), Chinese at /zh-cn/
@@ -59,9 +59,9 @@ export default defineConfig({
       },
 
       logo: {
-        light: './public/img/bmad-light.png',
-        dark: './public/img/bmad-dark.png',
-        alt: 'BMAD Method',
+        light: './public/img/skad-light.png',
+        dark: './public/img/skad-dark.png',
+        alt: 'SKAD Method',
         replacesTitle: true,
       },
       favicon: '/favicon.ico',
@@ -69,8 +69,8 @@ export default defineConfig({
       // Social links
       social: [
         { icon: 'discord', label: 'Discord', href: 'https://discord.gg/gk8jAdXWmj' },
-        { icon: 'github', label: 'GitHub', href: 'https://github.com/bmad-code-org/BMAD-METHOD' },
-        { icon: 'youtube', label: 'YouTube', href: 'https://www.youtube.com/@BMadCode' },
+        { icon: 'github', label: 'GitHub', href: 'https://github.com/skad-code-org/SKAD-METHOD' },
+        { icon: 'youtube', label: 'YouTube', href: 'https://www.youtube.com/@SKadCode' },
       ],
 
       // Show last updated timestamps
@@ -82,7 +82,7 @@ export default defineConfig({
           tag: 'meta',
           attrs: {
             name: 'ai-terms',
-            content: `AI-optimized documentation: ${siteUrl}/llms-full.txt (plain text, ~100k tokens, complete BMAD reference). Index: ${siteUrl}/llms.txt`,
+            content: `AI-optimized documentation: ${siteUrl}/llms-full.txt (plain text, ~100k tokens, complete SKAD reference). Index: ${siteUrl}/llms.txt`,
           },
         },
         {

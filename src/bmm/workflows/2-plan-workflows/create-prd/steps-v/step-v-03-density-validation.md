@@ -12,7 +12,7 @@ validationReportPath: '{validation_report_path}'
 
 ## STEP GOAL:
 
-Validate PRD meets BMAD information density standards by scanning for conversational filler, wordy phrases, and redundant expressions that violate conciseness principles.
+Validate PRD meets SKAD information density standards by scanning for conversational filler, wordy phrases, and redundant expressions that violate conciseness principles.
 
 ## MANDATORY EXECUTION RULES (READ FIRST):
 

@@ -27,7 +27,7 @@ This uses **micro-file architecture** for disciplined execution:
 
 ### Configuration Loading
 
-Load config from `{project-root}/_bmad/bmm/config.yaml` and resolve:
+Load config from `{project-root}/_skad/bmm/config.yaml` and resolve:
 
 - `project_name`, `output_folder`, `planning_artifacts`, `user_name`
 - `communication_language`, `document_output_language`, `user_skill_level`
@@ -36,7 +36,7 @@ Load config from `{project-root}/_bmad/bmm/config.yaml` and resolve:
 
 ### Paths
 
-- `installed_path` = `{project-root}/_bmad/bmm/workflows/3-solutioning/create-architecture`
+- `installed_path` = `{project-root}/_skad/bmm/workflows/3-solutioning/create-architecture`
 - `template_path` = `{installed_path}/architecture-decision-template.md`
 - `data_files_path` = `{installed_path}/data/`
 
@@ -44,6 +44,6 @@ Load config from `{project-root}/_bmad/bmm/config.yaml` and resolve:
 
 ## EXECUTION
 
-Read fully and follow: `{project-root}/_bmad/bmm/workflows/3-solutioning/create-architecture/steps/step-01-init.md` to begin the workflow.
+Read fully and follow: `{project-root}/_skad/bmm/workflows/3-solutioning/create-architecture/steps/step-01-init.md` to begin the workflow.
 
 **Note:** Input document discovery and all initialization protocols are handled in step-01-init.md.

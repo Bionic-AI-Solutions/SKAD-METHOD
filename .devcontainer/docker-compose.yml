@@ -1,0 +1,14 @@
+services:
+  devcontainer:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      # Mount workspace for hot-reload
+      - ..:/workspaces/SKAD-METHOD:cached
+      # Docker socket for host Docker access
+      - /var/run/docker.sock:/var/run/docker.sock
+      # Kube config from host
+      - ${HOME}/.kube/config:/home/vscode/.kube/config:ro
+    command: sleep infinity
+    network_mode: host
