@@ -6,7 +6,7 @@ SKad Core, SKad Method and SKad and Community SKad Modules are made possible by 
 
 - **Git history** — Every contribution is preserved in the project's commit history
 - **Contributors badge** — See the dynamic contributors list on our [README](README.md)
-- **GitHub contributors graph** — Visual representation at <https://github.com/skad-code-org/SKAD-METHOD/graphs/contributors>
+- **GitHub contributors graph** — Visual representation at <https://github.com/Bionic-AI-Solutions/SKAD-METHOD/graphs/contributors>
 
 ## Becoming a Contributor
 
@@ -23,7 +23,7 @@ There are no minimum contribution requirements — whether it's a one-character 
 
 ## Copyright
 
-The SKad Method project is copyrighted by SKad Code, LLC. Individual contributions are licensed under the same MIT License as the project. Contributors retain authorship credit through Git history and the contributors graph.
+The SKad Method project is copyrighted by Bionic Human LLC. Individual contributions are licensed under the same MIT License as the project. Contributors retain authorship credit through Git history and the contributors graph.
 
 ---
 

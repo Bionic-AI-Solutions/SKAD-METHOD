@@ -32,7 +32,7 @@ npx skad-method install
 :::tip[Bleeding edge]
 To install the latest from the main branch (may be unstable):
 ```bash
-npx github:skad-code-org/SKAD-METHOD install
+npx github:Bionic-AI-Solutions/SKAD-METHOD install
 ```
 :::
 

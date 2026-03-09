@@ -65,14 +65,14 @@ The `_skad` folder is created when you install SKad. If you don't have it yet, c
 **If your AI can read files (Claude Code, Cursor, etc.):**
 
 - **SKad installed:** Point at the `_skad` folder and ask directly
-- **Want deeper context:** Clone the [full repo](https://github.com/skad-code-org/SKAD-METHOD)
+- **Want deeper context:** Clone the [full repo](https://github.com/Bionic-AI-Solutions/SKAD-METHOD)
 
 **If you use ChatGPT or Claude.ai:**
 
 Fetch `llms-full.txt` into your session:
 
 ```text
-https://skad-code-org.github.io/SKAD-METHOD/llms-full.txt
+https://Bionic-AI-Solutions.github.io/SKAD-METHOD/llms-full.txt
 ```
 
 
@@ -106,7 +106,7 @@ Tried the LLM approach and still need help? You now have a much better question 
 
 **Discord:** [discord.gg/gk8jAdXWmj](https://discord.gg/gk8jAdXWmj)
 
-**GitHub Issues:** [github.com/skad-code-org/SKAD-METHOD/issues](https://github.com/skad-code-org/SKAD-METHOD/issues) (for clear bugs)
+**GitHub Issues:** [github.com/Bionic-AI-Solutions/SKAD-METHOD/issues](https://github.com/Bionic-AI-Solutions/SKAD-METHOD/issues) (for clear bugs)
 
 *You!*
         *Stuck*

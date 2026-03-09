@@ -17,7 +17,7 @@ SKad 通过您在安装期间选择的官方模块进行扩展。这些附加模
 
 - **代码：** `bmb`
 - **npm：** [`skad-builder`](https://www.npmjs.com/package/skad-builder)
-- **GitHub：** [skad-code-org/skad-builder](https://github.com/skad-code-org/skad-builder)
+- **GitHub：** [Bionic-AI-Solutions/skad-builder](https://github.com/Bionic-AI-Solutions/skad-builder)
 
 **提供：**
 
@@ -32,7 +32,7 @@ SKad 通过您在安装期间选择的官方模块进行扩展。这些附加模
 
 - **代码：** `cis`
 - **npm：** [`skad-creative-intelligence-suite`](https://www.npmjs.com/package/skad-creative-intelligence-suite)
-- **GitHub：** [skad-code-org/skad-module-creative-intelligence-suite](https://github.com/skad-code-org/skad-module-creative-intelligence-suite)
+- **GitHub：** [Bionic-AI-Solutions/skad-module-creative-intelligence-suite](https://github.com/Bionic-AI-Solutions/skad-module-creative-intelligence-suite)
 
 **提供：**
 
@@ -47,7 +47,7 @@ SKad 通过您在安装期间选择的官方模块进行扩展。这些附加模
 
 - **代码：** `gds`
 - **npm：** [`skad-game-dev-studio`](https://www.npmjs.com/package/skad-game-dev-studio)
-- **GitHub：** [skad-code-org/skad-module-game-dev-studio](https://github.com/skad-code-org/skad-module-game-dev-studio)
+- **GitHub：** [Bionic-AI-Solutions/skad-module-game-dev-studio](https://github.com/Bionic-AI-Solutions/skad-module-game-dev-studio)
 
 **提供：**
 
@@ -62,7 +62,7 @@ SKad 通过您在安装期间选择的官方模块进行扩展。这些附加模
 
 - **代码：** `tea`
 - **npm：** [`skad-method-test-architecture-enterprise`](https://www.npmjs.com/package/skad-method-test-architecture-enterprise)
-- **GitHub：** [skad-code-org/skad-method-test-architecture-enterprise](https://github.com/skad-code-org/skad-method-test-architecture-enterprise)
+- **GitHub：** [Bionic-AI-Solutions/skad-method-test-architecture-enterprise](https://github.com/Bionic-AI-Solutions/skad-method-test-architecture-enterprise)
 
 **提供：**
 
@@ -73,7 +73,7 @@ SKad 通过您在安装期间选择的官方模块进行扩展。这些附加模
 
 ## 社区模块
 
-社区模块和模块市场即将推出。请查看 [SKad GitHub 组织](https://github.com/skad-code-org) 获取最新更新。
+社区模块和模块市场即将推出。请查看 [SKad GitHub 组织](https://github.com/Bionic-AI-Solutions) 获取最新更新。
 
 ---
 ## 术语说明

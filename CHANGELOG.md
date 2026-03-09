@@ -335,9 +335,9 @@ V6 Stable Release! The End of Beta!
 
 | Module                                | Status                                            | New Location                                            |
 | ------------------------------------- | ------------------------------------------------- | ------------------------------------------------------- |
-| **skad-builder**                      | Near beta, with docs and walkthroughs coming soon | `skad-code-org/skad-builder`                            |
-| **CIS** (Creative Intelligence Suite) | Published as npm package                          | `skad-code-org/skad-module-creative-intelligence-suite` |
-| **Game Dev Studio**                   | Published as npm package                          | `skad-code-org/skad-module-game-dev-studio`             |
+| **skad-builder**                      | Near beta, with docs and walkthroughs coming soon | `Bionic-AI-Solutions/skad-builder`                            |
+| **CIS** (Creative Intelligence Suite) | Published as npm package                          | `Bionic-AI-Solutions/skad-module-creative-intelligence-suite` |
+| **Game Dev Studio**                   | Published as npm package                          | `Bionic-AI-Solutions/skad-module-game-dev-studio`             |
 
 ### 🔧 Installer & CLI Improvements
 
@@ -1482,7 +1482,7 @@ Located in `src/modules/bmb/workflows/agent/data/`:
 - **CIS**: Creative Intelligence Suite for ideation and creative workflows
 - **Game Development**: Full subclass of game-specific development patterns**Note**: Version 5.0.0 was skipped due to NPX registry issues that corrupted the version. Development continues with v6.0.0-alpha.0.
 
-## [v4.43.0](https://github.com/skad-code-org/SKAD-METHOD/releases/tag/v4.43.0)
+## [v4.43.0](https://github.com/Bionic-AI-Solutions/SKAD-METHOD/releases/tag/v4.43.0)
 
 **Release: August-September 2025 (v4.31.0 - v4.43.1)**
 
@@ -1536,9 +1536,9 @@ Focus on stability, ecosystem growth, and professional tooling.
 - Automatic release notes generation
 - Changelog file path configuration
 
-[View v4.43.1 tag](https://github.com/skad-code-org/SKAD-METHOD/tree/v4.43.1)
+[View v4.43.1 tag](https://github.com/Bionic-AI-Solutions/SKAD-METHOD/tree/v4.43.1)
 
-## [v4.30.0](https://github.com/skad-code-org/SKAD-METHOD/releases/tag/v4.30.0)
+## [v4.30.0](https://github.com/Bionic-AI-Solutions/SKAD-METHOD/releases/tag/v4.30.0)
 
 **Release: July 2025 (v4.21.0 - v4.30.4)**
 
@@ -1577,9 +1577,9 @@ Introduction of advanced IDE integrations and command systems.
 - Improved expansion pack documentation
 - Better isolated expansion pack installations
 
-[View v4.30.4 tag](https://github.com/skad-code-org/SKAD-METHOD/tree/v4.30.4)
+[View v4.30.4 tag](https://github.com/Bionic-AI-Solutions/SKAD-METHOD/tree/v4.30.4)
 
-## [v4.20.0](https://github.com/skad-code-org/SKAD-METHOD/releases/tag/v4.20.0)
+## [v4.20.0](https://github.com/Bionic-AI-Solutions/SKAD-METHOD/releases/tag/v4.20.0)
 
 **Release: June 2025 (v4.11.0 - v4.20.0)**
 
@@ -1619,9 +1619,9 @@ Major focus on documentation quality and expanding QA agent capabilities.
 - Common files moved to shared locations
 - Hardcoded dependencies removed from installer
 
-[View v4.20.0 tag](https://github.com/skad-code-org/SKAD-METHOD/tree/v4.20.0)
+[View v4.20.0 tag](https://github.com/Bionic-AI-Solutions/SKAD-METHOD/tree/v4.20.0)
 
-## [v4.10.0](https://github.com/skad-code-org/SKAD-METHOD/releases/tag/v4.10.0)
+## [v4.10.0](https://github.com/Bionic-AI-Solutions/SKAD-METHOD/releases/tag/v4.10.0)
 
 **Release: June 2025 (v4.3.0 - v4.10.3)**
 
@@ -1655,9 +1655,9 @@ This release focused on making SKAD more configurable and adaptable to different
 - Bundle build improvements
 - Template formatting fixes
 
-[View v4.10.3 tag](https://github.com/skad-code-org/SKAD-METHOD/tree/v4.10.3)
+[View v4.10.3 tag](https://github.com/Bionic-AI-Solutions/SKAD-METHOD/tree/v4.10.3)
 
-## [v4.0.0](https://github.com/skad-code-org/SKAD-METHOD/releases/tag/v4.0.0)
+## [v4.0.0](https://github.com/Bionic-AI-Solutions/SKAD-METHOD/releases/tag/v4.0.0)
 
 **Release: June 20, 2025 (v4.0.0 - v4.2.0)**
 
@@ -1693,9 +1693,9 @@ Version 4 represented a complete architectural overhaul, transforming SKAD from 
 - VSCode settings and markdown linting
 - Comprehensive documentation restructure
 
-[View v4.2.0 tag](https://github.com/skad-code-org/SKAD-METHOD/tree/v4.2.0)
+[View v4.2.0 tag](https://github.com/Bionic-AI-Solutions/SKAD-METHOD/tree/v4.2.0)
 
-## [v3.0.0](https://github.com/skad-code-org/SKAD-METHOD/releases/tag/v3.0.0)
+## [v3.0.0](https://github.com/Bionic-AI-Solutions/SKAD-METHOD/releases/tag/v3.0.0)
 
 **Release: May 20, 2025**
 
@@ -1722,9 +1722,9 @@ Version 3 introduced the revolutionary orchestrator concept, creating a unified 
 - Integrated method explanation within the agent itself
 - Cross-platform consistency (Gemini Gems, Custom GPTs)
 
-[View V3 Branch](https://github.com/skad-code-org/SKAD-METHOD/tree/V3)
+[View V3 Branch](https://github.com/Bionic-AI-Solutions/SKAD-METHOD/tree/V3)
 
-## [v2.0.0](https://github.com/skad-code-org/SKAD-METHOD/releases/tag/v2.0.0)
+## [v2.0.0](https://github.com/Bionic-AI-Solutions/SKAD-METHOD/releases/tag/v2.0.0)
 
 **Release: April 17, 2025**
 
@@ -1751,9 +1751,9 @@ Version 2 addressed the major shortcomings of V1 by introducing separation of co
 - Manual export/import workflow between agents
 - Creating each web agent separately was tedious
 
-[View V2 Branch](https://github.com/skad-code-org/SKAD-METHOD/tree/V2)
+[View V2 Branch](https://github.com/Bionic-AI-Solutions/SKAD-METHOD/tree/V2)
 
-## [v1.0.0](https://github.com/skad-code-org/SKAD-METHOD/releases/tag/v1.0.0)
+## [v1.0.0](https://github.com/Bionic-AI-Solutions/SKAD-METHOD/releases/tag/v1.0.0)
 
 **Initial Release: April 6, 2025**
 
@@ -1774,7 +1774,7 @@ The original SKAD Method was a tech demo showcasing how different custom agile p
 - Rigid scope and purpose with templates coupled to agents
 - Not optimized for IDE integration
 
-[View V1 Branch](https://github.com/skad-code-org/SKAD-METHOD/tree/V1)
+[View V1 Branch](https://github.com/Bionic-AI-Solutions/SKAD-METHOD/tree/V1)
 
 ## Installation
 
@@ -1782,4 +1782,4 @@ The original SKAD Method was a tech demo showcasing how different custom agile p
 npx skad-method
 ```
 
-For detailed release notes, see the [GitHub releases page](https://github.com/skad-code-org/SKAD-METHOD/releases).
+For detailed release notes, see the [GitHub releases page](https://github.com/Bionic-AI-Solutions/SKAD-METHOD/releases).

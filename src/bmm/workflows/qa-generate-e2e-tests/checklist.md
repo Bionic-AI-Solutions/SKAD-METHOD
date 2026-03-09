@@ -30,4 +30,4 @@ Run the tests using your project's test command.
 
 ---
 
-**Need more comprehensive testing?** Install [Test Architect (TEA)](https://skad-code-org.github.io/skad-method-test-architecture-enterprise/) for advanced workflows.
+**Need more comprehensive testing?** Install [Test Architect (TEA)](https://Bionic-AI-Solutions.github.io/skad-method-test-architecture-enterprise/) for advanced workflows.

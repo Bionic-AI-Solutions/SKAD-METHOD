@@ -1,9 +1,9 @@
-# This file allows these modules under skad-code-org to also be installed with the skad method installer, while
+# This file allows these modules under Bionic-AI-Solutions to also be installed with the skad method installer, while
 # allowing us to keep the source of these projects in separate repos.
 
 modules:
   skad-builder:
-    url: https://github.com/skad-code-org/skad-builder
+    url: https://github.com/Bionic-AI-Solutions/skad-builder
     module-definition: src/module.yaml
     code: bmb
     name: "SKad Builder"
@@ -13,7 +13,7 @@ modules:
     npmPackage: skad-builder
 
   skad-creative-intelligence-suite:
-    url: https://github.com/skad-code-org/skad-module-creative-intelligence-suite
+    url: https://github.com/Bionic-AI-Solutions/skad-module-creative-intelligence-suite
     module-definition: src/module.yaml
     code: cis
     name: "SKad Creative Intelligence Suite"
@@ -23,7 +23,7 @@ modules:
     npmPackage: skad-creative-intelligence-suite
 
   skad-game-dev-studio:
-    url: https://github.com/skad-code-org/skad-module-game-dev-studio.git
+    url: https://github.com/Bionic-AI-Solutions/skad-module-game-dev-studio.git
     module-definition: src/module.yaml
     code: gds
     name: "SKad Game Dev Studio"
@@ -33,7 +33,7 @@ modules:
     npmPackage: skad-game-dev-studio
 
   skad-method-test-architecture-enterprise:
-    url: https://github.com/skad-code-org/skad-method-test-architecture-enterprise
+    url: https://github.com/Bionic-AI-Solutions/skad-method-test-architecture-enterprise
     module-definition: src/module.yaml
     code: tea
     name: "Test Architect"
@@ -43,7 +43,7 @@ modules:
     npmPackage: skad-method-test-architecture-enterprise
 
   # whiteport-design-system:
-  #   url: https://github.com/skad-code-org/skad-method-wds-expansion
+  #   url: https://github.com/Bionic-AI-Solutions/skad-method-wds-expansion
   #   module-definition: src/module.yaml
   #   code: wds
   #   name: "Whiteport UX Design System"

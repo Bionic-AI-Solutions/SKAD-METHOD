@@ -53,7 +53,7 @@ sidebar:
 - `bmm` — SKad Method Master
 - `bmb` — SKad Builder
 
-查看 [SKad 注册表](https://github.com/skad-code-org) 获取可用的外部模块。
+查看 [SKad 注册表](https://github.com/Bionic-AI-Solutions) 获取可用的外部模块。
 
 ## 工具/IDE ID
 
@@ -61,7 +61,7 @@ sidebar:
 
 **推荐：** `claude-code`、`cursor`
 
-运行一次 `npx skad-method install` 交互式安装以查看完整的当前支持工具列表，或查看 [平台代码配置](https://github.com/skad-code-org/SKAD-METHOD/blob/main/tools/cli/installers/lib/ide/platform-codes.yaml)。
+运行一次 `npx skad-method install` 交互式安装以查看完整的当前支持工具列表，或查看 [平台代码配置](https://github.com/Bionic-AI-Solutions/SKAD-METHOD/blob/main/tools/cli/installers/lib/ide/platform-codes.yaml)。
 
 ## 安装模式
 
@@ -167,7 +167,7 @@ SKad 会验证所有提供的标志：
 - 在 `module.yaml` 中有 `code` 字段
 
 :::note[仍然卡住了？]
-使用 `--debug` 运行以获取详细输出，尝试交互模式以隔离问题，或在 <https://github.com/skad-code-org/SKAD-METHOD/issues> 报告。
+使用 `--debug` 运行以获取详细输出，尝试交互模式以隔离问题，或在 <https://github.com/Bionic-AI-Solutions/SKAD-METHOD/issues> 报告。
 :::
 
 ---

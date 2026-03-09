@@ -2,7 +2,7 @@
 
 ## Trademark Ownership
 
-The following names and logos are trademarks of SKad Code, LLC:
+The following names and logos are trademarks of Bionic Human LLC:
 
 - **SKad** (word mark, all casings: SKad, skad, SKAD)
 - **SKad Method** (word mark, includes SKadMethod, SKAD-METHOD, and all variations)
@@ -21,13 +21,13 @@ You may:
 
 - Use the SKad software under the terms of the MIT License
 - Refer to SKad to accurately describe compatibility or integration (e.g., "Compatible with SKad Method v6")
-- Link to <https://github.com/skad-code-org/SKAD-METHOD>
+- Link to <https://github.com/Bionic-AI-Solutions/SKAD-METHOD>
 - Fork the software and distribute your own version under a different name
 
 You may **not**:
 
 - Use "SKad" or any confusingly similar variation as your product name, service name, company name, or domain name
-- Present your product as officially endorsed, approved, or certified by SKad Code, LLC when it is not, without written consent from an authorized representative of SKad Code, LLC
+- Present your product as officially endorsed, approved, or certified by Bionic Human LLC when it is not, without written consent from an authorized representative of Bionic Human LLC
 - Use SKad logos or branding in a way that suggests your product is an official or endorsed SKad product
 - Register domain names, social media handles, or trademarks that incorporate SKad branding
 
@@ -52,4 +52,4 @@ You may sell products that incorporate or work with SKad software. However:
 
 If you have questions about trademark usage or would like to discuss official partnership or endorsement opportunities, please reach out:
 
-- **Email**: <contact@skadcode.com>
+- **GitHub**: <https://github.com/Bionic-AI-Solutions/SKAD-METHOD/issues>

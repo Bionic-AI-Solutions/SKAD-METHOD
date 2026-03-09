@@ -47,7 +47,7 @@ sidebar:
 
 BMM 尊重你的选择——它不会强制现代化，但会提供现代化选项。
 
-**有未在此处回答的问题吗？** 请[提出问题](https://github.com/skad-code-org/SKAD-METHOD/issues)或在 [Discord](https://discord.gg/gk8jAdXWmj) 中提问，以便我们添加它！
+**有未在此处回答的问题吗？** 请[提出问题](https://github.com/Bionic-AI-Solutions/SKAD-METHOD/issues)或在 [Discord](https://discord.gg/gk8jAdXWmj) 中提问，以便我们添加它！
 
 ---
 ## 术语说明

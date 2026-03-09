@@ -65,14 +65,14 @@ SKad-Help 会回应：
 **如果您的 AI 可以读取文件（Claude Code、Cursor 等）：**
 
 - **已安装 SKad：** 指向 `_skad` 文件夹并直接提问
-- **想要更深入的上下文：** 克隆[完整仓库](https://github.com/skad-code-org/SKAD-METHOD)
+- **想要更深入的上下文：** 克隆[完整仓库](https://github.com/Bionic-AI-Solutions/SKAD-METHOD)
 
 **如果您使用 ChatGPT 或 Claude.ai：**
 
 将 `llms-full.txt` 获取到您的会话中：
 
 ```text
-https://skad-code-org.github.io/SKAD-METHOD/llms-full.txt
+https://Bionic-AI-Solutions.github.io/SKAD-METHOD/llms-full.txt
 ```
 
 
@@ -106,7 +106,7 @@ https://skad-code-org.github.io/SKAD-METHOD/llms-full.txt
 
 **Discord：** [discord.gg/gk8jAdXWmj](https://discord.gg/gk8jAdXWmj)
 
-**GitHub Issues：** [github.com/skad-code-org/SKAD-METHOD/issues](https://github.com/skad-code-org/SKAD-METHOD/issues)（用于明确的错误）
+**GitHub Issues：** [github.com/Bionic-AI-Solutions/SKAD-METHOD/issues](https://github.com/Bionic-AI-Solutions/SKAD-METHOD/issues)（用于明确的错误）
 
 *你！*
         *卡住*

@@ -15,7 +15,7 @@ Traditional AI tools do the thinking for you, producing average results. SKad ag
 
 - **AI Intelligent Help** — Ask `/skad-help` anytime for guidance on what's next
 - **Scale-Domain-Adaptive** — Automatically adjusts planning depth based on project complexity
-- **Structured Workflows** — Grounded in agile best practices across analysis, planning, architecture, and implementation
+- **Structured Workflows** — Grounded in agile best practices across analysis, planning, architecture, and implementationd
 - **Specialized Agents** — 12+ domain experts (PM, Architect, Developer, UX, Scrum Master, and more)
 - **Party Mode** — Bring multiple agent personas into one session to collaborate and discuss
 - **Complete Lifecycle** — From brainstorming to deployment
@@ -36,21 +36,6 @@ Traditional AI tools do the thinking for you, producing average results. SKad ag
 
 **Prerequisites**: [Node.js](https://nodejs.org) v20+
 
-```bash
-npx skad-method install
-```
-
-> If you are getting a stale beta version, use: `npx skad-method@6.0.1 install`
-
-Follow the installer prompts, then open your AI IDE (Claude Code, Cursor, etc.) in your project folder.
-
-**Non-Interactive Installation** (for CI/CD):
-
-```bash
-npx skad-method install --directory /path/to/project --modules bmm --tools claude-code --yes
-```
-
-[See all installation options](https://docs.skad-method.org/how-to/non-interactive-installation/)
 
 ### Installing from Source (Private / Air-Gapped Environments)
 
@@ -97,11 +82,11 @@ SKad Method extends with official modules for specialized domains. Available dur
 
 | Module                                                                                                            | Purpose                                           |
 | ----------------------------------------------------------------------------------------------------------------- | ------------------------------------------------- |
-| **[SKad Method (BMM)](https://github.com/skad-code-org/SKAD-METHOD)**                                             | Core framework with 34+ workflows                 |
-| **[SKad Builder (BMB)](https://github.com/skad-code-org/skad-builder)**                                           | Create custom SKad agents and workflows           |
-| **[Test Architect (TEA)](https://github.com/skad-code-org/skad-method-test-architecture-enterprise)**             | Risk-based test strategy and automation           |
-| **[Game Dev Studio (BMGD)](https://github.com/skad-code-org/skad-module-game-dev-studio)**                        | Game development workflows (Unity, Unreal, Godot) |
-| **[Creative Intelligence Suite (CIS)](https://github.com/skad-code-org/skad-module-creative-intelligence-suite)** | Innovation, brainstorming, design thinking        |
+| **[SKad Method (BMM)](https://github.com/Bionic-AI-Solutions/SKAD-METHOD)**                                             | Core framework with 34+ workflows                 |
+| **[SKad Builder (BMB)](https://github.com/Bionic-AI-Solutions/skad-builder)**                                           | Create custom SKad agents and workflows           |
+| **[Test Architect (TEA)](https://github.com/Bionic-AI-Solutions/skad-method-test-architecture-enterprise)**             | Risk-based test strategy and automation           |
+| **[Game Dev Studio (BMGD)](https://github.com/Bionic-AI-Solutions/skad-module-game-dev-studio)**                        | Game development workflows (Unity, Unreal, Godot) |
+| **[Creative Intelligence Suite (CIS)](https://github.com/Bionic-AI-Solutions/skad-module-creative-intelligence-suite)** | Innovation, brainstorming, design thinking        |
 
 ## Documentation
 
@@ -110,28 +95,17 @@ SKad Method extends with official modules for specialized domains. Available dur
 **Quick links:**
 - [Getting Started Tutorial](https://docs.skad-method.org/tutorials/getting-started/)
 - [Upgrading from Previous Versions](https://docs.skad-method.org/how-to/upgrade-to-v6/)
-- [Test Architect Documentation](https://skad-code-org.github.io/skad-method-test-architecture-enterprise/)
+- [Test Architect Documentation](https://Bionic-AI-Solutions.github.io/skad-method-test-architecture-enterprise/)
 
-
-## Community
-
-- [Discord](https://discord.gg/gk8jAdXWmj) — Get help, share ideas, collaborate
-- [Subscribe on YouTube](https://www.youtube.com/@SKadCode) — Tutorials, master class, and podcast (launching Feb 2025)
-- [GitHub Issues](https://github.com/skad-code-org/SKAD-METHOD/issues) — Bug reports and feature requests
-- [Discussions](https://github.com/skad-code-org/SKAD-METHOD/discussions) — Community conversations
 
 ## Support SKad
 
 SKad is free for everyone — and always will be. If you'd like to support development:
 
 - ⭐ Please click the star project icon near the top right of this page
-- ☕ [Buy Me a Coffee](https://buymeacoffee.com/skad) — Fuel the development
 - 🏢 Corporate sponsorship — DM on Discord
 - 🎤 Speaking & Media — Available for conferences, podcasts, interviews (BM on Discord)
 
-## Contributing
-
-We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 ## License
 
@@ -139,8 +113,3 @@ MIT License — see [LICENSE](LICENSE) for details.
 
 ---
 
-**SKad** and **SKAD-METHOD** are trademarks of SKad Code, LLC. See [TRADEMARK.md](TRADEMARK.md) for details.
-
-[![Contributors](https://contrib.rocks/image?repo=skad-code-org/SKAD-METHOD)](https://github.com/skad-code-org/SKAD-METHOD/graphs/contributors)
-
-See [CONTRIBUTORS.md](CONTRIBUTORS.md) for contributor information.

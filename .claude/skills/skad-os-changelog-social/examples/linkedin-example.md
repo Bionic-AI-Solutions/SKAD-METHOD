@@ -36,7 +36,7 @@ npx skad-method@alpha install
 ```
 
 **Learn More**
-- GitHub: github.com/skad-code-org/SKAD-METHOD
+- GitHub: github.com/Bionic-AI-Solutions/SKAD-METHOD
 - YouTube: youtube.com/@SKadCode
 - Docs: docs.skad-method.org
 

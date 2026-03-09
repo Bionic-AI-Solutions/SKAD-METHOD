@@ -4,7 +4,7 @@ description: Analyzes a bug-fix commit or PR and produces a structured Root Caus
 license: MIT
 disable-model-invocation: true
 metadata:
-  author: skad-code-org
+  author: Bionic-AI-Solutions
   version: "1.0.0"
 compatibility: Requires gh CLI and git repository
 ---

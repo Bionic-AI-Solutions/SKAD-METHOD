@@ -134,7 +134,7 @@ If the project needs:
 - Comprehensive coverage analysis
 - Advanced testing patterns and utilities
 
-> **Install Test Architect (TEA) module**: <https://skad-code-org.github.io/skad-method-test-architecture-enterprise/>
+> **Install Test Architect (TEA) module**: <https://Bionic-AI-Solutions.github.io/skad-method-test-architecture-enterprise/>
 
 ## Output
 

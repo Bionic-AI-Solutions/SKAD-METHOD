@@ -92,7 +92,7 @@ Community-driven FTW! 🌟
 `npx skad-method@VERSION install`
 
 ⭐ **SUPPORT US:**
-🌟 GitHub: github.com/skad-code-org/SKAD-METHOD/
+🌟 GitHub: github.com/Bionic-AI-Solutions/SKAD-METHOD/
 📺 YouTube: youtube.com/@SKadCode
 ☕ Donate: buymeacoffee.com/skad
 

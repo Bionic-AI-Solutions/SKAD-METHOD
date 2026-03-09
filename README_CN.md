@@ -60,11 +60,11 @@ SKad 方法通过官方模块扩展到专业领域。可在安装期间或之后
 
 | Module                                                                                                            | Purpose                                           |
 | ----------------------------------------------------------------------------------------------------------------- | ------------------------------------------------- |
-| **[SKad Method (BMM)](https://github.com/skad-code-org/SKAD-METHOD)**                                             | 包含 34+ 工作流的核心框架                         |
-| **[SKad Builder (BMB)](https://github.com/skad-code-org/skad-builder)**                                           | 创建自定义 SKad 智能体和工作流                     |
-| **[Test Architect (TEA)](https://github.com/skad-code-org/tea)**                                                  | 基于风险的测试策略和自动化                         |
-| **[Game Dev Studio (BMGD)](https://github.com/skad-code-org/skad-module-game-dev-studio)**                        | 游戏开发工作流（Unity、Unreal、Godot）             |
-| **[Creative Intelligence Suite (CIS)](https://github.com/skad-code-org/skad-module-creative-intelligence-suite)** | 创新、头脑风暴、设计思维                           |
+| **[SKad Method (BMM)](https://github.com/Bionic-AI-Solutions/SKAD-METHOD)**                                             | 包含 34+ 工作流的核心框架                         |
+| **[SKad Builder (BMB)](https://github.com/Bionic-AI-Solutions/skad-builder)**                                           | 创建自定义 SKad 智能体和工作流                     |
+| **[Test Architect (TEA)](https://github.com/Bionic-AI-Solutions/tea)**                                                  | 基于风险的测试策略和自动化                         |
+| **[Game Dev Studio (BMGD)](https://github.com/Bionic-AI-Solutions/skad-module-game-dev-studio)**                        | 游戏开发工作流（Unity、Unreal、Godot）             |
+| **[Creative Intelligence Suite (CIS)](https://github.com/Bionic-AI-Solutions/skad-module-creative-intelligence-suite)** | 创新、头脑风暴、设计思维                           |
 
 ## 文档
 
@@ -73,15 +73,15 @@ SKad 方法通过官方模块扩展到专业领域。可在安装期间或之后
 **快速链接：**
 - [入门教程](http://docs.skad-method.org/tutorials/getting-started/)
 - [从先前版本升级](http://docs.skad-method.org/how-to/upgrade-to-v6/)
-- [测试架构师文档](https://skad-code-org.github.io/skad-method-test-architecture-enterprise/)
+- [测试架构师文档](https://Bionic-AI-Solutions.github.io/skad-method-test-architecture-enterprise/)
 
 
 ## 社区
 
 - [Discord](https://discord.gg/gk8jAdXWmj) — 获取帮助、分享想法、协作
 - [在 YouTube 上订阅](https://www.youtube.com/@SKadCode) — 教程、大师课和播客（2025 年 2 月推出）
-- [GitHub Issues](https://github.com/skad-code-org/SKAD-METHOD/issues) — 错误报告和功能请求
-- [讨论](https://github.com/skad-code-org/SKAD-METHOD/discussions) — 社区对话
+- [GitHub Issues](https://github.com/Bionic-AI-Solutions/SKAD-METHOD/issues) — 错误报告和功能请求
+- [讨论](https://github.com/Bionic-AI-Solutions/SKAD-METHOD/discussions) — 社区对话
 
 ## 支持 SKad
 
@@ -102,9 +102,9 @@ MIT 许可证 — 详见 [LICENSE](LICENSE)。
 
 ---
 
-**SKad** 和 **SKAD-METHOD** 是 SKad Code, LLC 的商标。详见 [TRADEMARK.md](TRADEMARK.md)。
+**SKad** 和 **SKAD-METHOD** 是 Bionic Human LLC 的商标。详见 [TRADEMARK.md](TRADEMARK.md)。
 
-[![Contributors](https://contrib.rocks/image?repo=skad-code-org/SKAD-METHOD)](https://github.com/skad-code-org/SKAD-METHOD/graphs/contributors)
+[![Contributors](https://contrib.rocks/image?repo=Bionic-AI-Solutions/SKAD-METHOD)](https://github.com/Bionic-AI-Solutions/SKAD-METHOD/graphs/contributors)
 
 请参阅 [CONTRIBUTORS.md](CONTRIBUTORS.md) 了解贡献者信息。
 

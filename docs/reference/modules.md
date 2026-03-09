@@ -17,7 +17,7 @@ Create custom agents, workflows, and domain-specific modules with guided assista
 
 - **Code:** `bmb`
 - **npm:** [`skad-builder`](https://www.npmjs.com/package/skad-builder)
-- **GitHub:** [skad-code-org/skad-builder](https://github.com/skad-code-org/skad-builder)
+- **GitHub:** [Bionic-AI-Solutions/skad-builder](https://github.com/Bionic-AI-Solutions/skad-builder)
 
 **Provides:**
 
@@ -32,7 +32,7 @@ AI-powered tools for structured creativity, ideation, and innovation during earl
 
 - **Code:** `cis`
 - **npm:** [`skad-creative-intelligence-suite`](https://www.npmjs.com/package/skad-creative-intelligence-suite)
-- **GitHub:** [skad-code-org/skad-module-creative-intelligence-suite](https://github.com/skad-code-org/skad-module-creative-intelligence-suite)
+- **GitHub:** [Bionic-AI-Solutions/skad-module-creative-intelligence-suite](https://github.com/Bionic-AI-Solutions/skad-module-creative-intelligence-suite)
 
 **Provides:**
 
@@ -47,7 +47,7 @@ Structured game development workflows adapted for Unity, Unreal, Godot, and cust
 
 - **Code:** `gds`
 - **npm:** [`skad-game-dev-studio`](https://www.npmjs.com/package/skad-game-dev-studio)
-- **GitHub:** [skad-code-org/skad-module-game-dev-studio](https://github.com/skad-code-org/skad-module-game-dev-studio)
+- **GitHub:** [Bionic-AI-Solutions/skad-module-game-dev-studio](https://github.com/Bionic-AI-Solutions/skad-module-game-dev-studio)
 
 **Provides:**
 
@@ -62,7 +62,7 @@ Enterprise-grade test strategy, automation guidance, and release gate decisions 
 
 - **Code:** `tea`
 - **npm:** [`skad-method-test-architecture-enterprise`](https://www.npmjs.com/package/skad-method-test-architecture-enterprise)
-- **GitHub:** [skad-code-org/skad-method-test-architecture-enterprise](https://github.com/skad-code-org/skad-method-test-architecture-enterprise)
+- **GitHub:** [Bionic-AI-Solutions/skad-method-test-architecture-enterprise](https://github.com/Bionic-AI-Solutions/skad-method-test-architecture-enterprise)
 
 **Provides:**
 
@@ -73,4 +73,4 @@ Enterprise-grade test strategy, automation guidance, and release gate decisions 
 
 ## Community Modules
 
-Community modules and a module marketplace are coming. Check the [SKad GitHub organization](https://github.com/skad-code-org) for updates.
+Community modules and a module marketplace are coming. Check the [SKad GitHub organization](https://github.com/Bionic-AI-Solutions) for updates.

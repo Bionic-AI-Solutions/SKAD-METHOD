@@ -22,7 +22,7 @@ import { getSiteUrl } from '../website/src/lib/site-url.mjs';
 const PROJECT_ROOT = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const BUILD_DIR = path.join(PROJECT_ROOT, 'build');
 
-const REPO_URL = 'https://github.com/skad-code-org/SKAD-METHOD';
+const REPO_URL = 'https://github.com/Bionic-AI-Solutions/SKAD-METHOD';
 
 // DO NOT CHANGE THESE VALUES!
 // llms-full.txt is consumed by AI agents as context. Most LLMs have ~200k token limits.

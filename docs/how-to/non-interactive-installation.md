@@ -53,7 +53,7 @@ Available module IDs for the `--modules` flag:
 - `bmm` — SKad Method Master
 - `bmb` — SKad Builder
 
-Check the [SKad registry](https://github.com/skad-code-org) for available external modules.
+Check the [SKad registry](https://github.com/Bionic-AI-Solutions) for available external modules.
 
 ## Tool/IDE IDs
 
@@ -61,7 +61,7 @@ Available tool IDs for the `--tools` flag:
 
 **Preferred:** `claude-code`, `cursor`
 
-Run `npx skad-method install` interactively once to see the full current list of supported tools, or check the [platform codes configuration](https://github.com/skad-code-org/SKAD-METHOD/blob/main/tools/cli/installers/lib/ide/platform-codes.yaml).
+Run `npx skad-method install` interactively once to see the full current list of supported tools, or check the [platform codes configuration](https://github.com/Bionic-AI-Solutions/SKAD-METHOD/blob/main/tools/cli/installers/lib/ide/platform-codes.yaml).
 
 ## Installation Modes
 
@@ -167,5 +167,5 @@ Ensure each custom content path:
 - Has a `code` field in the `module.yaml`
 
 :::note[Still stuck?]
-Run with `--debug` for detailed output, try interactive mode to isolate the issue, or report at <https://github.com/skad-code-org/SKAD-METHOD/issues>.
+Run with `--debug` for detailed output, try interactive mode to isolate the issue, or report at <https://github.com/Bionic-AI-Solutions/SKAD-METHOD/issues>.
 :::

@@ -65,7 +65,7 @@ Quinn generates tests only. For code review and story validation, use the Code R
 
 TEA is a standalone module that provides an expert agent (Murat) and nine structured workflows for enterprise-grade testing. It goes beyond test generation into test strategy, risk-based planning, quality gates, and requirements traceability.
 
-- **Documentation:** [TEA Module Docs](https://skad-code-org.github.io/skad-method-test-architecture-enterprise/)
+- **Documentation:** [TEA Module Docs](https://Bionic-AI-Solutions.github.io/skad-method-test-architecture-enterprise/)
 - **Install:** `npx skad-method install` and select the TEA module
 - **npm:** [`skad-method-test-architecture-enterprise`](https://www.npmjs.com/package/skad-method-test-architecture-enterprise)
 

@@ -52,7 +52,7 @@ You should be comfortable with basic software development concepts like version 
 Get help, share what you're building, or contribute to SKad:
 
 - **[Discord](https://discord.gg/gk8jAdXWmj)** — Chat with other SKad users, ask questions, share ideas
-- **[GitHub](https://github.com/skad-code-org/SKAD-METHOD)** — Source code, issues, and contributions
+- **[GitHub](https://github.com/Bionic-AI-Solutions/SKAD-METHOD)** — Source code, issues, and contributions
 - **[YouTube](https://www.youtube.com/@SKadCode)** — Video tutorials and walkthroughs
 
 ## Next Step

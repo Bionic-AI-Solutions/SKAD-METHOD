@@ -32,7 +32,7 @@ npx skad-method install
 :::tip[最新版本]
 要从主分支安装最新版本（可能不稳定）：
 ```bash
-npx github:skad-code-org/SKAD-METHOD install
+npx github:Bionic-AI-Solutions/SKAD-METHOD install
 ```
 :::
 
