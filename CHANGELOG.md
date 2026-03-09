@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.0.0] — 2026-03-09
+
+### 🎁 Features
+
+* Add `dev-tasks` orchestrator workflow — task-level implementation pipeline with 3-phase automation (Implement → Lightweight Review → Test) per task, stall detection with automatic sub-agent restart, and 4 configurable autonomy modes: `implement-only`, `halt-after-story` (default), `halt-on-high`, `full-hands-off`
+* Add `[DT] Dev Tasks` trigger to Developer agent (Amelia) menu — invoke the orchestrator directly from the dev agent
+* Add `tools/install.js` — standalone Node.js installer that performs the full SKAD installation from a local clone with no npm publish required; compiles agents, registers Claude Code skills, writes `config.yaml`; works on Node 18+
+* Add `tools/patch-install-dev-tasks.sh` — idempotent bash patch script to add `dev-tasks` to an existing SKAD installation without a full reinstall
+* Extend `create-tasks/task-template.md` with full Status value comment block (`ready-for-task` → `in-dev` → `in-review` → `in-test` → `passed` / `failed`)
+* Extend `sprint-status-template.yaml` with `current_task` inline comment convention for orchestrator resume after context reset
+* Add source install instructions to README for private fork and air-gapped environments
+
+---
+
 ## [6.0.4]
 
 ### 🎁 Features
