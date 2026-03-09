@@ -52,6 +52,43 @@ npx skad-method install --directory /path/to/project --modules bmm --tools claud
 
 [See all installation options](https://docs.skad-method.org/how-to/non-interactive-installation/)
 
+### Installing from Source (Private / Air-Gapped Environments)
+
+If you are working from a private fork or an environment without npm access, use the standalone installer that ships with this repo. It performs the full installation — agent compilation, skill registration, and config setup — directly from the local source:
+
+```bash
+# Clone the repo first
+git clone <your-private-repo-url> skad-method
+cd skad-method
+npm install
+
+# Install into a new project
+node tools/install.js --directory /path/to/your-project
+
+# Silent install with defaults (useful for scripts)
+node tools/install.js --directory /path/to/your-project --yes --name "Your Name"
+
+# Update an existing installation (preserves config.yaml)
+node tools/install.js --directory /path/to/your-project --action update
+```
+
+**Options:**
+
+| Flag | Description | Default |
+|------|-------------|---------|
+| `--directory` | Target project directory (required) | — |
+| `--action` | `install` or `update` | `install` |
+| `--name` | Your name for agents to use | prompted |
+| `--lang` | Communication language | `English` |
+| `--output` | Output folder relative to project root | `_skad-output` |
+| `--yes` | Accept all defaults, skip prompts | off |
+
+To patch an **already-installed** project with only the new `dev-tasks` workflow (without a full reinstall):
+
+```bash
+bash tools/patch-install-dev-tasks.sh /path/to/your-project
+```
+
 > **Not sure what to do?** Run `/skad-help` — it tells you exactly what's next and what's optional. You can also ask questions like `/skad-help I just finished the architecture, what do I do next?`
 
 ## Modules
