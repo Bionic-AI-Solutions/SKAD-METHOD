@@ -19,6 +19,9 @@
 #   - backlog: Story only exists in epic file
 #   - ready-for-dev: Story file created, ready for development
 #   - in-progress: Developer actively working on implementation
+#              Optional inline comment: # current_task: task-N-slug
+#              Added by dev-tasks orchestrator to track resume point after context reset.
+#              Example: 1-2-account-management: in-progress  # current_task: task-3-add-jwt-middleware
 #   - review: Implementation complete, ready for review
 #   - done: Story completed
 #

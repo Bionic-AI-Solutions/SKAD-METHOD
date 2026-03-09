@@ -4,6 +4,16 @@
 **Status:** ready-for-task
 **Generated:** {{date}}
 
+<!-- Status values (managed by dev-tasks orchestrator):
+  ready-for-task  — generated, not yet started
+  in-dev          — Phase 1 (implement) sub-agent running
+  in-dev-complete — implementation done, awaiting review
+  in-review       — Phase 2 (self-review) sub-agent running
+  in-test         — Phase 3 (test) sub-agent running
+  passed          — all 3 phases complete
+  failed          — halted, requires human intervention
+-->
+
 ---
 
 ## What This Task Does
