@@ -140,10 +140,12 @@ If all validations pass:
 - Save the final epics.md
 
 **Present Final Menu:**
-**All validations complete!** [C] Complete Workflow
+**All validations complete!**
+[C] Continue to OpenProject Sync — push epics and stories to your project tracker
+[S] Skip OpenProject — complete the workflow without syncing
 
-When C is selected, the workflow is complete and the epics.md is ready for development.
+When C is selected, proceed to the OpenProject sync step:
+Read fully and follow: `{project-root}/_skad/bmm/workflows/3-solutioning/create-epics-and-stories/steps/step-05-openproject-sync.md`
 
+When S is selected, the workflow is complete and the epics.md is ready for development.
 Epics and Stories complete. Read fully and follow: `{project-root}/_skad/core/tasks/help.md`
-
-Upon Completion of task output: offer to answer any questions about the Epics and Stories.

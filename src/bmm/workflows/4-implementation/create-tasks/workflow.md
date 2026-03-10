@@ -242,6 +242,11 @@ Load config from `{project-root}/_skad/bmm/config.yaml` and resolve:
         - npx jest src/services/auth.test.ts
         - npm run lint src/services/auth.ts
     18. {{do_not_list}} = task-specific prohibitions derived from architecture constraints + story Dev Notes; e.g., "Do NOT call the external API directly — use the service layer abstraction"
+    19. {{stall_profile}} = classify the task's expected activity pattern:
+        - `file-heavy` — (default) task primarily creates/modifies source files and tests
+        - `api-heavy` — task involves MCP tool calls, API integrations, external service round-trips, or infrastructure validation where long periods pass without file writes
+        - `mixed` — task does both file I/O and API/MCP calls
+        Determine by inspecting: does the task call external APIs, MCP servers, or run long integration test suites? If yes → `api-heavy` or `mixed`. If purely writing code and unit tests → `file-heavy`.
 
     **Write task file:**
     - Filename: task-{{N}}-{{slug}}.md where slug = kebab-case of task_title

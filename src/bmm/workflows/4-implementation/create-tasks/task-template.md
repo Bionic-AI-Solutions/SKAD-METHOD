@@ -2,6 +2,7 @@
 
 **Story:** [{{story_key}}](../../{{story_key}}.md)
 **Status:** ready-for-task
+**Stall Profile:** {{stall_profile}}
 **Generated:** {{date}}
 
 <!-- Status values (managed by dev-tasks orchestrator):
@@ -12,6 +13,11 @@
   in-test         — Phase 3 (test) sub-agent running
   passed          — all 3 phases complete
   failed          — halted, requires human intervention
+-->
+<!-- Stall Profile values (controls stall detection sensitivity):
+  file-heavy  — (default) task primarily writes/modifies files; standard thresholds
+  api-heavy   — task makes MCP/API calls with long round-trips; extended thresholds
+  mixed       — both file I/O and API calls; moderate thresholds
 -->
 
 ---

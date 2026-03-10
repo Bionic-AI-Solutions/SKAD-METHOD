@@ -35,6 +35,16 @@ Load config from `{project-root}/_skad/bmm/config.yaml` and resolve:
 - `sprint_status` = `{implementation_artifacts}/sprint-status.yaml`
 - `story_path` = `` (explicit story path; auto-discovered if empty)
 
+### OpenProject Integration
+
+Read `openproject_id` from config (may be null if OP not configured).
+
+- `op_sync_workflow` = `{project-root}/_skad/bmm/workflows/4-implementation/openproject-sync/workflow.md`
+- `op_map_file` = `{project-root}/_skad/bmm/openproject-map.yaml`
+- `op_enabled` = true if `openproject_id` is present AND `op_map_file` exists, else false
+
+If `op_enabled` is false: all OP sync steps in this workflow are silently skipped.
+
 ### Autonomy Mode
 
 Read `autonomy_mode` from config or user invocation argument. Valid values:
@@ -50,10 +60,29 @@ If `autonomy_mode` is not set, default to `halt-after-story`.
 
 ### Stall Detection Settings
 
-- `stall_warn_minutes` = 10 (warn if no output growth for this long)
-- `stall_kill_minutes` = 20 (kill and restart if stalled beyond this)
+Base thresholds (adjusted per task `Stall Profile`):
 
-Override via config or invocation args if needed.
+| Stall Profile | `stall_warn` | `stall_kill` | Use Case |
+|---------------|-------------|-------------|----------|
+| `file-heavy` (default) | 10 min | 20 min | Code writing, unit tests — frequent file writes expected |
+| `api-heavy` | 20 min | 40 min | MCP calls, API integrations, infra validation — long periods without file I/O |
+| `mixed` | 15 min | 30 min | Both file writes and API calls |
+
+Config overrides (`stall_warn_minutes`, `stall_kill_minutes`) take precedence over profile defaults.
+
+### Multi-Signal Activity Detection
+
+A sub-agent is considered **alive** if ANY of these signals are true:
+
+| Signal | What It Detects | How to Check |
+|--------|----------------|--------------|
+| **TaskOutput growth** | Agent produced new output (tool results, text) | `TaskOutput(agent_id)` length increased since last poll |
+| **Active child processes** | Agent is running tools (curl, python3, node, etc.) | `pgrep -P <agent_pid> -la` returns active children |
+| **Network socket activity** | Agent is making API/MCP calls | `ss -tnp \| grep -c <agent_pid>` shows established connections |
+
+The orchestrator only declares a stall when **ALL signals are negative** for the full `stall_kill` duration.
+
+Override base thresholds via config or invocation args if needed.
 
 ---
 
@@ -159,6 +188,17 @@ Override via config or invocation args if needed.
     </check>
   </step>
 
+  <step n="2b" goal="OpenProject: Bootstrap Task WPs for current story" tag="op-sync">
+    <check if="{{op_enabled}} == true">
+      <action>Read COMPLETE {{op_sync_workflow}}</action>
+      <action>Execute ACTION: bootstrap-tasks with:
+        - story_key = {{story_key}}
+        - project_root = {project-root}
+      </action>
+      <critical>OP sync failures must NEVER halt the dev-tasks pipeline. If the sync workflow returns a warning, log it and continue.</critical>
+    </check>
+  </step>
+
   <step n="3" goal="Dependency check for current task">
     <action>Read COMPLETE task file: {{current_task_file}}</action>
     <action>Extract 'Requires:' field from Dependency Order section</action>
@@ -208,25 +248,50 @@ Override via config or invocation args if needed.
     </action>
     <action>Store sub-agent ID as {{implement_agent_id}}</action>
 
-    <!-- Stall monitoring loop -->
+    <!-- Resolve stall thresholds from task Stall Profile -->
+    <action>Read "Stall Profile:" field from current task file (default: "file-heavy" if absent)</action>
+    <action>Set {{effective_stall_warn}} and {{effective_stall_kill}} based on profile:
+      - file-heavy: stall_warn=10, stall_kill=20
+      - api-heavy:  stall_warn=20, stall_kill=40
+      - mixed:      stall_warn=15, stall_kill=30
+      If config overrides (stall_warn_minutes / stall_kill_minutes) are set, use those instead.
+    </action>
+
+    <!-- Multi-signal stall monitoring loop -->
     <action>Set {{last_output_len}} = 0, {{stall_count}} = 0</action>
-    <loop until="sub-agent completes OR stall detected">
-      <action>Wait {{stall_warn_minutes}} minutes</action>
+    <loop until="sub-agent completes OR stall confirmed">
+      <action>Wait {{effective_stall_warn}} minutes</action>
+
+      <!-- Signal 1: TaskOutput growth -->
       <action>Read TaskOutput({{implement_agent_id}})</action>
       <action>Set {{current_output_len}} = length of output so far</action>
+      <action>Set {{output_grew}} = ({{current_output_len}} > {{last_output_len}})</action>
 
-      <check if="{{current_output_len}} == {{last_output_len}}">
-        <action>Increment {{stall_count}}</action>
-        <output>⏳ No output growth detected ({{stall_count * stall_warn_minutes}} min). Monitoring for stall...</output>
-        <check if="{{stall_count}} * {{stall_warn_minutes}} >= {{stall_kill_minutes}}">
-          <action>TaskStop({{implement_agent_id}})</action>
-          <output>🔴 Implementation sub-agent stalled. Initiating recovery...</output>
-          <goto anchor="implement_recovery" />
+      <!-- Signal 2: Active child processes (curl, python3, node, etc.) -->
+      <action>Run: pgrep -la "curl|python3|node|npm|npx|pytest|jest" 2>/dev/null | wc -l</action>
+      <action>Set {{has_active_children}} = (result > 0)</action>
+
+      <!-- Signal 3: Network socket activity -->
+      <action>Run: ss -tnp 2>/dev/null | grep -c "ESTAB" || echo "0"</action>
+      <action>Set {{has_network_activity}} = (result > 0)</action>
+
+      <!-- Evaluate: agent is alive if ANY signal is positive -->
+      <check if="{{output_grew}} OR {{has_active_children}} OR {{has_network_activity}}">
+        <action>Set {{last_output_len}} = {{current_output_len}}, {{stall_count}} = 0</action>
+        <check if="NOT {{output_grew}} AND ({{has_active_children}} OR {{has_network_activity}})">
+          <output>⏳ No output growth but agent is active (child processes: {{has_active_children}}, network: {{has_network_activity}}). Stall timer reset.</output>
         </check>
       </check>
 
-      <check if="{{current_output_len}} > {{last_output_len}}">
-        <action>Set {{last_output_len}} = {{current_output_len}}, {{stall_count}} = 0</action>
+      <!-- All signals negative — possible stall -->
+      <check if="NOT {{output_grew}} AND NOT {{has_active_children}} AND NOT {{has_network_activity}}">
+        <action>Increment {{stall_count}}</action>
+        <output>⏳ No activity detected on any signal ({{stall_count * effective_stall_warn}} min). Monitoring for stall...</output>
+        <check if="{{stall_count}} * {{effective_stall_warn}} >= {{effective_stall_kill}}">
+          <action>TaskStop({{implement_agent_id}})</action>
+          <output>🔴 Implementation sub-agent stalled (all signals negative for {{effective_stall_kill}} min). Initiating recovery...</output>
+          <goto anchor="implement_recovery" />
+        </check>
       </check>
     </loop>
 
@@ -313,16 +378,27 @@ Override via config or invocation args if needed.
     </action>
     <action>Store sub-agent ID as {{review_agent_id}}</action>
 
-    <!-- Stall monitoring (same pattern as Phase 1) -->
+    <!-- Multi-signal stall monitoring (same pattern as Phase 1) -->
     <action>Set {{last_output_len}} = 0, {{stall_count}} = 0</action>
-    <loop until="sub-agent completes OR stall detected">
-      <action>Wait {{stall_warn_minutes}} minutes</action>
+    <loop until="sub-agent completes OR stall confirmed">
+      <action>Wait {{effective_stall_warn}} minutes</action>
       <action>Read TaskOutput({{review_agent_id}})</action>
-      <check if="no output growth for {{stall_kill_minutes}} minutes">
-        <action>TaskStop({{review_agent_id}})</action>
-        <output>⚠️ Review sub-agent stalled. Re-spawning...</output>
-        <action>Spawn fresh review sub-agent with same prompt</action>
-        <action>Update {{review_agent_id}}</action>
+      <action>Set {{current_output_len}} = length of output</action>
+      <action>Set {{output_grew}} = ({{current_output_len}} > {{last_output_len}})</action>
+      <action>Check child processes: pgrep -la "curl|python3|node" 2>/dev/null | wc -l</action>
+      <action>Check network: ss -tnp 2>/dev/null | grep -c "ESTAB" || echo "0"</action>
+
+      <check if="any signal positive (output grew OR active children OR network)">
+        <action>Set {{last_output_len}} = {{current_output_len}}, {{stall_count}} = 0</action>
+      </check>
+      <check if="all signals negative">
+        <action>Increment {{stall_count}}</action>
+        <check if="{{stall_count}} * {{effective_stall_warn}} >= {{effective_stall_kill}}">
+          <action>TaskStop({{review_agent_id}})</action>
+          <output>⚠️ Review sub-agent stalled (all signals negative). Re-spawning...</output>
+          <action>Spawn fresh review sub-agent with same prompt</action>
+          <action>Update {{review_agent_id}}, reset {{stall_count}} = 0</action>
+        </check>
       </check>
     </loop>
 
@@ -400,22 +476,33 @@ Override via config or invocation args if needed.
     </action>
     <action>Store sub-agent ID as {{test_agent_id}}</action>
 
-    <!-- Stall monitoring -->
+    <!-- Multi-signal stall monitoring -->
     <action>Set {{last_output_len}} = 0, {{stall_count}} = 0</action>
-    <loop until="sub-agent completes OR stall detected">
-      <action>Wait {{stall_warn_minutes}} minutes</action>
+    <loop until="sub-agent completes OR stall confirmed">
+      <action>Wait {{effective_stall_warn}} minutes</action>
       <action>Read TaskOutput({{test_agent_id}})</action>
-      <check if="no output growth for {{stall_kill_minutes}} minutes">
-        <action>TaskStop({{test_agent_id}})</action>
-        <action>git stash if uncommitted changes exist</action>
-        <action>Set {{test_retry_count}} = {{test_retry_count}} + 1</action>
-        <check if="{{test_retry_count}} > 2">
-          <action>Update task file Status → 'failed'</action>
-          <output>🚫 Test phase stalled after 2 retries. Manual intervention required.</output>
-          <action>HALT</action>
+      <action>Set {{current_output_len}} = length of output</action>
+      <action>Set {{output_grew}} = ({{current_output_len}} > {{last_output_len}})</action>
+      <action>Check child processes: pgrep -la "curl|python3|node|pytest|jest" 2>/dev/null | wc -l</action>
+      <action>Check network: ss -tnp 2>/dev/null | grep -c "ESTAB" || echo "0"</action>
+
+      <check if="any signal positive (output grew OR active children OR network)">
+        <action>Set {{last_output_len}} = {{current_output_len}}, {{stall_count}} = 0</action>
+      </check>
+      <check if="all signals negative">
+        <action>Increment {{stall_count}}</action>
+        <check if="{{stall_count}} * {{effective_stall_warn}} >= {{effective_stall_kill}}">
+          <action>TaskStop({{test_agent_id}})</action>
+          <action>git stash if uncommitted changes exist</action>
+          <action>Set {{test_retry_count}} = {{test_retry_count}} + 1</action>
+          <check if="{{test_retry_count}} > 2">
+            <action>Update task file Status → 'failed'</action>
+            <output>🚫 Test phase stalled after 2 retries (all signals negative). Manual intervention required.</output>
+            <action>HALT</action>
+          </check>
+          <action>Spawn fresh test sub-agent</action>
+          <goto anchor="test_run" />
         </check>
-        <action>Spawn fresh test sub-agent</action>
-        <goto anchor="test_run" />
       </check>
     </loop>
 
@@ -440,6 +527,17 @@ Override via config or invocation args if needed.
       <action>Mark corresponding checkbox [x] in story file Tasks/Subtasks section</action>
       <action>Update story File List with any new/modified files from this task</action>
       <output>✅ **Task PASSED: {{current_task_file_basename}}** ({{passed_tasks + 1}} / {{total_tasks}})</output>
+
+      <!-- OpenProject: sync task status -->
+      <check if="{{op_enabled}} == true">
+        <action>Read COMPLETE {{op_sync_workflow}}</action>
+        <action>Execute ACTION: task-passed with:
+          - story_key = {{story_key}}
+          - task_file_basename = {{current_task_file_basename}}
+          - project_root = {project-root}
+        </action>
+        <critical>OP sync failure must NOT block the pipeline. Log warning and continue.</critical>
+      </check>
     </check>
 
     <check if="sub-agent output contains failure and no TEST-INTEGRITY-HALT">
@@ -488,6 +586,16 @@ Override via config or invocation args if needed.
       <action>Update sprint-status.yaml: development_status[{{story_key}}] → "review"</action>
       <action>Remove current_task comment from sprint-status entry</action>
       <action>Update last_updated to current date</action>
+
+      <!-- OpenProject: sync story-complete status -->
+      <check if="{{op_enabled}} == true">
+        <action>Read COMPLETE {{op_sync_workflow}}</action>
+        <action>Execute ACTION: story-complete with:
+          - story_key = {{story_key}}
+          - project_root = {project-root}
+        </action>
+        <critical>OP sync failure must NOT block the pipeline. Log warning and continue.</critical>
+      </check>
 
       <check if="autonomy_mode == 'halt-after-story' OR autonomy_mode == 'halt-on-high'">
         <output>⏸️ **Story {{story_key}} complete — awaiting human approval**
@@ -581,14 +689,45 @@ Task files use the `Status:` field to track pipeline phase. Valid values:
 
 ## Stall Detection Reference
 
-The orchestrator polls sub-agent output every `stall_warn_minutes` (default: 10 min). If output length does not grow after `stall_kill_minutes` (default: 20 min), the sub-agent is stopped and a recovery is initiated.
+### Multi-Signal Activity Detection
 
-Recovery sequence:
+The orchestrator polls sub-agent health every `effective_stall_warn` minutes using three independent signals:
+
+| Signal | Command | What it catches |
+|--------|---------|----------------|
+| **TaskOutput growth** | `TaskOutput(agent_id)` length delta | Agent producing any output (tool calls, text, errors) |
+| **Active child processes** | `pgrep -la "curl\|python3\|node\|pytest\|jest"` | Agent running tools, test suites, API calls |
+| **Network socket activity** | `ss -tnp \| grep -c "ESTAB"` | Active TCP connections (MCP calls, HTTP APIs) |
+
+A stall is declared **only when ALL THREE signals are negative** for the full `effective_stall_kill` duration. Any single positive signal resets the stall timer.
+
+### Stall Profile Thresholds
+
+Each task file declares a `Stall Profile:` field that adjusts detection sensitivity:
+
+| Profile | `stall_warn` | `stall_kill` | When to use |
+|---------|-------------|-------------|-------------|
+| `file-heavy` | 10 min | 20 min | Code writing, unit tests — frequent file writes expected |
+| `api-heavy` | 20 min | 40 min | MCP calls, API integrations, infra validation — long periods without file I/O |
+| `mixed` | 15 min | 30 min | Both file writes and API calls |
+
+Config overrides (`stall_warn_minutes`, `stall_kill_minutes`) always take precedence over profile defaults.
+
+### Recovery Sequence
+
+When a stall is confirmed (all signals negative for `stall_kill` duration):
+
 1. `TaskStop(agent_id)` — kill stalled agent
 2. `git status` — identify uncommitted partial changes
 3. `git stash "dev-tasks recovery: stalled on <task>"` — stash partial state
 4. Spawn fresh sub-agent with Recovery Context describing the stash and last known point
 5. Track retry count — HALT after 2 failed retries
+
+### Why Not CPU/Memory?
+
+**CPU** is unreliable as a stall signal: the sub-agent's process spends most of its time waiting on Anthropic's inference API (near-zero CPU) even while actively reasoning. CPU spikes only during tool execution — the same pattern as a sleeping process that wakes briefly. False negatives make it unsuitable as a primary signal.
+
+**Memory** is not useful: agent RSS stays roughly constant once loaded. A stalled agent and an active agent are indistinguishable by memory footprint.
 
 ---
 

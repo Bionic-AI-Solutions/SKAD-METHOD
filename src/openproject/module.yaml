@@ -1,0 +1,32 @@
+code: openproject
+name: "OpenProject Integration"
+description: "Sync SKAD epics, stories, and tasks to OpenProject via MCP bridge. Provides real-time status sync as dev-tasks progresses."
+default_selected: false
+
+# Variables from Core Config inserted:
+## user_name, communication_language, output_folder
+
+openproject_mcp_url:
+  prompt: "OpenProject MCP endpoint URL"
+  default: "https://mcp.baisoln.com/openproject/mcp"
+  result: "{value}"
+
+# Directories to create during installation
+directories: []
+
+# Post-install note displayed to the user
+install_notes: |
+  OpenProject Integration installed.
+
+  The OpenProject Claude skill has been placed at:
+    .claude/skills/openproject/
+
+  This gives Claude Code awareness of your OpenProject MCP server.
+  The full tool context is loaded on demand — no constant context overhead.
+
+  To connect your project:
+  1. Run `create-epics-and-stories` — step 5 will bootstrap the OP project automatically.
+  2. Run `dev-tasks` — task/story/epic statuses sync to OpenProject as dev progresses.
+  3. Or run `sync openproject status` at any time for a full manual sync.
+
+  MCP endpoint: {openproject_mcp_url}
