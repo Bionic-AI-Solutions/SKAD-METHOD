@@ -713,6 +713,36 @@ async function main() {
     console.log(`\n📁 Created output directory: ${outputFolder}/`);
   }
 
+  // ── Step 8: Verify workflow chain integrity ─────────────────────────────────
+  console.log('\n🔗 Verifying workflow chain integrity...');
+  const chainFiles = [
+    // create-epics-and-stories → sprint-planning chain
+    'bmm/workflows/3-solutioning/create-epics-and-stories/steps/step-04-final-validation.md',
+    // sprint-planning → create-story chain
+    'bmm/workflows/4-implementation/sprint-planning/workflow.md',
+    // create-story → create-tasks chain
+    'bmm/workflows/4-implementation/create-story/workflow.md',
+    // create-tasks self-containment validation
+    'bmm/workflows/4-implementation/create-tasks/workflow.md',
+    'bmm/workflows/4-implementation/create-tasks/task-template.md',
+    // dev-tasks auto-chain fallbacks
+    'bmm/workflows/4-implementation/dev-tasks/workflow.md',
+  ];
+  let chainOk = true;
+  for (const relPath of chainFiles) {
+    const fullPath = path.join(SKAD_DIR, relPath);
+    if (!fs.existsSync(fullPath)) {
+      console.warn(`   ⚠️  Missing chain file: _skad/${relPath}`);
+      chainOk = false;
+    }
+  }
+  if (chainOk) {
+    console.log('   ✅ All workflow chain files present');
+    console.log('      Pipeline: create-epics → sprint-planning → create-story → create-tasks → dev-tasks');
+  } else {
+    console.warn('   ⚠️  Some workflow chain files are missing — auto-chaining may not work fully');
+  }
+
   // ── Done ───────────────────────────────────────────────────────────────────
   const totalSkills = fs.readdirSync(SKILLS_DIR).filter((f) => !f.startsWith('.')).length;
   console.log('\n✅ Installation complete!\n');
@@ -728,6 +758,9 @@ async function main() {
   console.log('   3. Type /skad-master to launch the orchestrator');
   console.log('   4. Type /skad-sm     to launch the Scrum Master agent');
   console.log('   5. Type /skad-dev    to launch the Developer agent');
+  console.log('');
+  console.log('   Workflow chain (auto-chained):');
+  console.log('   create-epics → sprint-planning → create-story → create-tasks → dev-tasks');
   console.log('');
 }
 

@@ -386,26 +386,42 @@ Load config from `{project-root}/_skad/bmm/config.yaml` and resolve:
   </output>
 </step>
 
-<step n="7" goal="Optionally invoke create-tasks to atomize story into sub-agent task files">
-  <output>**Break story into atomic task files for sub-agent implementation?**
+<step n="7" goal="Auto-chain: Create atomic task files for sub-agent implementation">
+  <critical>Task files are MANDATORY for the dev-tasks pipeline. Each task file must be 100% self-contained so sub-agents can execute with zero starting context — no "see architecture doc" or "refer to story file" references.</critical>
+
+  <!-- QUALITY GATE: Verify story file quality before generating tasks -->
+  <action>Verify story file quality before proceeding to task generation:
+    1. Story has a valid User Story statement (As a / I want / So that)
+    2. Acceptance Criteria section exists with at least one Given/When/Then block
+    3. Tasks/Subtasks section exists with at least one task
+    4. Dev Notes section exists with technical context
+    5. Status is "ready-for-dev"
+  </action>
+  <check if="story file fails any quality check">
+    <output>⚠️ Story file quality issue detected. Returning to Step 5 to fix before generating tasks...</output>
+    <goto step="5">Regenerate story with complete content</goto>
+  </check>
+
+  <output>📋 Story validated. Now generating self-contained atomic task files for sub-agent implementation...
 
     Task files embed full context per task (1-3 files each, architecture inlined, verification commands included).
     Each task is independently completable by a sub-agent without loading any external documents.
-    Recommended for stories with 3+ tasks or complex architecture dependencies.
-
-    [CT] Create Tasks now
-    [S] Skip — dev-story will work from story Tasks/Subtasks directly
   </output>
-  <ask>Choose [CT] or [S]:</ask>
 
-  <check if="user chooses CT">
-    <action>Set {{story_path}} = {{story_file}}</action>
-    <action>Load and follow: {project-root}/_skad/bmm/workflows/4-implementation/create-tasks/workflow.md</action>
-  </check>
+  <action>Set {{story_path}} = {{story_file}}</action>
+  <action>Load and follow: {project-root}/_skad/bmm/workflows/4-implementation/create-tasks/workflow.md</action>
 
-  <check if="user chooses S">
-    <output>Skipping task file generation. Run create-tasks later: "create tasks for {{story_key}}"</output>
-  </check>
+  <note>QUALITY EXPECTATIONS for create-tasks — every generated task file MUST:
+    - Be 100% self-contained: all architecture excerpts inlined VERBATIM (not summarized)
+    - Include exact file paths and function signatures (no ambiguity)
+    - Include existing file excerpts (imports, class structure, current state)
+    - Include code patterns from prior stories for consistency
+    - Have runnable verification commands (not placeholders)
+    - Have a specific DO NOT list derived from architecture constraints
+    - Touch at most 3 files (split into sub-tasks if more)
+    - Include a Stall Profile classification for the dev-tasks orchestrator
+    Sub-agents spawned by dev-tasks receive ZERO pre-loaded context. If a task file says "see architecture doc" or "refer to story", the sub-agent WILL fail.
+  </note>
 </step>
 
 </workflow>

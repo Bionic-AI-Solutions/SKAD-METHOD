@@ -126,15 +126,24 @@ Override base thresholds via config or invocation args if needed.
       </check>
 
       <check if="no in-progress or ready-for-dev story found">
-        <output>📋 No actionable stories found in sprint-status.yaml
+        <!-- Check if there's a backlog story we can auto-create -->
+        <action>Find FIRST entry matching pattern number-number-name where status = "backlog"</action>
+        <check if="backlog story found">
+          <output>📋 No ready-for-dev stories, but found backlog story {{backlog_story_key}}. Auto-creating story file and task files...</output>
+          <action>Read fully and follow: `{project-root}/_skad/bmm/workflows/4-implementation/create-story/workflow.md`</action>
+          <note>create-story will auto-discover the first backlog story from sprint-status.yaml, generate the comprehensive story file, and auto-chain into create-tasks to produce self-contained atomic task files. After completion, dev-tasks resumes from step 1.</note>
+          <goto step="1">Re-discover now that story and tasks exist</goto>
+        </check>
+        <check if="no backlog story found either">
+          <output>📋 No actionable stories found in sprint-status.yaml — all stories are in-progress, review, or done.
 
-          **Options:**
-          1. Run `create-story` to create the next story
-          2. Specify a story file path directly
-          3. Check sprint-status for current state
-        </output>
-        <ask>Choose an option or provide a story file path:</ask>
-        <action>Handle user response and set {{story_path}} or HALT as appropriate</action>
+            **Options:**
+            1. Specify a story file path directly
+            2. Check sprint-status for current state
+          </output>
+          <ask>Provide a story file path or check sprint-status:</ask>
+          <action>Handle user response and set {{story_path}} or HALT as appropriate</action>
+        </check>
       </check>
     </check>
 
@@ -149,8 +158,11 @@ Override base thresholds via config or invocation args if needed.
     <action>Read COMPLETE story file</action>
     <action>Verify Dev Notes contains '### Task Files' subsection</action>
     <check if="'### Task Files' subsection is missing">
-      <output>⚠️ Story {{story_key}} has no Task Files. Run `create-tasks` first to generate atomic task files, then re-run `dev-tasks`.</output>
-      <action>HALT</action>
+      <output>⚠️ Story {{story_key}} has no task files. Auto-generating self-contained atomic task files...</output>
+      <action>Set {{story_path}} = path to current story file</action>
+      <action>Read fully and follow: `{project-root}/_skad/bmm/workflows/4-implementation/create-tasks/workflow.md`</action>
+      <note>create-tasks will atomize the story into self-contained task files with all architecture context, code patterns, and verification commands inlined. Sub-agents can then execute each task with zero starting context.</note>
+      <action>After create-tasks completes, re-read the story file to pick up the newly added Task Files subsection</action>
     </check>
 
     <action>Extract all task file paths from markdown links in the '### Task Files' subsection</action>
@@ -634,35 +646,53 @@ Override base thresholds via config or invocation args if needed.
       <action>Find the next story after {{story_key}} (by order in file) where status is 'ready-for-dev' or 'backlog'</action>
 
       <check if="next story is 'backlog' (story file not yet created)">
-        <output>📋 Next story {{next_story_key}} is in backlog — story file not yet created.
-          Run `create-story` for {{next_story_key}}, then `create-tasks`, then re-run `dev-tasks` to continue.
-        </output>
-        <action>HALT</action>
+        <output>📋 Next story {{next_story_key}} is in backlog. Auto-creating story file and task files...</output>
+        <action>Read fully and follow: `{project-root}/_skad/bmm/workflows/4-implementation/create-story/workflow.md`</action>
+        <note>create-story will generate the comprehensive story file from epics.md context and auto-chain into create-tasks to produce self-contained atomic task files. After completion, dev-tasks resumes with the new story.</note>
+        <action>Set {{story_key}} = {{next_story_key}}</action>
+        <goto step="1">Re-discover now that story and tasks exist</goto>
       </check>
 
       <check if="next story is 'ready-for-dev'">
         <action>Check if next story has Task Files (### Task Files in Dev Notes)</action>
         <check if="Task Files missing">
-          <output>📋 Story {{next_story_key}} is ready-for-dev but has no task files.
-            Run `create-tasks` for {{next_story_key}}, then re-run `dev-tasks` to continue.
-          </output>
-          <action>HALT</action>
+          <output>📋 Story {{next_story_key}} is ready-for-dev but has no task files. Auto-generating...</output>
+          <action>Set {{story_path}} = path to {{next_story_key}} story file</action>
+          <action>Read fully and follow: `{project-root}/_skad/bmm/workflows/4-implementation/create-tasks/workflow.md`</action>
+          <note>create-tasks will atomize the story into self-contained task files with all context inlined for zero-context sub-agent execution.</note>
+          <action>Set {{story_key}} = {{next_story_key}}</action>
+          <goto step="1">Re-discover now that tasks exist</goto>
         </check>
         <action>Set {{story_key}} = {{next_story_key}}</action>
         <output>🚀 Starting next story: {{story_key}}</output>
         <goto step="1">Find position in new story</goto>
       </check>
 
-      <check if="no further stories are actionable">
-        <action>Load sprint-status and check for epic completion</action>
-        <output>🏁 **All stories in current epic are complete!**
+      <check if="no further stories are actionable in current epic">
+        <action>Load sprint-status and check across ALL epics for next backlog story</action>
+        <action>Find FIRST story across all epics where status = "backlog"</action>
+        <check if="backlog story found in another epic">
+          <output>🏁 **Current epic complete!** Moving to next epic...
 
-          Check sprint-status for the next epic's stories. Run `create-story` for the next epic's first story, followed by `create-tasks`, then re-run `dev-tasks`.
+            Epic progress summary:
+            {{epic_summary}}
 
-          Epic progress summary:
-          {{epic_summary}}
-        </output>
-        <action>HALT</action>
+            Next story: {{next_backlog_story_key}} — auto-creating story and tasks...
+          </output>
+          <action>Read fully and follow: `{project-root}/_skad/bmm/workflows/4-implementation/create-story/workflow.md`</action>
+          <note>create-story will auto-discover the next backlog story, generate the story file, and chain into create-tasks. After completion, dev-tasks resumes.</note>
+          <goto step="1">Re-discover now that story and tasks exist</goto>
+        </check>
+        <check if="no backlog stories remain anywhere">
+          <output>🏁 **All epics and stories are complete!**
+
+            Epic progress summary:
+            {{epic_summary}}
+
+            No remaining backlog stories. The project implementation is complete.
+          </output>
+          <action>HALT</action>
+        </check>
       </check>
     </check>
   </step>

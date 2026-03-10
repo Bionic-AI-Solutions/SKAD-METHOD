@@ -219,10 +219,59 @@ development_status:
 **Next Steps:**
 
 1. Review the generated {status_file}
-2. Use this file to track development progress
-3. Agents will update statuses as they work
-4. Re-run this workflow to refresh auto-detected statuses
+2. Proceeding to create the first story file...
 
+</step>
+
+<step n="6" goal="Auto-chain: Create first story from backlog">
+<critical>QUALITY GATE: Before chaining into create-story, verify sprint-status.yaml is valid and complete. The downstream create-story workflow depends on accurate sprint status data to discover the correct story and extract the right epic context.</critical>
+
+<action>Load the FULL file: {status_file}</action>
+<action>Parse the development_status section completely</action>
+
+<!-- Pre-chain quality check -->
+<action>Verify sprint-status.yaml quality before proceeding:
+  - All epics from epics.md are present in development_status
+  - All stories from epics.md are present with correct keys
+  - File is valid YAML (no syntax errors)
+  - Status values are legal (backlog, ready-for-dev, in-progress, review, done)
+</action>
+<check if="quality check fails">
+  <output>⚠️ Sprint status file has quality issues. Regenerating from Step 4...</output>
+  <goto step="4">Regenerate sprint-status.yaml</goto>
+</check>
+
+<action>Find the FIRST story (reading top to bottom) where:
+  - Key matches pattern: number-number-name (e.g., "1-1-user-auth")
+  - NOT an epic key (epic-X) or retrospective (epic-X-retrospective)
+  - Status value equals "backlog"
+</action>
+
+<check if="backlog story found">
+  <output>📋 Sprint status validated. Now creating comprehensive story file for: {{first_backlog_story_key}}...
+
+    The story will include exhaustive artifact analysis from PRD, architecture, UX docs, and epics.
+    After story creation, self-contained atomic task files will be auto-generated.
+  </output>
+  <action>Read fully and follow: `{project-root}/_skad/bmm/workflows/4-implementation/create-story/workflow.md`</action>
+  <note>QUALITY EXPECTATIONS for create-story:
+    - Exhaustive analysis of ALL planning artifacts (PRD, architecture, UX, epics)
+    - Previous story intelligence extraction (learnings, patterns, file lists)
+    - Web research for latest technical specifics
+    - Validation against checklist.md before finalizing
+    - Story must be comprehensive enough for create-tasks to generate fully self-contained task files
+  </note>
+</check>
+
+<check if="no backlog story found">
+  <output>📋 Sprint status generated but no backlog stories found — all stories may already have files.
+
+    **Next Steps:**
+    1. Review {status_file} for current story statuses
+    2. Run `dev-tasks` to implement the next ready-for-dev story
+    3. Run `create-story` manually if you need to create a specific story
+  </output>
+</check>
 </step>
 
 </workflow>

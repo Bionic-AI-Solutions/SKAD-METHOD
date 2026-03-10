@@ -142,10 +142,24 @@ If all validations pass:
 **Present Final Menu:**
 **All validations complete!**
 [C] Continue to OpenProject Sync — push epics and stories to your project tracker
-[S] Skip OpenProject — complete the workflow without syncing
+[S] Skip OpenProject — proceed directly to Sprint Planning
+[Q] Quit — stop here without continuing the pipeline
 
 When C is selected, proceed to the OpenProject sync step:
 Read fully and follow: `{project-root}/_skad/bmm/workflows/3-solutioning/create-epics-and-stories/steps/step-05-openproject-sync.md`
+After OpenProject sync completes, continue to Sprint Planning below.
 
-When S is selected, the workflow is complete and the epics.md is ready for development.
+When S is selected, skip OpenProject and continue to Sprint Planning below.
+
+When Q is selected:
 Epics and Stories complete. Read fully and follow: `{project-root}/_skad/core/tasks/help.md`
+
+### 7. Auto-chain: Sprint Planning
+
+After OpenProject sync (or skip), automatically proceed to sprint planning to generate the sprint-status.yaml tracking file from the epics just created.
+
+<output>Epics validated. Now generating sprint status tracking from your epics...</output>
+
+<action>Read fully and follow: `{project-root}/_skad/bmm/workflows/4-implementation/sprint-planning/workflow.md`</action>
+
+<note>Sprint planning will parse the epics.md just created, extract all epics and stories, and generate sprint-status.yaml with all items in backlog status. After sprint planning completes, it will chain into create-story for the first backlog story.</note>

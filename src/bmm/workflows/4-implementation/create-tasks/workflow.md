@@ -415,7 +415,39 @@ Load config from `{project-root}/_skad/bmm/config.yaml` and resolve:
   <action>Save story file preserving ALL existing content and structure</action>
 </step>
 
-<step n="6" goal="Update sprint status and report completion">
+<step n="6" goal="QUALITY GATE: Validate task file self-containment">
+  <critical>This step is MANDATORY. Sub-agents spawned by dev-tasks receive ZERO pre-loaded context. Every task file must stand alone.</critical>
+
+  <action>For each generated task file in {{tasks_dir}}, verify:
+
+    **Self-Containment Checks (FAIL = regenerate the task):**
+    1. NO external references — file must NOT contain phrases like:
+       - "see architecture doc", "refer to story", "check the PRD"
+       - "as described in", "per the architecture", "see above"
+       - Any {project-root}/_skad/ path references to planning docs
+    2. Architecture excerpt is VERBATIM — not a summary, not a paraphrase, but the actual text the dev needs
+    3. Existing file excerpts are present — for files being modified, current imports/signatures/structure must be inlined
+    4. Verification commands are RUNNABLE — actual shell commands with real file paths, not placeholders like "run the tests"
+    5. DO NOT list is specific — derived from architecture constraints, not generic boilerplate
+    6. Files to touch are EXACT — real file paths, not patterns or descriptions
+    7. Implementation instructions are UNAMBIGUOUS — function signatures, data shapes, error handling approach are specified
+
+    **Structural Checks:**
+    8. Task touches at most 3 files (Exact Files to Touch table has ≤ 3 rows)
+    9. Dependency Order section specifies what this task Requires and what it Produces
+    10. Completion Checklist has specific, verifiable items
+    11. Stall Profile is set to file-heavy, api-heavy, or mixed
+  </action>
+
+  <check if="any task file fails self-containment checks">
+    <output>⚠️ Task file(s) failed self-containment validation. Regenerating with full inlined context...</output>
+    <action>For each failing task: re-extract the missing context from architecture/story/git and regenerate the task file with all content inlined</action>
+  </check>
+
+  <output>✅ All {{total_tasks_generated}} task files passed self-containment validation.</output>
+</step>
+
+<step n="7" goal="Update sprint status and report completion">
   <check if="sprint status file exists">
     <action>Load the FULL file: {{sprint_status}}</action>
     <action>Update last_updated field to current date</action>
@@ -425,7 +457,7 @@ Load config from `{project-root}/_skad/bmm/config.yaml` and resolve:
 
   <output>**Tasks Created for {{story_key}}, {user_name}!**
 
-    **Task Files Generated:** {{total_tasks_generated}} files
+    **Task Files Generated:** {{total_tasks_generated}} files (all validated for self-containment)
     **Location:** {{tasks_dir}}/
 
     | # | File | Scope | Depends On |
@@ -434,10 +466,12 @@ Load config from `{project-root}/_skad/bmm/config.yaml` and resolve:
 
     **Story file updated** with links to task files under Dev Notes → Task Files.
 
+    Each task file is 100% self-contained — sub-agents can implement any task without loading external documents.
+
     **Next Steps:**
     1. Review task files in {{tasks_dir}}/ (each is self-contained, no external docs needed)
-    2. Run `dev-story` — it will detect task files and implement task-by-task automatically
-    3. Or target a specific task: point dev-story at an individual task file path
+    2. Run `dev-tasks` — it will orchestrate task-by-task implementation with automated implement → review → test pipeline
+    3. Or run `dev-story` for single-agent story implementation
   </output>
 </step>
 
