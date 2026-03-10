@@ -1,6 +1,6 @@
 {
   "name": "SKAD-METHOD Dev",
-  "dockerComposeFile": "docker-compose.yml",
+  "dockerComposeFile": "docker-compose.yaml",
   "service": "devcontainer",
   "workspaceFolder": "/workspaces/SKAD-METHOD",
 
@@ -27,9 +27,7 @@
 
   "customizations": {
     "vscode": {
-      "extensions": [
-        "anthropic.claude-code"
-      ]
+      "extensions": ["anthropic.claude-code"]
     }
   },
 
