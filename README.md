@@ -112,4 +112,3 @@ SKad is free for everyone — and always will be. If you'd like to support devel
 MIT License — see [LICENSE](LICENSE) for details.
 
 ---
-
