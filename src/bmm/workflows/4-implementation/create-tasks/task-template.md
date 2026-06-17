@@ -43,7 +43,8 @@ Satisfies **Acceptance Criteria: {{ac_refs}}**
 ## Exact Files to Touch
 
 | Action | File Path | What to do |
-|--------|-----------|------------|
+| ------ | --------- | ---------- |
+
 {{files_table}}
 
 **HARD LIMIT: 3 files maximum. If you discover you need to touch more files, HALT and ask the user.**
@@ -88,6 +89,8 @@ The following shows the current state of files you will modify. Use these as you
 
 {{test_requirements}}
 
+> **Rule R1:** if this task includes an integration/E2E test, it MUST hit the project's REAL infrastructure (name it) with an infra-precheck. **No mocks** in integration tests (in-memory fakes, in-process servers with stubbed downstreams, monkeypatched services). Unit tests may mock. **R2:** if the real infrastructure isn't wired, do NOT mock — mark blocked on the Infrastructure Epic.
+
 ### Verification Commands
 
 Run these exact commands to verify this task is complete. All must exit 0.
@@ -128,12 +131,12 @@ Before marking this task done, verify ALL of the following:
 
 ### Completion Notes
 
-*(Fill in after implementation — summarize what was built and tested)*
+_(Fill in after implementation — summarize what was built and tested)_
 
 ### Files Modified
 
-*(List actual files touched — should match "Exact Files to Touch" above)*
+_(List actual files touched — should match "Exact Files to Touch" above)_
 
 ### Deviations from Plan
 
-*(Document any necessary deviations and why — keep empty if you followed the plan exactly)*
+_(Document any necessary deviations and why — keep empty if you followed the plan exactly)_

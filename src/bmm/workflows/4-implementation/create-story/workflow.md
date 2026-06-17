@@ -8,6 +8,14 @@ description: 'Creates a dedicated story file with all the context the agent will
 **Goal:** Create a comprehensive story file that gives the dev agent everything needed for flawless implementation.
 
 **Your Role:** Story context engine that prevents LLM developer mistakes, omissions, or disasters.
+
+## MANDATORY PROCESS RULES
+
+- **R3 Traceability:** the story header records its parent epic → capability → GOAL.
+- **R1 No mock integration tests:** any integration/E2E test task names the REAL infrastructure it hits + an infra-precheck; never an in-memory fake / in-process stub / monkeypatched service.
+- **R2 Infra gap:** if the story needs unwired infrastructure, mark it blocked on the Infrastructure Epic — do not let a mock satisfy it.
+- **R4/R5 QA acceptance:** the story's Definition of Done includes the adversarial QA real-app run on real infrastructure (mock audit + break-the-journey). The story is not done until QA passes.
+
 - Communicate all responses in {communication_language} and generate all documents in {document_output_language}
 - Your purpose is NOT to copy from epics - it's to create a comprehensive, optimized story file that gives the DEV agent EVERYTHING needed for flawless implementation
 - COMMON LLM MISTAKES TO PREVENT: reinventing wheels, wrong libraries, wrong file locations, breaking regressions, ignoring UX, vague implementations, lying about completion, not learning from past work
@@ -46,12 +54,12 @@ Load config from `{project-root}/_skad/bmm/config.yaml` and resolve:
 
 ### Input Files
 
-| Input | Description | Path Pattern(s) | Load Strategy |
-|-------|-------------|------------------|---------------|
-| prd | PRD (fallback - epics file should have most content) | whole: `{planning_artifacts}/*prd*.md`, sharded: `{planning_artifacts}/*prd*/*.md` | SELECTIVE_LOAD |
+| Input        | Description                                                        | Path Pattern(s)                                                                                      | Load Strategy  |
+| ------------ | ------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------- | -------------- |
+| prd          | PRD (fallback - epics file should have most content)               | whole: `{planning_artifacts}/*prd*.md`, sharded: `{planning_artifacts}/*prd*/*.md`                   | SELECTIVE_LOAD |
 | architecture | Architecture (fallback - epics file should have relevant sections) | whole: `{planning_artifacts}/*architecture*.md`, sharded: `{planning_artifacts}/*architecture*/*.md` | SELECTIVE_LOAD |
-| ux | UX design (fallback - epics file should have relevant sections) | whole: `{planning_artifacts}/*ux*.md`, sharded: `{planning_artifacts}/*ux*/*.md` | SELECTIVE_LOAD |
-| epics | Enhanced epics+stories file with BDD and source hints | whole: `{planning_artifacts}/*epic*.md`, sharded: `{planning_artifacts}/*epic*/*.md` | SELECTIVE_LOAD |
+| ux           | UX design (fallback - epics file should have relevant sections)    | whole: `{planning_artifacts}/*ux*.md`, sharded: `{planning_artifacts}/*ux*/*.md`                     | SELECTIVE_LOAD |
+| epics        | Enhanced epics+stories file with BDD and source hints              | whole: `{planning_artifacts}/*epic*.md`, sharded: `{planning_artifacts}/*epic*/*.md`                 | SELECTIVE_LOAD |
 
 ---
 
@@ -66,16 +74,13 @@ Load config from `{project-root}/_skad/bmm/config.yaml` and resolve:
     <action>GOTO step 2a</action>
   </check>
 
-  <action>Check if {{sprint_status}} file exists for auto discover</action>
-  <check if="sprint status file does NOT exist">
-    <output>🚫 No sprint status file found and no story specified</output>
-    <output>
-      **Required Options:**
-      1. Run `sprint-planning` to initialize sprint tracking (recommended)
-      2. Provide specific epic-story number to create (e.g., "1-2-user-auth")
-      3. Provide path to story documents if sprint status doesn't exist yet
-    </output>
-    <ask>Choose option [1], provide epic-story number, path to story docs, or [q] to quit:</ask>
+<action>Check if {{sprint_status}} file exists for auto discover</action>
+<check if="sprint status file does NOT exist">
+<output>🚫 No sprint status file found and no story specified</output>
+<output>
+**Required Options:** 1. Run `sprint-planning` to initialize sprint tracking (recommended) 2. Provide specific epic-story number to create (e.g., "1-2-user-auth") 3. Provide path to story documents if sprint status doesn't exist yet
+</output>
+<ask>Choose option [1], provide epic-story number, path to story docs, or [q] to quit:</ask>
 
     <check if="user chooses 'q'">
       <action>HALT - No work needed</action>
@@ -96,6 +101,7 @@ Load config from `{project-root}/_skad/bmm/config.yaml` and resolve:
       <action>Use user-provided path for story documents</action>
       <action>GOTO step 2a</action>
     </check>
+
   </check>
 
   <!-- Auto-discover from sprint status only if no user input -->
@@ -157,16 +163,14 @@ Load config from `{project-root}/_skad/bmm/config.yaml` and resolve:
     </check>
 
     <action>GOTO step 2a</action>
+
   </check>
   <action>Load the FULL file: {{sprint_status}}</action>
   <action>Read ALL lines from beginning to end - do not skip any content</action>
   <action>Parse the development_status section completely</action>
 
-  <action>Find the FIRST story (by reading in order from top to bottom) where:
-    - Key matches pattern: number-number-name (e.g., "1-2-user-auth")
-    - NOT an epic key (epic-X) or retrospective (epic-X-retrospective)
-    - Status value equals "backlog"
-  </action>
+<action>Find the FIRST story (by reading in order from top to bottom) where: - Key matches pattern: number-number-name (e.g., "1-2-user-auth") - NOT an epic key (epic-X) or retrospective (epic-X-retrospective) - Status value equals "backlog"
+</action>
 
   <check if="no backlog story found">
     <output>No backlog stories found in sprint-status.yaml
@@ -179,81 +183,78 @@ Load config from `{project-root}/_skad/bmm/config.yaml` and resolve:
       3. Check if current sprint is complete and run retrospective
     </output>
     <action>HALT</action>
+
   </check>
 
-  <action>Extract from found story key (e.g., "1-2-user-authentication"):
-    - epic_num: first number before dash (e.g., "1")
-    - story_num: second number after first dash (e.g., "2")
-    - story_title: remainder after second dash (e.g., "user-authentication")
-  </action>
-  <action>Set {{story_id}} = "{{epic_num}}.{{story_num}}"</action>
-  <action>Store story_key for later use (e.g., "1-2-user-authentication")</action>
+<action>Extract from found story key (e.g., "1-2-user-authentication"): - epic_num: first number before dash (e.g., "1") - story_num: second number after first dash (e.g., "2") - story_title: remainder after second dash (e.g., "user-authentication")
+</action>
+<action>Set {{story_id}} = "{{epic_num}}.{{story_num}}"</action>
+<action>Store story_key for later use (e.g., "1-2-user-authentication")</action>
 
   <!-- Mark epic as in-progress if this is first story -->
-  <action>Check if this is the first story in epic {{epic_num}} by looking for {{epic_num}}-1-* pattern</action>
-  <check if="this is first story in epic {{epic_num}}">
-    <action>Load {{sprint_status}} and check epic-{{epic_num}} status</action>
-    <action>If epic status is "backlog" → update to "in-progress"</action>
-    <action>If epic status is "contexted" (legacy status) → update to "in-progress" (backward compatibility)</action>
-    <action>If epic status is "in-progress" → no change needed</action>
-    <check if="epic status is 'done'">
-      <output>ERROR: Cannot create story in completed epic</output>
-      <output>Epic {{epic_num}} is marked as 'done'. All stories are complete.</output>
-      <output>If you need to add more work, either:</output>
-      <output>1. Manually change epic status back to 'in-progress' in sprint-status.yaml</output>
-      <output>2. Create a new epic for additional work</output>
-      <action>HALT - Cannot proceed</action>
-    </check>
-    <check if="epic status is not one of: backlog, contexted, in-progress, done">
-      <output>ERROR: Invalid epic status '{{epic_status}}'</output>
-      <output>Epic {{epic_num}} has invalid status. Expected: backlog, in-progress, or done</output>
-      <output>Please fix sprint-status.yaml manually or run sprint-planning to regenerate</output>
-      <action>HALT - Cannot proceed</action>
-    </check>
-    <output>Epic {{epic_num}} status updated to in-progress</output>
-  </check>
 
-  <action>GOTO step 2a</action>
+<action>Check if this is the first story in epic {{epic_num}} by looking for {{epic_num}}-1-\* pattern</action>
+<check if="this is first story in epic {{epic_num}}">
+<action>Load {{sprint_status}} and check epic-{{epic_num}} status</action>
+<action>If epic status is "backlog" → update to "in-progress"</action>
+<action>If epic status is "contexted" (legacy status) → update to "in-progress" (backward compatibility)</action>
+<action>If epic status is "in-progress" → no change needed</action>
+<check if="epic status is 'done'">
+<output>ERROR: Cannot create story in completed epic</output>
+<output>Epic {{epic_num}} is marked as 'done'. All stories are complete.</output>
+<output>If you need to add more work, either:</output>
+<output>1. Manually change epic status back to 'in-progress' in sprint-status.yaml</output>
+<output>2. Create a new epic for additional work</output>
+<action>HALT - Cannot proceed</action>
+</check>
+<check if="epic status is not one of: backlog, contexted, in-progress, done">
+<output>ERROR: Invalid epic status '{{epic_status}}'</output>
+<output>Epic {{epic_num}} has invalid status. Expected: backlog, in-progress, or done</output>
+<output>Please fix sprint-status.yaml manually or run sprint-planning to regenerate</output>
+<action>HALT - Cannot proceed</action>
+</check>
+<output>Epic {{epic_num}} status updated to in-progress</output>
+</check>
+
+<action>GOTO step 2a</action>
 </step>
 
 <step n="2" goal="Load and analyze core artifacts">
   <critical>🔬 EXHAUSTIVE ARTIFACT ANALYSIS - This is where you prevent future developer fuckups!</critical>
 
   <!-- Load all available content through discovery protocol -->
-  <invoke-protocol
+
+<invoke-protocol
     name="discover_inputs" />
-  <note>Available content: {epics_content}, {prd_content}, {architecture_content}, {ux_content},
-  {project_context}</note>
+<note>Available content: {epics_content}, {prd_content}, {architecture_content}, {ux_content},
+{project_context}</note>
 
   <!-- Analyze epics file for story foundation -->
-  <action>From {epics_content}, extract Epic {{epic_num}} complete context:</action> **EPIC ANALYSIS:** - Epic
-  objectives and business value - ALL stories in this epic for cross-story context - Our specific story's requirements, user story
-  statement, acceptance criteria - Technical requirements and constraints - Dependencies on other stories/epics - Source hints pointing to
-  original documents <!-- Extract specific story requirements -->
-  <action>Extract our story ({{epic_num}}-{{story_num}}) details:</action> **STORY FOUNDATION:** - User story statement
-  (As a, I want, so that) - Detailed acceptance criteria (already BDD formatted) - Technical requirements specific to this story -
-  Business context and value - Success criteria <!-- Previous story analysis for context continuity -->
-  <check if="story_num > 1">
-    <action>Find {{previous_story_num}}: scan {implementation_artifacts} for the story file in epic {{epic_num}} with the highest story number less than {{story_num}}</action>
-    <action>Load previous story file: {implementation_artifacts}/{{epic_num}}-{{previous_story_num}}-*.md</action> **PREVIOUS STORY INTELLIGENCE:** -
-  Dev notes and learnings from previous story - Review feedback and corrections needed - Files that were created/modified and their
-  patterns - Testing approaches that worked/didn't work - Problems encountered and solutions found - Code patterns established <action>Extract
-  all learnings that could impact current story implementation</action>
-  </check>
+
+<action>From {epics_content}, extract Epic {{epic_num}} complete context:</action> **EPIC ANALYSIS:** - Epic
+objectives and business value - ALL stories in this epic for cross-story context - Our specific story's requirements, user story
+statement, acceptance criteria - Technical requirements and constraints - Dependencies on other stories/epics - Source hints pointing to
+original documents <!-- Extract specific story requirements -->
+<action>Extract our story ({{epic_num}}-{{story_num}}) details:</action> **STORY FOUNDATION:** - User story statement
+(As a, I want, so that) - Detailed acceptance criteria (already BDD formatted) - Technical requirements specific to this story -
+Business context and value - Success criteria <!-- Previous story analysis for context continuity -->
+<check if="story_num > 1">
+<action>Find {{previous_story_num}}: scan {implementation_artifacts} for the story file in epic {{epic_num}} with the highest story number less than {{story_num}}</action>
+<action>Load previous story file: {implementation_artifacts}/{{epic_num}}-{{previous_story_num}}-\*.md</action> **PREVIOUS STORY INTELLIGENCE:** -
+Dev notes and learnings from previous story - Review feedback and corrections needed - Files that were created/modified and their
+patterns - Testing approaches that worked/didn't work - Problems encountered and solutions found - Code patterns established <action>Extract
+all learnings that could impact current story implementation</action>
+</check>
 
   <!-- Git intelligence for previous work patterns -->
-  <check
+
+<check
     if="previous story exists AND git repository detected">
-    <action>Get last 5 commit titles to understand recent work patterns</action>
-    <action>Analyze 1-5 most recent commits for relevance to current story:
-      - Files created/modified
-      - Code patterns and conventions used
-      - Library dependencies added/changed
-      - Architecture decisions implemented
-      - Testing approaches used
-    </action>
-    <action>Extract actionable insights for current story implementation</action>
-  </check>
+<action>Get last 5 commit titles to understand recent work patterns</action>
+<action>Analyze 1-5 most recent commits for relevance to current story: - Files created/modified - Code patterns and conventions used - Library dependencies added/changed - Architecture decisions implemented - Testing approaches used
+</action>
+<action>Extract actionable insights for current story implementation</action>
+</check>
 </step>
 
 <step n="3" goal="Architecture analysis for developer guardrails">
@@ -282,32 +283,25 @@ Load config from `{project-root}/_skad/bmm/config.yaml` and resolve:
   technical areas that require latest version knowledge:</action>
 
   <!-- Check for libraries/frameworks mentioned in architecture -->
-  <action>From architecture analysis, identify specific libraries, APIs, or
-  frameworks</action>
-  <action>For each critical technology, research latest stable version and key changes:
-    - Latest API documentation and breaking changes
-    - Security vulnerabilities or updates
-    - Performance improvements or deprecations
-    - Best practices for current version
-  </action>
-  **EXTERNAL CONTEXT INCLUSION:** <action>Include in story any critical latest information the developer needs:
-    - Specific library versions and why chosen
-    - API endpoints with parameters and authentication
-    - Recent security patches or considerations
-    - Performance optimization techniques
-    - Migration considerations if upgrading
-  </action>
+
+<action>From architecture analysis, identify specific libraries, APIs, or
+frameworks</action>
+<action>For each critical technology, research latest stable version and key changes: - Latest API documentation and breaking changes - Security vulnerabilities or updates - Performance improvements or deprecations - Best practices for current version
+</action>
+**EXTERNAL CONTEXT INCLUSION:** <action>Include in story any critical latest information the developer needs: - Specific library versions and why chosen - API endpoints with parameters and authentication - Recent security patches or considerations - Performance optimization techniques - Migration considerations if upgrading
+</action>
 </step>
 
 <step n="5" goal="Create comprehensive story file">
   <critical>📝 CREATE ULTIMATE STORY FILE - The developer's master implementation guide!</critical>
 
-  <action>Initialize from template.md:
-  {default_output_file}</action>
-  <template-output file="{default_output_file}">story_header</template-output>
+<action>Initialize from template.md:
+{default_output_file}</action>
+<template-output file="{default_output_file}">story_header</template-output>
 
   <!-- Story foundation from epics analysis -->
-  <template-output
+
+<template-output
     file="{default_output_file}">story_requirements</template-output>
 
   <!-- Developer context section - MOST IMPORTANT PART -->
@@ -322,16 +316,18 @@ Load config from `{project-root}/_skad/bmm/config.yaml` and resolve:
   <template-output file="{default_output_file}">testing_requirements</template-output>
 
   <!-- Previous story intelligence -->
-  <check
+
+<check
     if="previous story learnings available">
-    <template-output file="{default_output_file}">previous_story_intelligence</template-output>
-  </check>
+<template-output file="{default_output_file}">previous_story_intelligence</template-output>
+</check>
 
   <!-- Git intelligence -->
-  <check
+
+<check
     if="git analysis completed">
-    <template-output file="{default_output_file}">git_intelligence_summary</template-output>
-  </check>
+<template-output file="{default_output_file}">git_intelligence_summary</template-output>
+</check>
 
   <!-- Latest technical specifics -->
   <check if="web research completed">
@@ -339,7 +335,8 @@ Load config from `{project-root}/_skad/bmm/config.yaml` and resolve:
   </check>
 
   <!-- Project context reference -->
-  <template-output
+
+<template-output
     file="{default_output_file}">project_context_reference</template-output>
 
   <!-- Final status update -->
@@ -347,9 +344,10 @@ Load config from `{project-root}/_skad/bmm/config.yaml` and resolve:
   story_completion_status</template-output>
 
   <!-- CRITICAL: Set status to ready-for-dev -->
-  <action>Set story Status to: "ready-for-dev"</action>
-  <action>Add completion note: "Ultimate
-  context engine analysis completed - comprehensive developer guide created"</action>
+
+<action>Set story Status to: "ready-for-dev"</action>
+<action>Add completion note: "Ultimate
+context engine analysis completed - comprehensive developer guide created"</action>
 </step>
 
 <step n="6" goal="Update sprint status and finalize">
@@ -367,8 +365,8 @@ Load config from `{project-root}/_skad/bmm/config.yaml` and resolve:
     <action>Save file, preserving ALL comments and structure including STATUS DEFINITIONS</action>
   </check>
 
-  <action>Report completion</action>
-  <output>**🎯 ULTIMATE SKad Method STORY CONTEXT CREATED, {user_name}!**
+<action>Report completion</action>
+<output>**🎯 ULTIMATE SKad Method STORY CONTEXT CREATED, {user_name}!**
 
     **Story Details:**
     - Story ID: {{story_id}}
@@ -383,6 +381,7 @@ Load config from `{project-root}/_skad/bmm/config.yaml` and resolve:
     4. Optional: If Test Architect module installed, run `/skad:tea:automate` after `dev-story` to generate guardrail tests
 
     **The developer now has everything needed for flawless implementation!**
+
   </output>
 </step>
 
@@ -390,38 +389,27 @@ Load config from `{project-root}/_skad/bmm/config.yaml` and resolve:
   <critical>Task files are MANDATORY for the dev-tasks pipeline. Each task file must be 100% self-contained so sub-agents can execute with zero starting context — no "see architecture doc" or "refer to story file" references.</critical>
 
   <!-- QUALITY GATE: Verify story file quality before generating tasks -->
-  <action>Verify story file quality before proceeding to task generation:
-    1. Story has a valid User Story statement (As a / I want / So that)
-    2. Acceptance Criteria section exists with at least one Given/When/Then block
-    3. Tasks/Subtasks section exists with at least one task
-    4. Dev Notes section exists with technical context
-    5. Status is "ready-for-dev"
-  </action>
-  <check if="story file fails any quality check">
-    <output>⚠️ Story file quality issue detected. Returning to Step 5 to fix before generating tasks...</output>
-    <goto step="5">Regenerate story with complete content</goto>
-  </check>
 
-  <output>📋 Story validated. Now generating self-contained atomic task files for sub-agent implementation...
+<action>Verify story file quality before proceeding to task generation: 1. Story has a valid User Story statement (As a / I want / So that) 2. Acceptance Criteria section exists with at least one Given/When/Then block 3. Tasks/Subtasks section exists with at least one task 4. Dev Notes section exists with technical context 5. Status is "ready-for-dev"
+</action>
+<check if="story file fails any quality check">
+<output>⚠️ Story file quality issue detected. Returning to Step 5 to fix before generating tasks...</output>
+<goto step="5">Regenerate story with complete content</goto>
+</check>
+
+<output>📋 Story validated. Now generating self-contained atomic task files for sub-agent implementation...
 
     Task files embed full context per task (1-3 files each, architecture inlined, verification commands included).
     Each task is independently completable by a sub-agent without loading any external documents.
+
   </output>
 
-  <action>Set {{story_path}} = {{story_file}}</action>
-  <action>Load and follow: {project-root}/_skad/bmm/workflows/4-implementation/create-tasks/workflow.md</action>
+<action>Set {{story_path}} = {{story_file}}</action>
+<action>Load and follow: {project-root}/\_skad/bmm/workflows/4-implementation/create-tasks/workflow.md</action>
 
-  <note>QUALITY EXPECTATIONS for create-tasks — every generated task file MUST:
-    - Be 100% self-contained: all architecture excerpts inlined VERBATIM (not summarized)
-    - Include exact file paths and function signatures (no ambiguity)
-    - Include existing file excerpts (imports, class structure, current state)
-    - Include code patterns from prior stories for consistency
-    - Have runnable verification commands (not placeholders)
-    - Have a specific DO NOT list derived from architecture constraints
-    - Touch at most 3 files (split into sub-tasks if more)
-    - Include a Stall Profile classification for the dev-tasks orchestrator
-    Sub-agents spawned by dev-tasks receive ZERO pre-loaded context. If a task file says "see architecture doc" or "refer to story", the sub-agent WILL fail.
-  </note>
+<note>QUALITY EXPECTATIONS for create-tasks — every generated task file MUST: - Be 100% self-contained: all architecture excerpts inlined VERBATIM (not summarized) - Include exact file paths and function signatures (no ambiguity) - Include existing file excerpts (imports, class structure, current state) - Include code patterns from prior stories for consistency - Have runnable verification commands (not placeholders) - Have a specific DO NOT list derived from architecture constraints - Touch at most 3 files (split into sub-tasks if more) - Include a Stall Profile classification for the dev-tasks orchestrator
+Sub-agents spawned by dev-tasks receive ZERO pre-loaded context. If a task file says "see architecture doc" or "refer to story", the sub-agent WILL fail.
+</note>
 </step>
 
 </workflow>

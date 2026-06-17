@@ -8,6 +8,14 @@ description: 'Break a ready-for-dev story into self-contained atomic task files 
 **Goal:** Atomize a story's Tasks/Subtasks into self-contained task files that sub-agents can implement in a single short session without loading any external documents.
 
 **Your Role:** Task decomposition engine that prevents context overload in sub-agents.
+
+## MANDATORY PROCESS RULES
+
+- **R3 Traceability:** each task file names its parent story (→ epic → capability → GOAL).
+- **R1 No mock integration tests:** every integration/E2E test task states the REAL infrastructure it hits + an infra-precheck, and explicitly forbids mocks (in-memory fakes, in-process stubs, monkeypatched downstreams). Unit tests may mock; integration tests may not.
+- **R2 Infra gap → Infrastructure Epic:** if a task needs unwired infrastructure, do not write a mock task — emit an infra-dependency task pointing at the Infrastructure Epic and mark the test task blocked.
+- **R4/R5 QA task:** the final task of a story is a QA-adversarial-real-app task: drive the REAL application on real infrastructure, audit integration tests for mocks (flag as defects), and try to break the user journey.
+
 - Communicate all responses in {communication_language} and generate all documents in {document_output_language}
 - Each task file must be 100% self-contained: no "see architecture doc" — inline the relevant excerpt verbatim
 - Tasks must be tiny: 1-3 files to touch maximum, one function or feature increment per task
@@ -80,6 +88,7 @@ Load config from `{project-root}/_skad/bmm/config.yaml` and resolve:
     <action>Construct story path: {implementation_artifacts}/{{story_key}}.md</action>
     <action>Read COMPLETE story file</action>
     <action>Set {{tasks_dir}} = {implementation_artifacts}/tasks/{{story_key}}</action>
+
   </check>
 
   <check if="no sprint_status file AND no story_path provided">
@@ -88,13 +97,15 @@ Load config from `{project-root}/_skad/bmm/config.yaml` and resolve:
       Provide a story path: "create tasks for path/to/story.md"
     </output>
     <action>HALT</action>
+
   </check>
 
   <!-- Parse story content -->
-  <action>Parse all story sections: Story, Acceptance Criteria, Tasks/Subtasks, Dev Notes, References, Dev Agent Record</action>
-  <action>Extract complete Tasks/Subtasks list including all subtask bullets</action>
-  <action>Count total top-level tasks as {{total_tasks}}</action>
-  <action>Warn (but continue) if story Status is not "ready-for-dev"</action>
+
+<action>Parse all story sections: Story, Acceptance Criteria, Tasks/Subtasks, Dev Notes, References, Dev Agent Record</action>
+<action>Extract complete Tasks/Subtasks list including all subtask bullets</action>
+<action>Count total top-level tasks as {{total_tasks}}</action>
+<action>Warn (but continue) if story Status is not "ready-for-dev"</action>
 
   <!-- Handle existing task files -->
   <check if="{{tasks_dir}} directory already exists with task files">
@@ -119,6 +130,7 @@ Load config from `{project-root}/_skad/bmm/config.yaml` and resolve:
     <check if="user chooses R">
       <action>Continue with Step 2 — all task files will be overwritten</action>
     </check>
+
   </check>
 </step>
 
@@ -126,14 +138,9 @@ Load config from `{project-root}/_skad/bmm/config.yaml` and resolve:
   <critical>EVERY task file must be self-contained. Extract all context that sub-agents will need so they NEVER have to load external documents.</critical>
 
   <!-- Parse Dev Notes for all references -->
-  <action>From story Dev Notes, extract:
-    - All file paths mentioned (files to create, modify, or reference)
-    - All library/framework names and version requirements
-    - All architecture pattern names referenced (e.g., "repository pattern", "service layer")
-    - All testing requirements (framework, coverage expectations, test locations)
-    - All "do not" constraints already listed
-    - All references from the References subsection
-  </action>
+
+<action>From story Dev Notes, extract: - All file paths mentioned (files to create, modify, or reference) - All library/framework names and version requirements - All architecture pattern names referenced (e.g., "repository pattern", "service layer") - All testing requirements (framework, coverage expectations, test locations) - All "do not" constraints already listed - All references from the References subsection
+</action>
 
   <!-- Load architecture — whole or sharded, mirroring create-story step 3 -->
   <check if="whole architecture file exists at {planning_artifacts}/*architecture*.md">
@@ -144,11 +151,8 @@ Load config from `{project-root}/_skad/bmm/config.yaml` and resolve:
     <action>Load all architecture shard files referenced in the index</action>
   </check>
 
-  <action>For each architecture pattern referenced in Dev Notes:
-    - Find the relevant section in architecture document
-    - Copy that section VERBATIM (not a summary — the actual text the dev needs)
-    - Tag it with which story task(s) it applies to
-  </action>
+<action>For each architecture pattern referenced in Dev Notes: - Find the relevant section in architecture document - Copy that section VERBATIM (not a summary — the actual text the dev needs) - Tag it with which story task(s) it applies to
+</action>
 
   <!-- Previous story intelligence -->
   <check if="story_num > 1">
@@ -165,18 +169,16 @@ Load config from `{project-root}/_skad/bmm/config.yaml` and resolve:
   </check>
 
   <!-- Dependency graph across tasks -->
-  <action>For each top-level task in the story's Tasks/Subtasks:
-    1. Identify what files/functions/data this task creates or modifies
-    2. Identify what the NEXT task needs from this task's output
-    3. Determine if any task has a hard dependency on a previous task's output
-    4. Build strict ordering: Task N must complete before Task N+1 starts (or note if parallel is safe)
-  </action>
-  <action>Store dependency chain as {{task_dependency_map}}</action>
+
+<action>For each top-level task in the story's Tasks/Subtasks: 1. Identify what files/functions/data this task creates or modifies 2. Identify what the NEXT task needs from this task's output 3. Determine if any task has a hard dependency on a previous task's output 4. Build strict ordering: Task N must complete before Task N+1 starts (or note if parallel is safe)
+</action>
+<action>Store dependency chain as {{task_dependency_map}}</action>
 
   <!-- File scope enforcement: detect oversized tasks early -->
-  <action>For each top-level task, estimate the number of distinct files it will touch</action>
-  <action>Flag any task that appears to touch more than 3 files as needing a split</action>
-  <action>Plan splits for oversized tasks: task-Na and task-Nb with clear handoff between them</action>
+
+<action>For each top-level task, estimate the number of distinct files it will touch</action>
+<action>Flag any task that appears to touch more than 3 files as needing a split</action>
+<action>Plan splits for oversized tasks: task-Na and task-Nb with clear handoff between them</action>
 </step>
 
 <step n="3" goal="Optional checkpoint before generation">
@@ -189,6 +191,7 @@ Load config from `{project-root}/_skad/bmm/config.yaml` and resolve:
 
     [A] Advanced Elicitation — push for deeper context (missing architecture, ambiguous file paths, unclear dependencies)
     [C] Continue — generate task files now
+
   </output>
   <ask>Choose [A] or [C]:</ask>
 
@@ -207,11 +210,12 @@ Load config from `{project-root}/_skad/bmm/config.yaml` and resolve:
   <critical>Each task file MUST be self-contained. NEVER write "see architecture doc" or "refer to story". INLINE the relevant excerpt verbatim.</critical>
   <critical>3-file hard limit per task. If a task touches more than 3 files, SPLIT it into task-Na and task-Nb.</critical>
 
-  <action>Create directory {{tasks_dir}} if it does not exist</action>
-  <action>Load task-template.md from: {{task_template}}</action>
+<action>Create directory {{tasks_dir}} if it does not exist</action>
+<action>Load task-template.md from: {{task_template}}</action>
 
   <!-- Iterate over each top-level task -->
-  <action>For each Task N (iterating 1 through {{total_tasks}}, skipping completed tasks if [U] mode):
+
+<action>For each Task N (iterating 1 through {{total_tasks}}, skipping completed tasks if [U] mode):
 
     **Resolve template variables for this task:**
 
@@ -252,21 +256,25 @@ Load config from `{project-root}/_skad/bmm/config.yaml` and resolve:
     - Filename: task-{{N}}-{{slug}}.md where slug = kebab-case of task_title
     - Path: {{tasks_dir}}/task-{{N}}-{{slug}}.md
     - Substitute ALL template variables — the output file contains NO {{variables}}, only resolved content
+
   </action>
 
-  <action>Track all generated task file paths as {{generated_task_files}}</action>
-  <action>Store count of implementation task files as {{impl_task_count}} = number of files generated so far</action>
+<action>Track all generated task file paths as {{generated_task_files}}</action>
+<action>Store count of implementation task files as {{impl_task_count}} = number of files generated so far</action>
 
   <!-- MANDATORY: Always append two standard test tasks after all implementation tasks -->
-  <action>Set {{unit_test_task_num}} = {{impl_task_count}} + 1</action>
-  <action>Set {{acceptance_task_num}} = {{impl_task_count}} + 2</action>
-  <action>Set {{final_total}} = {{acceptance_task_num}}</action>
+
+<action>Set {{unit_test_task_num}} = {{impl_task_count}} + 1</action>
+<action>Set {{acceptance_task_num}} = {{impl_task_count}} + 2</action>
+<action>Set {{final_total}} = {{acceptance_task_num}}</action>
 
   <!-- Update "Task N of M" denominator in all previously written task files to use {{final_total}} -->
-  <action>In each already-written task file in {{tasks_dir}}, replace the total count in the heading line ("Task N of M") so M = {{final_total}}</action>
+
+<action>In each already-written task file in {{tasks_dir}}, replace the total count in the heading line ("Task N of M") so M = {{final_total}}</action>
 
   <!-- Standard Task U: Unit Tests -->
-  <action>Generate task file: {{tasks_dir}}/task-{{unit_test_task_num}}-unit-tests.md using task-template.md with:
+
+<action>Generate task file: {{tasks_dir}}/task-{{unit_test_task_num}}-unit-tests.md using task-template.md with:
 
     {{task_num}}          = {{unit_test_task_num}}
     {{total_tasks}}       = {{final_total}}
@@ -324,10 +332,12 @@ Load config from `{project-root}/_skad/bmm/config.yaml` and resolve:
                              Do NOT write integration or e2e tests here — those belong in Task {{acceptance_task_num}}
                              Do NOT use real databases, network calls, or filesystem in unit tests — mock everything
                              Do NOT skip any function introduced in Tasks 1–{{impl_task_count}}"
+
   </action>
 
   <!-- Standard Task S: Story Acceptance Tests -->
-  <action>Generate task file: {{tasks_dir}}/task-{{acceptance_task_num}}-story-acceptance-tests.md using task-template.md with:
+
+<action>Generate task file: {{tasks_dir}}/task-{{acceptance_task_num}}-story-acceptance-tests.md using task-template.md with:
 
     {{task_num}}          = {{acceptance_task_num}}
     {{total_tasks}}       = {{final_total}}
@@ -387,17 +397,19 @@ Load config from `{project-root}/_skad/bmm/config.yaml` and resolve:
                              Do NOT skip any AC — every criterion needs at least one test
                              Do NOT mark complete if the full regression suite (npm test) has any failures
                              Do NOT implement feature code here — tests only"
+
   </action>
 
-  <action>Append both new task file paths to {{generated_task_files}}</action>
-  <action>Set {{total_tasks_generated}} = {{final_total}}</action>
+<action>Append both new task file paths to {{generated_task_files}}</action>
+<action>Set {{total_tasks_generated}} = {{final_total}}</action>
 </step>
 
 <step n="5" goal="Update story file to link to generated task files">
   <action>Load the COMPLETE story file from {{story_file}}</action>
 
   <!-- Add Task Files subsection to Dev Notes — before the References subsection -->
-  <action>In the Dev Notes section, insert a new "### Task Files" subsection BEFORE "### References":
+
+<action>In the Dev Notes section, insert a new "### Task Files" subsection BEFORE "### References":
 
     ```markdown
     ### Task Files
@@ -409,16 +421,17 @@ Load config from `{project-root}/_skad/bmm/config.yaml` and resolve:
 
     Where {{generated_task_file_links}} = one line per file:
     `- [task-N-slug](tasks/{{story_key}}/task-N-slug.md) — [one-line task description]`
+
   </action>
 
-  <critical>Do NOT modify: Tasks/Subtasks checkboxes, Acceptance Criteria, Story statement, Dev Agent Record, Status — those are dev-story's domain</critical>
-  <action>Save story file preserving ALL existing content and structure</action>
+<critical>Do NOT modify: Tasks/Subtasks checkboxes, Acceptance Criteria, Story statement, Dev Agent Record, Status — those are dev-story's domain</critical>
+<action>Save story file preserving ALL existing content and structure</action>
 </step>
 
 <step n="6" goal="QUALITY GATE: Validate task file self-containment">
   <critical>This step is MANDATORY. Sub-agents spawned by dev-tasks receive ZERO pre-loaded context. Every task file must stand alone.</critical>
 
-  <action>For each generated task file in {{tasks_dir}}, verify:
+<action>For each generated task file in {{tasks_dir}}, verify:
 
     **Self-Containment Checks (FAIL = regenerate the task):**
     1. NO external references — file must NOT contain phrases like:
@@ -437,6 +450,7 @@ Load config from `{project-root}/_skad/bmm/config.yaml` and resolve:
     9. Dependency Order section specifies what this task Requires and what it Produces
     10. Completion Checklist has specific, verifiable items
     11. Stall Profile is set to file-heavy, api-heavy, or mixed
+
   </action>
 
   <check if="any task file fails self-containment checks">
@@ -444,7 +458,7 @@ Load config from `{project-root}/_skad/bmm/config.yaml` and resolve:
     <action>For each failing task: re-extract the missing context from architecture/story/git and regenerate the task file with all content inlined</action>
   </check>
 
-  <output>✅ All {{total_tasks_generated}} task files passed self-containment validation.</output>
+<output>✅ All {{total_tasks_generated}} task files passed self-containment validation.</output>
 </step>
 
 <step n="7" goal="Update sprint status and report completion">
@@ -455,7 +469,7 @@ Load config from `{project-root}/_skad/bmm/config.yaml` and resolve:
     <action>Save file preserving ALL comments and structure including STATUS DEFINITIONS</action>
   </check>
 
-  <output>**Tasks Created for {{story_key}}, {user_name}!**
+<output>**Tasks Created for {{story_key}}, {user_name}!**
 
     **Task Files Generated:** {{total_tasks_generated}} files (all validated for self-containment)
     **Location:** {{tasks_dir}}/
@@ -472,6 +486,7 @@ Load config from `{project-root}/_skad/bmm/config.yaml` and resolve:
     1. Review task files in {{tasks_dir}}/ (each is self-contained, no external docs needed)
     2. Run `dev-tasks` — it will orchestrate task-by-task implementation with automated implement → review → test pipeline
     3. Or run `dev-story` for single-agent story implementation
+
   </output>
 </step>
 
