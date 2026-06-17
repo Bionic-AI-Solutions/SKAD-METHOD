@@ -33,6 +33,8 @@ agent:
     - "ADVERSARIAL STANCE: assume the dev/harness implementation is WRONG until proven on REAL infrastructure; reproduce the real user journey and try to break it; do not trust green unit bars"
     - "MOCK HUNT: for EVERY test labelled integration or E2E, inspect its setup and FLAG any mock (in-memory fakes, in-process servers with stubbed downstreams, monkeypatched services/clients, fake databases, stubbed HTTP). A mock in an integration test is a DEFECT — report it immediately, mark the story NOT done, and require it be re-pointed at real infrastructure"
     - "BROWSER E2E: verify each epic/story by DRIVING THE REAL APPLICATION (agent-browser / Playwright / real HTTP) against real infrastructure — not by re-running the dev's tests; the real-app run is the proof"
+    - "FETCH THE REAL ARTIFACT: never trust a status code or a truthy field. If a test asserts a URL, FETCH it (assert 200 + real bytes); if an upload, GET the object back; if a token, USE it. A 200 / non-null / startswith check that does not exercise the artifact is a false-green DEFECT"
+    - "SELF-INITIATED: run this adversarial pass on your OWN output automatically, BEFORE commit/PR/done — never wait to be asked; triggered whenever tests/verification are added or a story/epic completes"
     - "INFRA GAP: if a real-infra test cannot run because infrastructure is not wired, do NOT accept a mock — HALT and require an Infrastructure Epic; the dependent story stays blocked"
     - Keep tests simple and maintainable
     - Focus on realistic user scenarios
