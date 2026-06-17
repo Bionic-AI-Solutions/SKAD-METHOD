@@ -15,6 +15,13 @@ description: 'Orchestrate task-by-task story implementation with automated imple
 - NEVER modify test assertions to make a test pass — only production code is fixed
 - Read state from files at the start of every iteration — never assume state from memory
 
+## MANDATORY PROCESS RULES (override defaults)
+
+- **R1 — No integration test with mocks.** Integration/E2E tests MUST hit the project's REAL infrastructure (its actual databases, auth, message/streaming, object store, external/AI services). The Test phase REJECTS any integration test that uses in-memory fakes, an in-process server with stubbed downstreams, monkeypatched services, or fake databases — that is a defect, not a pass. (Unit tests may mock; integration tests may not.)
+- **R2 — Infra gap → Infrastructure Epic.** If a real-infra test cannot run because infrastructure isn't wired, do NOT mock and do NOT mark the task/story `passed` — HALT, record the gap against an **Infrastructure Epic**, and leave the story blocked.
+- **R3 — Traceability.** Every task links to its story, story to epic, epic to capability, capability to the product GOAL. Flag any orphan or unwired connection in the run output.
+- **R4/R5 — QA adversarial real-app gate.** A story/epic is NOT complete until the **Phase 4 QA adversarial verification** (below) passes: the adversarial QA role drives the REAL application (browser / agent-browser / Playwright) on real infrastructure, audits the story's integration tests for mocks, and tries to break the user journey. Spawn the QA agent (`bmm/agents/qa`).
+
 ---
 
 ## INITIALIZATION
@@ -49,12 +56,12 @@ If `op_enabled` is false: all OP sync steps in this workflow are silently skippe
 
 Read `autonomy_mode` from config or user invocation argument. Valid values:
 
-| Mode | Behavior |
-|------|----------|
-| `implement-only` | Run Phase 1 (implement) only per task; no auto review/test |
+| Mode               | Behavior                                                                                            |
+| ------------------ | --------------------------------------------------------------------------------------------------- |
+| `implement-only`   | Run Phase 1 (implement) only per task; no auto review/test                                          |
 | `halt-after-story` | **(Default)** Pause after all tasks in a story are passed, awaiting human approval before advancing |
-| `halt-on-high` | Pause only when Phase 2 review finds a High-severity issue |
-| `full-hands-off` | Run to completion (or failure) without pausing |
+| `halt-on-high`     | Pause only when Phase 2 review finds a High-severity issue                                          |
+| `full-hands-off`   | Run to completion (or failure) without pausing                                                      |
 
 If `autonomy_mode` is not set, default to `halt-after-story`.
 
@@ -62,11 +69,11 @@ If `autonomy_mode` is not set, default to `halt-after-story`.
 
 Base thresholds (adjusted per task `Stall Profile`):
 
-| Stall Profile | `stall_warn` | `stall_kill` | Use Case |
-|---------------|-------------|-------------|----------|
-| `file-heavy` (default) | 10 min | 20 min | Code writing, unit tests — frequent file writes expected |
-| `api-heavy` | 20 min | 40 min | MCP calls, API integrations, infra validation — long periods without file I/O |
-| `mixed` | 15 min | 30 min | Both file writes and API calls |
+| Stall Profile          | `stall_warn` | `stall_kill` | Use Case                                                                      |
+| ---------------------- | ------------ | ------------ | ----------------------------------------------------------------------------- |
+| `file-heavy` (default) | 10 min       | 20 min       | Code writing, unit tests — frequent file writes expected                      |
+| `api-heavy`            | 20 min       | 40 min       | MCP calls, API integrations, infra validation — long periods without file I/O |
+| `mixed`                | 15 min       | 30 min       | Both file writes and API calls                                                |
 
 Config overrides (`stall_warn_minutes`, `stall_kill_minutes`) take precedence over profile defaults.
 
@@ -74,11 +81,11 @@ Config overrides (`stall_warn_minutes`, `stall_kill_minutes`) take precedence ov
 
 A sub-agent is considered **alive** if ANY of these signals are true:
 
-| Signal | What It Detects | How to Check |
-|--------|----------------|--------------|
-| **TaskOutput growth** | Agent produced new output (tool results, text) | `TaskOutput(agent_id)` length increased since last poll |
-| **Active child processes** | Agent is running tools (curl, python3, node, etc.) | `pgrep -P <agent_pid> -la` returns active children |
-| **Network socket activity** | Agent is making API/MCP calls | `ss -tnp \| grep -c <agent_pid>` shows established connections |
+| Signal                      | What It Detects                                    | How to Check                                                   |
+| --------------------------- | -------------------------------------------------- | -------------------------------------------------------------- |
+| **TaskOutput growth**       | Agent produced new output (tool results, text)     | `TaskOutput(agent_id)` length increased since last poll        |
+| **Active child processes**  | Agent is running tools (curl, python3, node, etc.) | `pgrep -P <agent_pid> -la` returns active children             |
+| **Network socket activity** | Agent is making API/MCP calls                      | `ss -tnp \| grep -c <agent_pid>` shows established connections |
 
 The orchestrator only declares a stall when **ALL signals are negative** for the full `stall_kill` duration.
 
@@ -181,6 +188,7 @@ Override base thresholds via config or invocation args if needed.
       Next task: {{current_task_file}}
       Autonomy mode: {{autonomy_mode}}
     </output>
+
   </step>
 
   <step n="2" goal="Update sprint status to in-progress" tag="sprint-status">
@@ -227,6 +235,7 @@ Override base thresholds via config or invocation args if needed.
       </check>
     </check>
     <output>✅ Dependencies satisfied for {{current_task_file_basename}}</output>
+
   </step>
 
   <step n="4" goal="Phase 1 — Implement" tag="implement">
@@ -345,6 +354,7 @@ Override base thresholds via config or invocation args if needed.
       </output>
       <action>HALT</action>
     </check>
+
   </step>
 
   <step n="5" goal="Phase 2 — Lightweight Self-Review" tag="review">
@@ -446,6 +456,7 @@ Override base thresholds via config or invocation args if needed.
         </check>
       </check>
     </check>
+
   </step>
 
   <step n="6" goal="Phase 3 — Test" tag="test">
@@ -562,6 +573,7 @@ Override base thresholds via config or invocation args if needed.
       <output>⚠️ Test phase failed (attempt {{test_retry_count}}). Retrying...</output>
       <goto anchor="test_run" />
     </check>
+
   </step>
 
   <step n="7" goal="Advance to next task or story boundary">
@@ -592,6 +604,22 @@ Override base thresholds via config or invocation args if needed.
         <output>🛑 Story-level code review found High-severity issues. Resolving before marking story complete...</output>
         <action>Spawn fix sub-agent to address High findings (production code only)</action>
         <action>After fixes: re-run test phase for affected tasks</action>
+      </check>
+
+      <!-- Phase 4 — MANDATORY QA adversarial real-app verification + mock audit (rules R1/R4/R5) -->
+      <output>🧪 **Phase 4: QA adversarial verification** — story {{story_key}}</output>
+      <action critical="true">Spawn the ADVERSARIAL QA agent (`bmm/agents/qa`, command [AV]). QA MUST:
+        1. MOCK AUDIT — inspect every test the story labels integration/E2E and FLAG any mock (in-memory fakes, in-process servers with stubbed downstreams, monkeypatched services/clients, fake databases). Any such mock is a DEFECT (rule R1).
+        2. REAL-APP E2E — drive the REAL application (browser / agent-browser / Playwright / real HTTP) on REAL infrastructure and adversarially attempt to break the story's user journey end-to-end (do NOT merely re-run the dev's tests).
+        3. INFRA GAP — if a real-infra check cannot run because infrastructure is missing, HALT and route the gap to an Infrastructure Epic (rule R2); do not accept a mock.
+        4. TRACEABILITY — confirm the story traces to its epic/capability/GOAL and flag any orphan/unwired flow (rule R3).
+      </action>
+      <action>Monitor the QA sub-agent with stall detection; read its verdict (Pass / Defects-Found / Blocked-on-Infra).</action>
+      <check if="QA verdict != 'Pass'">
+        <output>🛑 QA adversarial verification FAILED for {{story_key}} — {{qa_summary}}. Story is NOT complete.</output>
+        <action>If mocks were found in integration tests: spawn a fix sub-agent to re-point them at real infrastructure, then re-run the Test phase + Phase 4.</action>
+        <action>If blocked on infra: record the gap against the Infrastructure Epic, set the story status to blocked, and HALT — do NOT mark complete.</action>
+        <action>Do not proceed to mark the story complete until QA verdict == 'Pass'.</action>
       </check>
 
       <action>Update story file Status → "review"</action>
@@ -695,6 +723,7 @@ Override base thresholds via config or invocation args if needed.
         </check>
       </check>
     </check>
+
   </step>
 
 </workflow>
@@ -705,15 +734,15 @@ Override base thresholds via config or invocation args if needed.
 
 Task files use the `Status:` field to track pipeline phase. Valid values:
 
-| Status | Meaning |
-|--------|---------|
-| `ready-for-task` | Task generated, not yet started |
-| `in-dev` | Phase 1 (implement) sub-agent running |
-| `in-dev-complete` | Implementation done, awaiting review phase |
-| `in-review` | Phase 2 (review) sub-agent running |
-| `in-test` | Phase 3 (test) sub-agent running |
-| `passed` | All 3 phases complete — task is done |
-| `failed` | Halted due to unresolvable failure — requires human intervention |
+| Status            | Meaning                                                          |
+| ----------------- | ---------------------------------------------------------------- |
+| `ready-for-task`  | Task generated, not yet started                                  |
+| `in-dev`          | Phase 1 (implement) sub-agent running                            |
+| `in-dev-complete` | Implementation done, awaiting review phase                       |
+| `in-review`       | Phase 2 (review) sub-agent running                               |
+| `in-test`         | Phase 3 (test) sub-agent running                                 |
+| `passed`          | All 3 phases complete — task is done                             |
+| `failed`          | Halted due to unresolvable failure — requires human intervention |
 
 ---
 
@@ -723,11 +752,11 @@ Task files use the `Status:` field to track pipeline phase. Valid values:
 
 The orchestrator polls sub-agent health every `effective_stall_warn` minutes using three independent signals:
 
-| Signal | Command | What it catches |
-|--------|---------|----------------|
-| **TaskOutput growth** | `TaskOutput(agent_id)` length delta | Agent producing any output (tool calls, text, errors) |
-| **Active child processes** | `pgrep -la "curl\|python3\|node\|pytest\|jest"` | Agent running tools, test suites, API calls |
-| **Network socket activity** | `ss -tnp \| grep -c "ESTAB"` | Active TCP connections (MCP calls, HTTP APIs) |
+| Signal                      | Command                                         | What it catches                                       |
+| --------------------------- | ----------------------------------------------- | ----------------------------------------------------- |
+| **TaskOutput growth**       | `TaskOutput(agent_id)` length delta             | Agent producing any output (tool calls, text, errors) |
+| **Active child processes**  | `pgrep -la "curl\|python3\|node\|pytest\|jest"` | Agent running tools, test suites, API calls           |
+| **Network socket activity** | `ss -tnp \| grep -c "ESTAB"`                    | Active TCP connections (MCP calls, HTTP APIs)         |
 
 A stall is declared **only when ALL THREE signals are negative** for the full `effective_stall_kill` duration. Any single positive signal resets the stall timer.
 
@@ -735,11 +764,11 @@ A stall is declared **only when ALL THREE signals are negative** for the full `e
 
 Each task file declares a `Stall Profile:` field that adjusts detection sensitivity:
 
-| Profile | `stall_warn` | `stall_kill` | When to use |
-|---------|-------------|-------------|-------------|
-| `file-heavy` | 10 min | 20 min | Code writing, unit tests — frequent file writes expected |
-| `api-heavy` | 20 min | 40 min | MCP calls, API integrations, infra validation — long periods without file I/O |
-| `mixed` | 15 min | 30 min | Both file writes and API calls |
+| Profile      | `stall_warn` | `stall_kill` | When to use                                                                   |
+| ------------ | ------------ | ------------ | ----------------------------------------------------------------------------- |
+| `file-heavy` | 10 min       | 20 min       | Code writing, unit tests — frequent file writes expected                      |
+| `api-heavy`  | 20 min       | 40 min       | MCP calls, API integrations, infra validation — long periods without file I/O |
+| `mixed`      | 15 min       | 30 min       | Both file writes and API calls                                                |
 
 Config overrides (`stall_warn_minutes`, `stall_kill_minutes`) always take precedence over profile defaults.
 
@@ -766,7 +795,7 @@ When a stall is confirmed (all signals negative for `stall_kill` duration):
 Set `autonomy_mode` in `{project-root}/_skad/bmm/config.yaml`:
 
 ```yaml
-autonomy_mode: halt-after-story  # implement-only | halt-after-story | halt-on-high | full-hands-off
+autonomy_mode: halt-after-story # implement-only | halt-after-story | halt-on-high | full-hands-off
 stall_warn_minutes: 10
 stall_kill_minutes: 20
 ```
@@ -780,11 +809,13 @@ Or override at invocation time: `dev-tasks autonomy_mode=full-hands-off`
 > **Tests are the source of truth. They define what the code must do.**
 
 If a verification command fails, the orchestrator and all sub-agents MUST:
+
 - Diagnose the root cause in production code
 - Fix production code only
 - Re-run the command to confirm the fix
 
 If fixing production code appears to require changing a test assertion, this is a signal that either:
+
 1. The implementation fundamentally misunderstands the acceptance criterion (fix the implementation)
 2. The test was authored incorrectly in `create-tasks` (escalate to human — do not auto-fix)
 

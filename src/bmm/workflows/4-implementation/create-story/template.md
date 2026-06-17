@@ -4,6 +4,16 @@ Status: ready-for-dev
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
+## Traceability (R3)
+
+- Epic: {{epic_num}} → Capability: {{capability}} → GOAL. Flag any divergence/orphan.
+
+## Definition of Done — process rules (R1/R2/R4/R5)
+
+- Integration/E2E tests hit REAL infrastructure (named) + infra-precheck; **no mocks** (in-memory fakes / in-process stubs / monkeypatched downstreams forbidden in integration tests).
+- If required infrastructure is unwired: blocked on the **Infrastructure Epic**, not mocked.
+- **QA adversarial real-app run** (real app, real infra) passes: mock audit of integration tests + break-the-journey attempt. Story is not done until QA passes.
+
 ## Story
 
 As a {{role}},
