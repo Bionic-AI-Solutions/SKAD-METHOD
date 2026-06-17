@@ -21,6 +21,7 @@ description: 'Orchestrate task-by-task story implementation with automated imple
 - **R2 — Infra gap → Infrastructure Epic.** If a real-infra test cannot run because infrastructure isn't wired, do NOT mock and do NOT mark the task/story `passed` — HALT, record the gap against an **Infrastructure Epic**, and leave the story blocked.
 - **R3 — Traceability.** Every task links to its story, story to epic, epic to capability, capability to the product GOAL. Flag any orphan or unwired connection in the run output.
 - **R4/R5 — QA adversarial real-app gate.** A story/epic is NOT complete until the **Phase 4 QA adversarial verification** (below) passes: the adversarial QA role drives the REAL application (browser / agent-browser / Playwright) on real infrastructure, audits the story's integration tests for mocks, and tries to break the user journey. Spawn the QA agent (`bmm/agents/qa`).
+- **R6 — Self-initiated QA, before commit/merge/done.** Trigger the Phase 4 QA pass YOURSELF (never wait to be asked) whenever a task/story adds or changes tests/verification and before opening a PR or marking done. QA must FETCH/drive the real artifact (not trust a 200 / truthy field) — a check that does not exercise the artifact is a false-green defect, fixed in the same cycle.
 
 ---
 
